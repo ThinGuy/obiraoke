@@ -1,0 +1,49 @@
+name: obiraoke
+base: core24
+version: '0.1.0'
+summary: OB-01's Karaoke Party
+description: |
+  YouTube-based karaoke system for Raspberry Pi, Windows, macOS, and Linux.
+  Web interface for song search, queuing, and playback with pitch shifting.
+grade: devel
+confinement: strict
+
+architectures:
+  - build-on: [amd64]
+
+apps:
+  obiraoke:
+    command: bin/pikaraoke
+    environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib:$LD_LIBRARY_PATH
+    plugs:
+      - network
+      - network-bind
+      - audio-playback
+      - home
+      - removable-media
+
+parts:
+  obiraoke:
+    plugin: python
+    source: .
+    python-packages:
+      - pip
+      - setuptools
+    stage-packages:
+      - ffmpeg
+      - libavcodec-extra
+      - libpulse0
+
+  deno:
+    plugin: nil
+    override-build: |
+      DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip"
+      curl -fsSL -o deno.zip "${DENO_URL}"
+      unzip -o deno.zip -d "${CRAFT_PART_INSTALL}/bin"
+      chmod 755 "${CRAFT_PART_INSTALL}/bin/deno"
+      rm -f deno.zip
+    build-packages:
+      - curl
+      - unzip
