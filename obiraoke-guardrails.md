@@ -153,3 +153,27 @@ until `git push origin <target>` has succeeded.
 Session branches must rebase on origin/dev before any work begins.
 Run `git fetch origin && git rebase origin/dev` at the start of every session
 branch to avoid diverging from current dev content.
+
+## Snapcraft Build Rules — ABSOLUTE
+
+1. Never run bare `snapcraft` with no subcommand. It is deprecated and produces
+   noise.
+
+2. Always run `snapcraft clean` before a build to ensure a clean stage.
+
+3. Always use `snapcraft pack` to build the snap, never bare `snapcraft`.
+
+4. Always pass `--use-lxd` to `snapcraft pack` and `snapcraft clean`. Every
+   snapcraft command that accepts it must use it.
+
+5. Craig runs all snapcraft commands. CC never suggests or runs snapcraft
+   commands.
+
+The correct build sequence is:
+
+```
+snapcraft clean --use-lxd
+snapcraft pack --use-lxd
+```
+
+No other snapcraft invocation pattern is permitted.
