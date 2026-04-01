@@ -1,0 +1,18 @@
+#!/bin/sh
+# PulseAudio environment setup for snap confinement.
+# Sourced by the wrapper script before launching the application.
+#
+# The audio-playback plug gives access to the host PulseAudio socket,
+# but the client needs PULSE_SERVER pointed at the correct path.
+# Inside strict confinement the runtime dir lives under the user's
+# XDG_RUNTIME_DIR which maps to /run/user/<uid>/pulse.
+
+PULSE_RUNTIME="/run/user/$(id -u)/pulse"
+
+export PULSE_SERVER="unix:${PULSE_RUNTIME}/native"
+export PULSE_RUNTIME_PATH="${PULSE_RUNTIME}"
+
+# Optional: cookie path for auth if the host requires it
+if [ -f "$SNAP_USER_DATA/.config/pulse/cookie" ]; then
+    export PULSE_COOKIE="$SNAP_USER_DATA/.config/pulse/cookie"
+fi

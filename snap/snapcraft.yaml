@@ -18,6 +18,8 @@ apps:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
       PYTHONPATH: $SNAP/lib/python3.12/site-packages
       LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib:$LD_LIBRARY_PATH
+      PULSE_RUNTIME_PATH: /run/user/1000/pulse
+      PULSE_SERVER: unix:/run/user/1000/pulse/native
     plugs:
       - network
       - network-bind
@@ -32,16 +34,21 @@ parts:
     python-packages:
       - pip
       - setuptools
+    build-packages:
+      - libpulse-dev
     stage-packages:
       - ffmpeg
       - libavcodec-extra
       - libpulse0
+      - libasound2
+      - libasound2-plugins
 
   wrapper:
     plugin: dump
     source: snap/local
     organize:
       wrapper: bin/wrapper
+      pulseaudio-setup: bin/pulseaudio-setup
 
   deno:
     plugin: nil

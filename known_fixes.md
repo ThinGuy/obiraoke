@@ -52,3 +52,33 @@ graceful degradation under snap strict confinement.
    The hardcoded `/usr/bin/omxplayer` path is unreachable under snap strict
    confinement. When `$SNAP` is set, `play_file()` logs a warning and returns
    immediately. omxplayer is legacy; all playback is handled by the browser.
+
+## Audio Interface (Sprint 4)
+
+Snap strict confinement isolates the application from host audio devices. Three
+pieces are required for audio to work:
+
+1. **libpulse0 (stage-package)** -- The PulseAudio client library. The
+   `audio-playback` plug grants access to the host PulseAudio socket, but
+   without the client library inside the snap, nothing can connect to it.
+   FFmpeg and any other process that probes audio devices at init time need
+   this library present.
+
+2. **libasound2 and libasound2-plugins (stage-packages)** -- The ALSA user-space
+   library and its plugin set. Some FFmpeg builds enumerate ALSA devices before
+   falling back to PulseAudio. Without libasound2 the probe segfaults or
+   returns an opaque error. The plugins package includes the PulseAudio ALSA
+   plugin (`libasound_module_pcm_pulse.so`), which routes ALSA output through
+   PulseAudio transparently.
+
+3. **PULSE_SERVER and PULSE_RUNTIME_PATH wiring** -- Inside confinement the
+   PulseAudio socket is at `/run/user/<uid>/pulse/native`. The snap environment
+   sets `PULSE_SERVER=unix:/run/user/1000/pulse/native` and
+   `PULSE_RUNTIME_PATH=/run/user/1000/pulse` so the client library finds the
+   socket without probing. A helper script (`snap/local/pulseaudio-setup`)
+   is sourced by the wrapper at launch to set these variables dynamically
+   using `id -u`, with a static fallback in `snapcraft.yaml` for UID 1000.
+
+4. **libpulse-dev (build-package)** -- Required at build time so that FFmpeg
+   and Python audio bindings can compile against PulseAudio headers. Without it,
+   optional PulseAudio support may be silently omitted during compilation.
