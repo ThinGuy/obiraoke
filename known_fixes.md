@@ -83,6 +83,23 @@ pieces are required for audio to work:
    and Python audio bindings can compile against PulseAudio headers. Without it,
    optional PulseAudio support may be silently omitted during compilation.
 
+## core24 uses platforms not architectures
+
+The `architectures` key is not supported in core24-based snaps. Snapcraft
+rejects it at build time. The equivalent for core24 is the `platforms` key:
+
+```yaml
+platforms:
+  amd64:
+```
+
+This was changed in `snap/snapcraft.yaml` from the old form:
+
+```yaml
+architectures:
+  - build-on: [amd64]
+```
+
 ## Strict Confinement Path Normalization (Sprint 5)
 
 Switched snap confinement from `devmode` to `strict` in `snap/snapcraft.yaml`.

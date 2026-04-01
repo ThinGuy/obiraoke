@@ -8,8 +8,8 @@ description: |
 grade: devel
 confinement: strict
 
-architectures:
-  - build-on: [amd64]
+platforms:
+  amd64:
 
 apps:
   obiraoke:
