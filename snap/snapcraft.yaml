@@ -1,21 +1,22 @@
 name: obiraoke
 base: core24
-version: '0.1.0'
+version: '1.19.0'
 summary: OB-01's Karaoke Party
 description: |
-  YouTube-based karaoke system for Raspberry Pi, Windows, macOS, and Linux.
-  Web interface for song search, queuing, and playback with pitch shifting.
+  YouTube-based karaoke system for Ubuntu. Web interface for song search,
+  queuing, and playback with pitch shifting and streaming.
 grade: devel
-confinement: strict
+confinement: devmode
 
 architectures:
   - build-on: [amd64]
 
 apps:
   obiraoke:
-    command: bin/pikaraoke
+    command: bin/wrapper
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+      PYTHONPATH: $SNAP/lib/python3.12/site-packages
       LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib:$LD_LIBRARY_PATH
     plugs:
       - network
@@ -35,6 +36,12 @@ parts:
       - ffmpeg
       - libavcodec-extra
       - libpulse0
+
+  wrapper:
+    plugin: dump
+    source: snap/local
+    organize:
+      wrapper: bin/wrapper
 
   deno:
     plugin: nil

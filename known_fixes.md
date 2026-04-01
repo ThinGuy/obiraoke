@@ -1,5 +1,18 @@
 # Known Fixes
 
+## Wrapper script (Sprint 1)
+
+The app command must be `bin/wrapper`, not `bin/pikaraoke`. The snap uses a
+wrapper part (dump plugin, source `snap/local`) that stages the wrapper script
+into `bin/wrapper`. Direct invocation of the Python entry point fails inside
+confinement because environment setup is needed first.
+
+## PYTHONPATH (Sprint 1)
+
+`PYTHONPATH` must be set to `$SNAP/lib/python3.12/site-packages` in the app
+environment. Without it the Python interpreter inside the snap cannot find the
+installed packages and the application fails to import its own modules.
+
 ## Bundled deno runtime
 
 yt-dlp requires a JavaScript runtime to extract download URLs from some sites.
