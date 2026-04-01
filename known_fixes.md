@@ -104,9 +104,29 @@ architectures:
 
 libcaca is an ffmpeg transitive dependency providing ASCII art rendering that
 obiraoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
-and libglut, which are not staged in the snap, causing two missing-dependency
-lint warnings from `snapcraft pack`. Excluding libcaca from the prime stage
-eliminates both warnings and reduces snap size.
+and libglut, which are not staged in the snap, causing missing-dependency lint
+warnings from `snapcraft pack`. Only the OpenGL plugin under
+`usr/lib/x86_64-linux-gnu/caca/libgl_plugin*` is excluded from prime -- not the
+entire libcaca library. `libcaca.so.0` must remain because ffmpeg links against
+it directly; removing it causes four new missing-dependency warnings.
+
+## Unused library exclusions
+
+Several transitive dependencies pulled in by ffmpeg and other stage-packages are
+not used at runtime by obiraoke. These are excluded from the prime stage to
+silence linter warnings and reduce snap size:
+
+- `libGLX_mesa` -- Mesa GLX provider, not needed without a display server
+- `libcjson_utils` -- cJSON utility extensions unused by ffmpeg at runtime
+- `libfftw3_omp`, `libfftw3_threads` -- OpenMP/threaded FFTW variants unused by ffmpeg
+- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by obiraoke
+- `libhwy_contrib`, `libhwy_test` -- Highway SIMD test/contrib libraries
+- `libicuio`, `libicutest` -- ICU I/O and test libraries not needed at runtime
+- `libjacknet`, `libjackserver` -- JACK audio server components (obiraoke uses PulseAudio)
+- `libslang` -- S-Lang terminal library unused by obiraoke
+- `libsphinxad` -- PocketSphinx audio device library unused by obiraoke
+- `libtheora` -- Theora video codec unused by obiraoke
+- `libzvbi-chains` -- VBI capture chain library unused by obiraoke
 
 ## Strict Confinement Path Normalization (Sprint 5)
 

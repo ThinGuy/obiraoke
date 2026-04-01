@@ -43,8 +43,25 @@ parts:
       - libasound2
       - libasound2-plugins
     prime:
-      - -usr/lib/x86_64-linux-gnu/libcaca*
-      - -usr/lib/x86_64-linux-gnu/caca/
+      - -usr/lib/x86_64-linux-gnu/caca/libgl_plugin*
+      - -usr/lib/x86_64-linux-gnu/libGLX_mesa*
+      - -usr/lib/x86_64-linux-gnu/libcjson_utils*
+      - -usr/lib/x86_64-linux-gnu/libfftw3_omp*
+      - -usr/lib/x86_64-linux-gnu/libfftw3_threads*
+      - -usr/lib/x86_64-linux-gnu/libflite_cmu_grapheme_lang*
+      - -usr/lib/x86_64-linux-gnu/libflite_cmu_grapheme_lex*
+      - -usr/lib/x86_64-linux-gnu/libflite_cmu_indic_lex*
+      - -usr/lib/x86_64-linux-gnu/libflite_cmu_time_awb*
+      - -usr/lib/x86_64-linux-gnu/libhwy_contrib*
+      - -usr/lib/x86_64-linux-gnu/libhwy_test*
+      - -usr/lib/x86_64-linux-gnu/libicuio*
+      - -usr/lib/x86_64-linux-gnu/libicutest*
+      - -usr/lib/x86_64-linux-gnu/libjacknet*
+      - -usr/lib/x86_64-linux-gnu/libjackserver*
+      - -usr/lib/x86_64-linux-gnu/libslang*
+      - -usr/lib/x86_64-linux-gnu/libsphinxad*
+      - -usr/lib/x86_64-linux-gnu/libtheora*
+      - -usr/lib/x86_64-linux-gnu/libzvbi-chains*
 
   wrapper:
     plugin: dump
