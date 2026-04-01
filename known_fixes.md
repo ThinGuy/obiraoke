@@ -82,3 +82,52 @@ pieces are required for audio to work:
 4. **libpulse-dev (build-package)** -- Required at build time so that FFmpeg
    and Python audio bindings can compile against PulseAudio headers. Without it,
    optional PulseAudio support may be silently omitted during compilation.
+
+## Strict Confinement Path Normalization (Sprint 5)
+
+Switched snap confinement from `devmode` to `strict` in `snap/snapcraft.yaml`.
+All application paths are now gated behind `os.environ.get("SNAP")` so the app
+resolves confined paths when running as a snap and keeps existing behavior
+otherwise. Grade remains `devel`.
+
+### Path changes in `pikaraoke/lib/get_platform.py`
+
+1. **Config directory (`get_data_directory()`)**
+
+   - Non-snap: `~/.pikaraoke` (unchanged)
+   - Snap: `$SNAP_USER_DATA/.pikaraoke`
+   - Why: Under strict confinement the home plug does not grant access to
+     dotfiles. `$SNAP_USER_DATA` (`~/snap/obiraoke/current`) is always writable
+     by the confined process without any extra plugs.
+
+2. **Songs directory (`get_default_dl_dir()`)**
+
+   - Non-snap: `~/pikaraoke-songs` (unchanged, with legacy fallbacks)
+   - Snap: `$HOME/obiraoke-songs`
+   - Why: The `home` plug grants access to non-hidden files in `$HOME`. Using
+     the rebranded `obiraoke-songs` name avoids confusion with the upstream
+     project name. Legacy directory checks are skipped under snap because
+     previous snap installs never created them.
+
+3. **Temp directory (`file_resolver.py`)**
+
+   - Already uses `tempfile.gettempdir()` exclusively. The snap runtime provides
+     a private `/tmp` automatically, so no code changes were needed.
+
+4. **Windows paths (`%APPDATA%/pikaraoke`, `~\pikaraoke-songs`)**
+
+   - No changes. Snaps do not run on Windows.
+
+### Files not changed
+
+- **`pikaraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
+  for all temporary file operations. No hardcoded `/tmp` paths.
+- **Test files** -- Mock values like `/tmp/12345` in test fixtures are arbitrary
+  strings passed to mocked functions and do not affect runtime behavior.
+
+### Layout section
+
+No `layout` section was added to `snapcraft.yaml`. All paths are either within
+snap-writable areas (`$SNAP_USER_DATA`, private `/tmp`) or covered by existing
+interface plugs (`home` for `$HOME/obiraoke-songs`, `audio-playback` for the
+PulseAudio socket).

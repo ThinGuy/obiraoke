@@ -128,6 +128,8 @@ def get_default_dl_dir(platform: str) -> str:
     Returns:
         Path string for the default download directory.
     """
+    if os.environ.get("SNAP"):
+        return os.path.join(os.environ.get("HOME", "~"), "obiraoke-songs")
     if is_raspberry_pi():
         return "~/pikaraoke-songs"
     elif is_windows():
@@ -162,7 +164,11 @@ def get_data_directory() -> str:
     Returns:
         Path to the data directory.
     """
-    if is_windows():
+    if os.environ.get("SNAP"):
+        # Snap confinement: $SNAP_USER_DATA/.pikaraoke
+        base_path = os.environ.get("SNAP_USER_DATA", os.path.expanduser("~"))
+        path = os.path.join(base_path, ".pikaraoke")
+    elif is_windows():
         # Windows: %APPDATA%/pikaraoke
         base_path = os.environ.get("APPDATA")
         # Fallback if APPDATA is not set (rare, but possible)

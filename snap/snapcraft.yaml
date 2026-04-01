@@ -6,7 +6,7 @@ description: |
   YouTube-based karaoke system for Ubuntu. Web interface for song search,
   queuing, and playback with pitch shifting and streaming.
 grade: devel
-confinement: devmode
+confinement: strict
 
 architectures:
   - build-on: [amd64]
