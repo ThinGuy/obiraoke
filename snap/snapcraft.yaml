@@ -42,6 +42,9 @@ parts:
       - libpulse0
       - libasound2
       - libasound2-plugins
+    prime:
+      - -usr/lib/x86_64-linux-gnu/libcaca*
+      - -usr/lib/x86_64-linux-gnu/caca/
 
   wrapper:
     plugin: dump

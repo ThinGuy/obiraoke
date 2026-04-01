@@ -100,6 +100,14 @@ architectures:
   - build-on: [amd64]
 ```
 
+## libcaca exclusion
+
+libcaca is an ffmpeg transitive dependency providing ASCII art rendering that
+obiraoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
+and libglut, which are not staged in the snap, causing two missing-dependency
+lint warnings from `snapcraft pack`. Excluding libcaca from the prime stage
+eliminates both warnings and reduces snap size.
+
 ## Strict Confinement Path Normalization (Sprint 5)
 
 Switched snap confinement from `devmode` to `strict` in `snap/snapcraft.yaml`.
