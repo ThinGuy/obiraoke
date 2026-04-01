@@ -1,36 +1,56 @@
 name: obiraoke
 base: core24
-version: "1.19.0"
-summary: Youtube-based karaoke machine for Ubuntu
+version: '1.19.0'
+summary: OB-01's Karaoke Party
 description: |
-  A web-interface karaoke system with YouTube song search, queuing,
-  and playback. Supports pitch shifting and streaming.
+  YouTube-based karaoke system for Ubuntu. Web interface for song search,
+  queuing, and playback with pitch shifting and streaming.
 grade: devel
 confinement: devmode
+
+architectures:
+  - build-on: [amd64]
 
 apps:
   obiraoke:
     command: bin/wrapper
     environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
       PYTHONPATH: $SNAP/lib/python3.12/site-packages
-      PATH: $SNAP/usr/bin:$SNAP/bin:$PATH
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib:$LD_LIBRARY_PATH
     plugs:
-      - network-bind
       - network
+      - network-bind
       - audio-playback
       - home
+      - removable-media
 
 parts:
   obiraoke:
     plugin: python
     source: .
-    build-packages:
-      - python3-dev
+    python-packages:
+      - pip
+      - setuptools
     stage-packages:
-      - python3-venv
+      - ffmpeg
+      - libavcodec-extra
+      - libpulse0
 
   wrapper:
     plugin: dump
-    source: snap/local/
+    source: snap/local
     organize:
       wrapper: bin/wrapper
+
+  deno:
+    plugin: nil
+    override-build: |
+      DENO_URL="https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip"
+      curl -fsSL -o deno.zip "${DENO_URL}"
+      unzip -o deno.zip -d "${CRAFT_PART_INSTALL}/bin"
+      chmod 755 "${CRAFT_PART_INSTALL}/bin/deno"
+      rm -f deno.zip
+    build-packages:
+      - curl
+      - unzip

@@ -1,34 +1,28 @@
 # Known Fixes
 
-Living record of snap packaging gotchas for the obiraoke project.
+## Wrapper script (Sprint 1)
 
+The app command must be `bin/wrapper`, not `bin/pikaraoke`. The snap uses a
+wrapper part (dump plugin, source `snap/local`) that stages the wrapper script
+into `bin/wrapper`. Direct invocation of the Python entry point fails inside
+confinement because environment setup is needed first.
 
-## 1. Files in snap/local/ are not staged into $SNAP
+## PYTHONPATH (Sprint 1)
 
-Files placed under snap/local/ are available at build time but are not
-automatically included in the final snap. The wrapper script lived at
-snap/local/wrapper and was referenced as command: snap/local/wrapper, which
-would fail at runtime because the file does not exist inside the snap.
+`PYTHONPATH` must be set to `$SNAP/lib/python3.12/site-packages` in the app
+environment. Without it the Python interpreter inside the snap cannot find the
+installed packages and the application fails to import its own modules.
 
-Resolution: add a separate part using the dump plugin that copies
-snap/local/wrapper into $SNAP/bin/wrapper, and set command: bin/wrapper.
+## Bundled deno runtime
 
+yt-dlp requires a JavaScript runtime to extract download URLs from some sites.
+Without one, certain YouTube videos fail during metadata extraction. Deno is
+bundled in the snap as `bin/deno` so yt-dlp can invoke it inside the
+confinement boundary without relying on the host system.
 
-## 2. PYTHONPATH must target Python 3.12 site-packages on core24
+## Staged libpulse0
 
-core24 ships Python 3.12. The original PYTHONPATH pointed at the
-dist-packages directories used by core22 and older bases
-($SNAP/lib/python3/dist-packages and $SNAP/usr/lib/python3/dist-packages).
-Packages installed by the python plugin on core24 land in
-$SNAP/lib/python3.12/site-packages, so the old path found nothing.
-
-Resolution: set PYTHONPATH to $SNAP/lib/python3.12/site-packages.
-
-
-## 3. Snap summary must be Ubuntu-focused
-
-The original summary said "Linux, macOS, and Windows". A snap is an Ubuntu
-packaging format; mentioning other operating systems in the summary is
-misleading and does not match the distribution channel.
-
-Resolution: replace the summary with Ubuntu-focused wording.
+The `audio-playback` snap interface provides access to the host PulseAudio
+socket, but the PulseAudio client library (`libpulse0`) must still be present
+inside the snap for applications to connect. Without it, audio output silently
+fails even though the interface is connected.
