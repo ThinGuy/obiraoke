@@ -110,22 +110,43 @@ warnings from `snapcraft pack`. Only the OpenGL plugin under
 entire libcaca library. `libcaca.so.0` must remain because ffmpeg links against
 it directly; removing it causes four new missing-dependency warnings.
 
+## Dependency resolution strategy
+
+Missing-dependency warnings from `snapcraft pack` mean a staged binary links
+against a library that is not present in the snap. The correct fix is to add the
+missing library as a stage-package so it ships inside the snap. Never fix a
+missing-dependency warning by excluding the consumer from prime -- that just
+moves the breakage from a lint warning to a runtime crash.
+
+Prime exclusions are only valid for genuinely unused libraries that have no
+consumers inside the snap. If any staged binary links against a library, that
+library must be present.
+
+### libslang2 and libtheora0
+
+`libslang2` is required because libcaca and libavdevice link against it.
+`libtheora0` is required because libavcodec, libavformat, libavfilter, and
+libavdevice all link against it. Both were previously (incorrectly) excluded
+from prime, which caused cascading missing-dependency warnings. They are now
+added as explicit stage-packages so they are always present.
+
 ## Unused library exclusions
 
-Several transitive dependencies pulled in by ffmpeg and other stage-packages are
-not used at runtime by obiraoke. These are excluded from the prime stage to
-silence linter warnings and reduce snap size:
+Libraries excluded from prime because nothing in the snap links against them:
 
+- `caca/libgl_plugin` -- libcaca OpenGL plugin, pulls in unstaged libGLU/libglut
 - `libGLX_mesa` -- Mesa GLX provider, not needed without a display server
+- `libXxf86vm` -- X11 video mode extension, unused in headless snap
+- `libcaca++` -- C++ bindings for libcaca, unused by ffmpeg
 - `libcjson_utils` -- cJSON utility extensions unused by ffmpeg at runtime
 - `libfftw3_omp`, `libfftw3_threads` -- OpenMP/threaded FFTW variants unused by ffmpeg
-- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by obiraoke
+- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by obiraoke
 - `libhwy_contrib`, `libhwy_test` -- Highway SIMD test/contrib libraries
-- `libicuio`, `libicutest` -- ICU I/O and test libraries not needed at runtime
+- `libicuio`, `libicutest`, `libicutu` -- ICU I/O, test, and tool utility libraries not needed at runtime
 - `libjacknet`, `libjackserver` -- JACK audio server components (obiraoke uses PulseAudio)
-- `libslang` -- S-Lang terminal library unused by obiraoke
+- `libpulse-simple` -- simplified PulseAudio API, unused (obiraoke uses libpulse0 directly)
 - `libsphinxad` -- PocketSphinx audio device library unused by obiraoke
-- `libtheora` -- Theora video codec unused by obiraoke
+- `libxcb-glx` -- XCB GLX extension, unused in headless snap
 - `libzvbi-chains` -- VBI capture chain library unused by obiraoke
 
 ## Strict Confinement Path Normalization (Sprint 5)
