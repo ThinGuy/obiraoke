@@ -66,10 +66,18 @@ def upgrade_youtubedl() -> str:
     """Upgrade yt-dlp to the latest version.
 
     Attempts self-upgrade first, then falls back to pip if needed.
+    Self-upgrade is disabled inside snap confinement; use snap refresh instead.
 
     Returns:
         The new version string after upgrade.
     """
+    if os.environ.get("SNAP"):
+        logging.warning(
+            "yt-dlp self-upgrade is disabled in snap confinement. "
+            "Upgrades are handled by snap refresh."
+        )
+        return get_youtubedl_version()
+
     try:
         output = (
             subprocess.check_output(yt_dlp_cmd + ["-U"], stderr=subprocess.STDOUT)

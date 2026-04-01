@@ -33,6 +33,12 @@ class OMXClient:
         self.process = None
 
     def play_file(self, file_path, additional_parameters=None):
+        if os.environ.get("SNAP"):
+            logging.warning(
+                "omxplayer is unavailable in snap confinement. "
+                "Playback is handled by the browser."
+            )
+            return
         logging.info("Playing video in omxplayer: " + file_path)
         self.kill()
         cmd = [

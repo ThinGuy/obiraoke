@@ -4,13 +4,12 @@
 > CC must read this file before touching any React component.
 > This spec is law. If it conflicts with existing code, the code is wrong.
 
-
----
+______________________________________________________________________
 
 ## Spec and UI Rules
 
-The header is near-black — #262626 (which matches vf-bg-dark exactly from the UI spec). 
-No gradient at all. 
+The header is near-black — #262626 (which matches vf-bg-dark exactly from the UI spec).
+No gradient at all.
 White text, Ubuntu Orange CoF logo top left. Clean, flat, dark bar.
 
 Topbar: background: #262626 — flat, no gradient
@@ -23,7 +22,7 @@ font-light on all headings.
 
 Never use Suru gradient
 
-Ubuntu variable font from assets.ubuntu.com only. 
+Ubuntu variable font from assets.ubuntu.com only.
 
 Nothing below overalls these absolute rules.
 
@@ -60,7 +59,7 @@ listed below.
 - Any shade of purple/violet that is not exactly `#772953`
 - Any orange that is not exactly `#e95420`
 
----
+______________________________________________________________________
 
 ## 2. Color System
 
@@ -99,7 +98,7 @@ Use ONLY these values — do not use Tailwind's default green/red/yellow.
 | Inactive / Unknown | `#757575` | Gray |
 | Info | `#0f95a1` | Teal (same as `vf-accent`) |
 
----
+______________________________________________________________________
 
 ## 3. Typography
 
@@ -139,7 +138,7 @@ ALL headings use `font-light` (300) unless they are card titles or labels.
 Canonical.com uses very light heading weights — never use `font-bold` on
 h1/h2/h3.
 
----
+______________________________________________________________________
 
 ## 4. Layout Chrome
 
@@ -154,26 +153,29 @@ components exactly — do not rewrite from scratch.
 | Background | `bg-[#262626]` |
 | Left accent | `4px solid #e95420` — applied as `style={{ borderLeft: '4px solid #e95420' }}` |
 
-
-
 **Nav section headers:**
+
 ```
 text-[10px] uppercase tracking-widest text-gray-500
 px-4 pt-4 pb-1
 ```
 
 **Nav items (inactive):**
+
 ```
 flex items-center gap-2 px-4 py-2 text-sm text-gray-400
 hover:text-white cursor-pointer
 ```
+
 NO background change on hover — only text color.
 
 **Nav items (active):**
+
 ```
 style={{ borderLeft: '2px solid #e95420' }}
 bg-[#313131] text-white
 ```
+
 Active items have BOTH the 4px outer sidebar accent bar AND a 2px inner border
 on the item itself.
 
@@ -181,6 +183,7 @@ on the item itself.
 lucide-react, size 16, `className="shrink-0"`
 
 **Version footer:**
+
 ```
 mt-auto px-4 pb-4
 text-[10px] text-gray-600
@@ -196,24 +199,30 @@ text-[10px] text-gray-600
 | Layout | `flex items-center px-6 gap-4` |
 
 Background (always inline style):
+
 ```
 style={{ background: 'linear-gradient(-89deg, #e95420 0%, #772953 42%, #2c001e 94%)' }}
 ```
 
 **Left side — page title:**
+
 ```
 text-white text-lg font-light
 ```
+
 - Dashboard: `"Canonical obiraoke"` + hostname badge
 - Docs: `"Docs - Canonical obiraoke"`
 
 **Hostname badge (dashboard only):**
+
 ```
 bg-white/20 text-white text-xs px-2 py-0.5
 ```
+
 NO border-radius.
 
 **Right side:**
+
 - Docs: search input
 - Dashboard: user menu placeholder
 
@@ -226,7 +235,7 @@ NO border-radius.
 | Max width | None (full width) for dashboard |
 | Max width | `max-w-4xl mx-auto` for docs prose |
 
----
+______________________________________________________________________
 
 ## 5. Components
 
@@ -256,6 +265,7 @@ Same as cards, plus:
 ```
 inline-flex items-center px-2 py-0.5 text-xs
 ```
+
 Border radius: NONE (`rounded-none`).
 
 | State | Classes |
@@ -278,24 +288,30 @@ Border radius: NONE (`rounded-none`).
 ### Buttons
 
 **Primary (action):**
+
 ```
 style={{ backgroundColor: '#e95420', color: 'white' }}
 px-4 py-2 text-sm font-medium
 ```
+
 NO border-radius. Hover: `style={{ backgroundColor: '#c44210' }}`.
 
 **Secondary (outline):**
+
 ```
 style={{ border: '1px solid #e95420', color: '#e95420' }}
 px-3 py-1.5 text-sm
 ```
+
 NO border-radius. Hover: `bg-orange-50`.
 
 **Neutral:**
+
 ```
 style={{ border: '1px solid rgba(0,0,0,0.2)' }}
 text-gray-600 px-3 py-1.5 text-sm
 ```
+
 NO border-radius.
 
 ### Inputs
@@ -304,6 +320,7 @@ NO border-radius.
 style={{ border: '1px solid rgba(0,0,0,0.2)' }}
 px-3 py-1.5 text-sm bg-white
 ```
+
 NO border-radius. Focus: `style={{ outline: '2px solid #0f95a1', outlineOffset: 0 }}`.
 Placeholder: `text-gray-400`.
 
@@ -323,15 +340,16 @@ Full width, no border-radius, `p-3`. Left border 4px:
 bg-[#262626] text-white p-4
 font-family: "Ubuntu Mono variable"
 ```
+
 NO border-radius. Copy button: `absolute top-2 right-2, text-gray-400 hover:text-white`.
 
----
+______________________________________________________________________
 
 ## 6. Suru Gradient
 
 NEVER USE
 
----
+______________________________________________________________________
 
 ## 7. Icons
 
@@ -341,37 +359,36 @@ Standard sizes: 16 (inline/nav), 20 (cards), 24 (hero stats).
 
 Color: inherit from parent text color. Never use emoji as icons in the UI.
 
-
----
+______________________________________________________________________
 
 ## 8. Implementation Rules for CC
 
 These rules are ABSOLUTE. CC must follow them on every PR:
 
-1. **Never use border-radius on structural elements.** Only pill badges
-   (`rounded-full`) are permitted.
+01. **Never use border-radius on structural elements.** Only pill badges
+    (`rounded-full`) are permitted.
 
-2. **Never invent a Ubuntu/Canonical logo.** Always import from the existing
-   SVG asset file.
+02. **Never invent a Ubuntu/Canonical logo.** Always import from the existing
+    SVG asset file.
 
-3. **Never use Google Fonts.** Ubuntu variable font only.
+03. **Never use Google Fonts.** Ubuntu variable font only.
 
-4. **Never use hex values not listed in Section 2.** If a color is needed,
-   use the closest listed value.
+04. **Never use hex values not listed in Section 2.** If a color is needed,
+    use the closest listed value.
 
-5. **Never use a component library** (MUI, Bootstrap, etc). Tailwind utility
-   classes only.
+05. **Never use a component library** (MUI, Bootstrap, etc). Tailwind utility
+    classes only.
 
-6. **Always use inline styles for the Suru gradient** — Tailwind's JIT may
-   not generate it correctly.
+06. **Always use inline styles for the Suru gradient** — Tailwind's JIT may
+    not generate it correctly.
 
-7. **Always use inline styles for border colors that use `rgba()` values** —
-   Tailwind cannot generate arbitrary rgba values without config.
+07. **Always use inline styles for border colors that use `rgba()` values** —
+    Tailwind cannot generate arbitrary rgba values without config.
 
-8. **`font-light` (300) for all headings.** Never `font-bold` on h1/h2/h3.
+08. **`font-light` (300) for all headings.** Never `font-bold` on h1/h2/h3.
 
-9. **"Canonical obiraoke"** in visible UI branding. **"obiraoke"** (lowercase)
-   everywhere else — commands, service names, version strings, config keys.
+09. **"Canonical obiraoke"** in visible UI branding. **"obiraoke"** (lowercase)
+    everywhere else — commands, service names, version strings, config keys.
 
 10. **Before writing any new component,** check if an equivalent already exists
     in `web/dashboard/src/components/`. If it does, copy it — do not rewrite

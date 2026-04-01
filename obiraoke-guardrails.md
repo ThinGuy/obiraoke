@@ -3,19 +3,16 @@
 ## For repos obiraoke
 
 ## Current names:
-obiraoke - OB-01's Karaoke Party
 
+obiraoke - OB-01's Karaoke Party
 
 ## Current Repos:
 
-obiraoke - https://github.com/ThinGuy/obiraoke 
-
+obiraoke - https://github.com/ThinGuy/obiraoke
 
 ## Local Path
 
 obiraoke repos lives at ~/obiraoke
-
-
 
 ## Code Block Rules — ABSOLUTE
 
@@ -57,11 +54,10 @@ Craig pulls the CC session branch, reviews, merges to main, then deletes the ses
 
 Craig does the terminal work. CC does the repo work.
 
-
 ## Spec and UI Rules
 
-The header is near-black — #262626 (which matches vf-bg-dark exactly from the UI spec). 
-No gradient at all. 
+The header is near-black — #262626 (which matches vf-bg-dark exactly from the UI spec).
+No gradient at all.
 White text, Ubuntu Orange CoF logo top left. Clean, flat, dark bar.
 
 Topbar: background: #262626 — flat, no gradient
@@ -77,6 +73,7 @@ Never use Suru gradient
 Ubuntu variable font from assets.ubuntu.com only.
 
 ## CC Hard Rules
+
 Craig merges to main, then deletes the session branch.
 
 Craig does the terminal work. CC doe the repo work.
@@ -89,15 +86,16 @@ Explain root cause before applying any fix.
 
 grade: devel on all snaps until tests pass.
 
-
 ## Merge Strategy
+
 Craig uses rebase not merge for CC session branches:
-  git fetch origin
-  git rebase origin/<session-branch>
-  git push origin dev
+git fetch origin
+git rebase origin/<session-branch>
+git push origin dev
 This eliminates merge conflicts. Never use git merge for CC branches.
 
 ## CLAUDE.md Updates
+
 CC must NOT update CLAUDE.md during dashboard wiring sessions.
 CLAUDE.md is updated by Craig manually at the end of each sprint.
 Omit the CLAUDE.md update instruction from all dashboard prompts.
@@ -105,6 +103,7 @@ Omit the CLAUDE.md update instruction from all dashboard prompts.
 ## Smart Quote / Curly Quote Rule — ABSOLUTE
 
 Never use smart quotes (", ", ', ') in ANY of the following:
+
 - Shell scripts or hooks
 - Heredocs
 - Config file templates
@@ -117,12 +116,11 @@ Smart quotes break PostgreSQL (syntax error near token), nginx, and every
 config parser silently or loudly. They enter codebases via copy-paste from
 editors, web browsers, and word processors. Always verify with:
 
-  grep -P '[\x{201C}\x{201D}\x{2018}\x{2019}]' <file>
+grep -P '\[\\x{201C}\\x{201D}\\x{2018}\\x{2019}\]' <file>
 
 And fix with:
 
-  sed -i 's/\xe2\x80\x9c/"/g; s/\xe2\x80\x9d/"/g; s/\xe2\x80\x98/'"'"'/g; s/\xe2\x80\x99/'"'"'/g' <file>
-
+sed -i 's/\\xe2\\x80\\x9c/"/g; s/\\xe2\\x80\\x9d/"/g; s/\\xe2\\x80\\x98/'"'"'/g; s/\\xe2\\x80\\x99/'"'"'/g' <file>
 
 ## Snap Gotchas
 
@@ -139,11 +137,19 @@ See known_fixes.md for full details. These three rules are absolute:
 3. Snap summaries and descriptions must be Ubuntu-focused. Do not mention
    other operating systems in snap metadata.
 
-
 ## Companion Snap Installation — ABSOLUTE
 
 Any CC prompt that touches snap/hooks/install or snap/hooks/configure must include
 this as an explicit constraint in the prompt body.
 Never add a `snap-management` plug — it does not exist.
 
+## Branch Deletion Order
 
+Always push to origin before deleting any branch. Never delete a remote branch
+until `git push origin <target>` has succeeded.
+
+## Session Branch Rebase Rule
+
+Session branches must rebase on origin/dev before any work begins.
+Run `git fetch origin && git rebase origin/dev` at the start of every session
+branch to avoid diverging from current dev content.

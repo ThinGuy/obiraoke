@@ -26,3 +26,29 @@ The `audio-playback` snap interface provides access to the host PulseAudio
 socket, but the PulseAudio client library (`libpulse0`) must still be present
 inside the snap for applications to connect. Without it, audio output silently
 fails even though the interface is connected.
+
+## Snap Runtime Guards
+
+The following locations are gated behind `os.environ.get("SNAP")` to ensure
+graceful degradation under snap strict confinement.
+
+1. **pikaraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
+   yt-dlp self-upgrade (`-U` flag and pip fallback) is skipped when `$SNAP` is
+   set. A warning is logged directing the user to `snap refresh`. The function
+   returns the current version immediately.
+
+2. **pikaraoke/routes/admin.py -- /shutdown and /reboot routes**
+   Both the route handler and `delayed_halt()` check for `$SNAP`. The route
+   returns a 503 JSON response (`{"error": "... unavailable in snap confinement"}`). The `delayed_halt` fallback also logs a warning and returns
+   early, preventing `os.system("shutdown now")` and `os.system("reboot")` from
+   being called.
+
+3. **pikaraoke/routes/admin.py -- /expand_fs route (raspi-config)**
+   Same 503 pattern as shutdown/reboot. `raspi-config --expand-rootfs` is
+   blocked under snap confinement at both the route level and inside
+   `delayed_halt()`.
+
+4. **pikaraoke/lib/omxclient.py -- OMXClient.play_file()**
+   The hardcoded `/usr/bin/omxplayer` path is unreachable under snap strict
+   confinement. When `$SNAP` is set, `play_file()` logs a warning and returns
+   immediately. omxplayer is legacy; all playback is handled by the browser.

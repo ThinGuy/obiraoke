@@ -1,6 +1,7 @@
 """Admin routes for system control and authentication."""
 
 import datetime
+import logging
 import os
 import subprocess
 import sys
@@ -35,10 +36,19 @@ def delayed_halt(cmd: int, k: Karaoke):
     if cmd == 0:
         sys.exit()
     if cmd == 1:
+        if os.environ.get("SNAP"):
+            logging.warning("shutdown is unavailable in snap confinement")
+            return
         os.system("shutdown now")
     if cmd == 2:
+        if os.environ.get("SNAP"):
+            logging.warning("reboot is unavailable in snap confinement")
+            return
         os.system("reboot")
     if cmd == 3:
+        if os.environ.get("SNAP"):
+            logging.warning("raspi-config is unavailable in snap confinement")
+            return
         process = subprocess.Popen(["raspi-config", "--expand-rootfs"])
         process.wait()
         os.system("reboot")
@@ -108,6 +118,8 @@ def quit():
 @admin_bp.route("/shutdown")
 def shutdown():
     """Shut down the host system."""
+    if os.environ.get("SNAP"):
+        return jsonify(error="shutdown is unavailable in snap confinement"), 503
     k = get_karaoke_instance()
     if is_admin():
         # MSG: Message shown after shutting down the system.
@@ -125,6 +137,8 @@ def shutdown():
 @admin_bp.route("/reboot")
 def reboot():
     """Reboot the host system."""
+    if os.environ.get("SNAP"):
+        return jsonify(error="reboot is unavailable in snap confinement"), 503
     k = get_karaoke_instance()
     if is_admin():
         # MSG: Message shown after rebooting the system.
@@ -142,6 +156,8 @@ def reboot():
 @admin_bp.route("/expand_fs")
 def expand_fs():
     """Expand filesystem on Raspberry Pi."""
+    if os.environ.get("SNAP"):
+        return jsonify(error="raspi-config is unavailable in snap confinement"), 503
     k = get_karaoke_instance()
     if is_admin() and k.is_raspberry_pi:
         # MSG: Message shown after expanding the filesystem.
