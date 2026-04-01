@@ -1,7 +1,7 @@
 name: obiraoke
 base: core24
 version: "1.19.0"
-summary: Youtube-based karaoke machine for Linux, macOS, and Windows
+summary: Youtube-based karaoke machine for Ubuntu
 description: |
   A web-interface karaoke system with YouTube song search, queuing,
   and playback. Supports pitch shifting and streaming.
@@ -10,9 +10,9 @@ confinement: devmode
 
 apps:
   obiraoke:
-    command: snap/local/wrapper
+    command: bin/wrapper
     environment:
-      PYTHONPATH: $SNAP/lib/python3/dist-packages:$SNAP/usr/lib/python3/dist-packages
+      PYTHONPATH: $SNAP/lib/python3.12/site-packages
       PATH: $SNAP/usr/bin:$SNAP/bin:$PATH
     plugs:
       - network-bind
@@ -28,3 +28,9 @@ parts:
       - python3-dev
     stage-packages:
       - python3-venv
+
+  wrapper:
+    plugin: dump
+    source: snap/local/
+    organize:
+      wrapper: bin/wrapper

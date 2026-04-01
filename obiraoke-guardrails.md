@@ -124,6 +124,22 @@ And fix with:
   sed -i 's/\xe2\x80\x9c/"/g; s/\xe2\x80\x9d/"/g; s/\xe2\x80\x98/'"'"'/g; s/\xe2\x80\x99/'"'"'/g' <file>
 
 
+## Snap Gotchas
+
+See known_fixes.md for full details. These three rules are absolute:
+
+1. Files in snap/local/ are not staged into the snap. Any file that must
+   exist at runtime needs a dump plugin part that installs it into $SNAP.
+   Never use command: snap/local/... in the apps stanza.
+
+2. core24 ships Python 3.12. PYTHONPATH must point at
+   $SNAP/lib/python3.12/site-packages, not the dist-packages paths used
+   by older bases.
+
+3. Snap summaries and descriptions must be Ubuntu-focused. Do not mention
+   other operating systems in snap metadata.
+
+
 ## Companion Snap Installation — ABSOLUTE
 
 Any CC prompt that touches snap/hooks/install or snap/hooks/configure must include
