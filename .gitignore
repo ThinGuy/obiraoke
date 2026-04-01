@@ -18,3 +18,9 @@ docker-compose.yml
 
 # Briefcase build artifacts
 *.briefcase.toml
+
+# Snap build artifacts
+*.snap
+parts/
+stage/
+prime/

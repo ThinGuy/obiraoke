@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+# Minimal configure hook for obiraoke snap.
+# Future snap set/get configuration will be wired here.
