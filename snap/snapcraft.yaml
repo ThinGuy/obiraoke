@@ -59,6 +59,7 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libflite_cmu_time_awb*
       - -usr/lib/x86_64-linux-gnu/libhwy_contrib*
       - -usr/lib/x86_64-linux-gnu/libhwy_test*
+      - -usr/lib/x86_64-linux-gnu/libicui18n*
       - -usr/lib/x86_64-linux-gnu/libicuio*
       - -usr/lib/x86_64-linux-gnu/libicutest*
       - -usr/lib/x86_64-linux-gnu/libicutu*
@@ -66,6 +67,7 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libjackserver*
       - -usr/lib/x86_64-linux-gnu/libpulse-simple*
       - -usr/lib/x86_64-linux-gnu/libsphinxad*
+      - -usr/lib/x86_64-linux-gnu/libtheora.so*
       - -usr/lib/x86_64-linux-gnu/libxcb-glx*
       - -usr/lib/x86_64-linux-gnu/libzvbi-chains*
 

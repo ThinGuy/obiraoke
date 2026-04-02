@@ -142,10 +142,12 @@ Libraries excluded from prime because nothing in the snap links against them:
 - `libfftw3_omp`, `libfftw3_threads` -- OpenMP/threaded FFTW variants unused by ffmpeg
 - `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by obiraoke
 - `libhwy_contrib`, `libhwy_test` -- Highway SIMD test/contrib libraries
+- `libicui18n` -- ICU internationalization library, no staged binary links against it
 - `libicuio`, `libicutest`, `libicutu` -- ICU I/O, test, and tool utility libraries not needed at runtime
 - `libjacknet`, `libjackserver` -- JACK audio server components (obiraoke uses PulseAudio)
 - `libpulse-simple` -- simplified PulseAudio API, unused (obiraoke uses libpulse0 directly)
 - `libsphinxad` -- PocketSphinx audio device library unused by obiraoke
+- `libtheora.so` -- top-level Theora convenience lib (`libtheora.so.0`); ffmpeg links against `libtheoradec`/`libtheoraenc`, not `libtheora.so` itself
 - `libxcb-glx` -- XCB GLX extension, unused in headless snap
 - `libzvbi-chains` -- VBI capture chain library unused by obiraoke
 
