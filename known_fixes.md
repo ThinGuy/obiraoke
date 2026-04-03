@@ -328,6 +328,23 @@ and `JOURNAL_STREAM` both set), it redirects stdout and stderr to
 rotates it (moving to `.log.1`) if it exceeds 10 MB. The install hook creates
 `$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/obiraoke.log` (0644).
 
+## Daemon install-mode: disable
+
+The `obiraoke-server` daemon in `snap/snapcraft.yaml` previously started
+automatically on `snap install`. This is wrong for a karaoke app -- the user
+should explicitly opt in with `snap set obiraoke autostart=true`. Added
+`install-mode: disable` to the `obiraoke-server` app stanza so the daemon is
+installed but not started or enabled until the user sets `autostart=true`,
+which the configure hook handles via `snapctl start --enable`.
+
+## Port pre-flight check (app.py)
+
+The gevent `WSGIServer` raises an `OSError` traceback when the listen port is
+already in use. Added a socket-based pre-flight check in `main()` before
+`server.start()`. If the port is occupied, a clear error message is logged
+("Port NNNN is already in use. Is obiraoke already running?") and the process
+exits cleanly with `sys.exit(1)` instead of dumping a traceback.
+
 ## bulma.min.css cascade overrides
 
 bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.

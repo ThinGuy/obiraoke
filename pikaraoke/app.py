@@ -6,6 +6,7 @@ monkey.patch_all()
 
 import logging
 import os
+import socket
 import sys
 from urllib.parse import quote
 
@@ -231,7 +232,14 @@ def main() -> None:
 
     spawn(upgrade_youtubedl)
 
-    server = WSGIServer(("0.0.0.0", int(args.port)), app, log=None, error_log=logging.getLogger())
+    port = int(args.port)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(1)
+        if sock.connect_ex(("127.0.0.1", port)) == 0:
+            logging.error("Port %d is already in use. Is obiraoke already running?", port)
+            sys.exit(1)
+
+    server = WSGIServer(("0.0.0.0", port), app, log=None, error_log=logging.getLogger())
     server.start()
 
     # Handle sigterm, apparently cherrypy won't shut down without explicit handling

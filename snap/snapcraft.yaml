@@ -48,6 +48,7 @@ apps:
   obiraoke-server:
     command: bin/wrapper
     daemon: simple
+    install-mode: disable
     restart-condition: on-failure
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
