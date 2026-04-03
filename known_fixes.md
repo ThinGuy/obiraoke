@@ -227,13 +227,16 @@ because `apt:` is not a valid snapcraft source type -- snapcraft only recognises
 URLs, local paths, and VCS repositories as source values. Building from the
 upstream tarball also avoids depending on Ubuntu's source packaging layout.
 
-## libasound.so.2 and libslang.so.2 prime exclusions
+## libasound.so.2 must NOT be excluded from prime
 
-`libasound.so.2` and `libslang.so.2` are top-level convenience symlinks that
-nothing in the snap links against directly. The actual versioned libraries
-(`libasound.so.2.0.0`, `libslang.so.2.3.3`, etc.) are kept by separate
-stage-packages. Excluding the bare `.so.2*` symlinks removes unnecessary files
-from the prime layer without affecting runtime behavior.
+`libasound.so.2` must remain in the snap. The ALSA plugin modules in
+`libasound2-plugins` (e.g. `libasound_module_pcm_pulse.so`) load it at runtime
+via `dlopen`. Because no staged binary links against it directly, dependency
+linters report it as unused -- but excluding it causes silent audio failure
+when ALSA plugins attempt to call back into the core ALSA library.
+
+`libslang.so.2` is a genuine convenience symlink with no runtime consumers and
+remains excluded.
 
 ## Help text rebranding (args.py)
 
