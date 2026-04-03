@@ -3,17 +3,23 @@
    Based on bulmaswatch dark theme
    =================================== */
 
-/* Import Lato font */
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700&display=swap");
+/* Ubuntu variable font */
+@font-face {
+	font-family: "Ubuntu variable";
+	src: url("https://assets.ubuntu.com/v1/f1ea362b-Ubuntu[wdth,wght]-latin-v0.896a.woff2") format("woff2");
+	font-weight: 100 800;
+	font-style: normal;
+	font-display: swap;
+}
 
 /* ===================================
    COLOR VARIABLES
    =================================== */
 :root {
 	/* Background colors */
-	--dark-bg-primary: #1f2424;
-	--dark-bg-secondary: #282f2f;
-	--dark-bg-tertiary: #343c3d;
+	--dark-bg-primary: #262626;
+	--dark-bg-secondary: #202020;
+	--dark-bg-tertiary: #262626;
 
 	/* Text colors */
 	--dark-text-primary: #ffffff;
@@ -26,13 +32,13 @@
 	--dark-border-light: #8c9b9d;
 
 	/* Accent colors */
-	--dark-primary: #375a7f;
-	--dark-link: #1abc9c;
-	--dark-link-hover: #1dd2af;
-	--dark-info: #3298dc;
-	--dark-success: #2ecc71;
-	--dark-warning: #f1b70e;
-	--dark-danger: #e74c3c;
+	--dark-primary: #e95420;
+	--dark-link: #69c;
+	--dark-link-hover: #70bbc2;
+	--dark-info: #0f95a1;
+	--dark-success: #0e8420;
+	--dark-warning: #f99b11;
+	--dark-danger: #c7162b;
 }
 
 /* ===================================
@@ -44,7 +50,7 @@ html {
 }
 
 body {
-	font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Ubuntu variable", "Ubuntu", -apple-system, "Segoe UI", Roboto, sans-serif;
 	color: var(--dark-text-primary);
 	background-color: var(--dark-bg-primary);
 }
@@ -128,7 +134,7 @@ hr {
 }
 
 .button.is-primary:hover {
-	background-color: #436d9a;
+	background-color: #c44210;
 }
 
 .button.is-primary[disabled] {
@@ -203,7 +209,7 @@ hr {
 }
 
 .checkbox {
-	accent-color: hsl(141, 71%, 48%);
+	accent-color: #e95420;
 	margin-right: 8px;
 	min-width: 20px;
 	min-height: 20px;
@@ -234,20 +240,20 @@ hr {
 	background-color: var(--dark-bg-tertiary);
 	box-shadow: none;
 	color: var(--dark-text-primary);
-	border-radius: 8px;
+	border-radius: 0;
 }
 
 .card {
 	background-color: var(--dark-bg-secondary);
 	border: 2px solid var(--dark-bg-tertiary);
 	box-shadow: none;
-	border-radius: 0.4em;
+	border-radius: 0;
 }
 
 .card-header {
 	background-color: rgba(18, 18, 18, 0.2);
 	box-shadow: none;
-	border-radius: 0.4em 0.4em 0 0;
+	border-radius: 0;
 }
 
 .card-footer,
@@ -266,7 +272,7 @@ hr {
    =================================== */
 .notification {
 	background-color: var(--dark-bg-tertiary);
-	border-radius: 0.4em;
+	border-radius: 0;
 }
 
 .notification.is-primary {
@@ -335,8 +341,8 @@ hr {
    NAVIGATION
    =================================== */
 .navbar {
-	background-color: var(--dark-primary);
-	border-radius: 0.4em;
+	background-color: #262626;
+	border-radius: 0;
 }
 
 .navbar-item,
@@ -357,13 +363,13 @@ hr {
 
 @media screen and (max-width: 1023px) {
 	.navbar-menu {
-		background-color: var(--dark-primary);
-		border-radius: 0 0 0.4em 0.4em;
+		background-color: #262626;
+		border-radius: 0;
 	}
 }
 
 .navbar-dropdown {
-	background-color: var(--dark-primary);
+	background-color: #262626;
 	border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
@@ -454,7 +460,7 @@ hr {
 .menu-list a {
 	color: var(--dark-text-primary);
 	transition: all 300ms ease;
-	border-radius: 3px;
+	border-radius: 0;
 }
 
 .menu-list a:hover {
@@ -477,14 +483,14 @@ hr {
    PANEL
    =================================== */
 .panel {
-	border-radius: 8px;
+	border-radius: 0;
 	box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
 
 .panel-heading {
 	background-color: var(--dark-bg-tertiary);
 	color: var(--dark-text-secondary);
-	border-radius: 8px 8px 0 0;
+	border-radius: 0;
 	font-weight: 700;
 }
 
@@ -526,7 +532,7 @@ hr {
 .tag:not(body) {
 	background-color: var(--dark-bg-secondary);
 	color: var(--dark-text-primary);
-	border-radius: 0.4em;
+	border-radius: 0;
 }
 
 .tag.is-primary {
@@ -641,7 +647,7 @@ hr {
    =================================== */
 .dropdown-content {
 	background-color: var(--dark-bg-secondary);
-	border-radius: 0.4em;
+	border-radius: 0;
 }
 
 .dropdown-item {
