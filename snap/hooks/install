@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+# Create the shared songs directory so non-root users can download to it.
+# $SNAP_COMMON is /var/snap/obiraoke/common, owned by root. Subdirectories
+# must be created here (running as root) with world-writable permissions.
+mkdir -p "$SNAP_COMMON/obiraoke-songs"
+chmod 0777 "$SNAP_COMMON/obiraoke-songs"

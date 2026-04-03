@@ -294,6 +294,22 @@ sudo snap set obiraoke streaming-format=mp4
 sudo snap set obiraoke headless=true
 ```
 
+## Install hook creates $SNAP_COMMON subdirectories
+
+`$SNAP_COMMON` (`/var/snap/obiraoke/common`) is owned by root. When obiraoke
+runs as a normal user, it cannot create subdirectories there. Attempting to
+download songs to `$SNAP_COMMON/obiraoke-songs` fails with "Permission denied"
+if the directory does not already exist.
+
+The fix is `snap/hooks/install`, which runs as root during `snap install`. It
+creates `$SNAP_COMMON/obiraoke-songs` with mode 0777 so any user can write to
+it. The configure hook (`snap/hooks/configure`) also creates the directory if
+missing, covering the case where the install hook did not run or the directory
+was removed.
+
+Any future `$SNAP_COMMON` subdirectory that non-root users need must follow the
+same pattern: create it in the install hook with world-writable permissions.
+
 ## bulma.min.css cascade overrides
 
 bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.

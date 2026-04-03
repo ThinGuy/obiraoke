@@ -30,6 +30,14 @@ if [ -n "$streaming_format" ]; then
     esac
 fi
 
+# Ensure the shared songs directory exists with world-writable permissions.
+# This covers the case where download-path is changed via snap set and the
+# default directory was not yet created (e.g. install hook did not run).
+if [ ! -d "$SNAP_COMMON/obiraoke-songs" ]; then
+    mkdir -p "$SNAP_COMMON/obiraoke-songs"
+    chmod 0777 "$SNAP_COMMON/obiraoke-songs"
+fi
+
 # The following keys are accepted without validation:
 # admin-password  -- any string
 # download-path   -- any path string
