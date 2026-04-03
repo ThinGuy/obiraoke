@@ -1,5 +1,37 @@
 #!/bin/sh
 set -e
 
-# Minimal configure hook for obiraoke snap.
-# Future snap set/get configuration will be wired here.
+# Validate snap configuration keys set via: snap set obiraoke key=value
+
+# Validate port (must be numeric 1-65535)
+port="$(snapctl get port)" || true
+if [ -n "$port" ]; then
+    case "$port" in
+        ''|*[!0-9]*)
+            echo "error: port must be a number between 1 and 65535, got '$port'" >&2
+            exit 1
+            ;;
+    esac
+    if [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+        echo "error: port must be between 1 and 65535, got '$port'" >&2
+        exit 1
+    fi
+fi
+
+# Validate streaming-format (must be hls or mp4)
+streaming_format="$(snapctl get streaming-format)" || true
+if [ -n "$streaming_format" ]; then
+    case "$streaming_format" in
+        hls|mp4) ;;
+        *)
+            echo "error: streaming-format must be 'hls' or 'mp4', got '$streaming_format'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+# The following keys are accepted without validation:
+# admin-password  -- any string
+# download-path   -- any path string
+# log-level       -- passed through to the application
+# headless        -- boolean (true/false)

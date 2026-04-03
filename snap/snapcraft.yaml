@@ -5,6 +5,22 @@ summary: OB-01's Karaoke Party
 description: |
   YouTube-based karaoke system for Ubuntu. Web interface for song search,
   queuing, and playback with pitch shifting and streaming.
+
+  Configuration via snap set:
+    snap set obiraoke port=8080
+    snap set obiraoke admin-password=secret
+    snap set obiraoke download-path=/path/to/songs
+    snap set obiraoke log-level=DEBUG
+    snap set obiraoke headless=true
+    snap set obiraoke streaming-format=mp4
+
+  Keys:
+    port              TCP listen port (1-65535)
+    admin-password    Password for the admin interface
+    download-path     Song download directory (default: $SNAP_COMMON/obiraoke-songs)
+    log-level         Logging level (DEBUG, INFO, WARNING, ERROR)
+    headless          Run without a local browser window (default: true)
+    streaming-format  Streaming format: hls or mp4
 grade: devel
 confinement: strict
 

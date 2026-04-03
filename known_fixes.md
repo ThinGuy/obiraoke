@@ -258,6 +258,42 @@ at runtime. The snapcraft linter flagged these as missing dependencies. Added
 `libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the obiraoke
 part so they ship inside the snap.
 
+## Shared songs directory ($SNAP_COMMON)
+
+The snap songs directory was changed from `$HOME/obiraoke-songs` to
+`$SNAP_COMMON/obiraoke-songs` so that songs are shared across all users on the
+system. `$SNAP_COMMON` (`/var/snap/obiraoke/common`) is writable by the snap
+daemon and persists across refreshes. This avoids each user maintaining a
+separate song library.
+
+## Snap configuration interface
+
+The snap supports runtime configuration via `snap set obiraoke key=value`.
+The wrapper script (`snap/local/wrapper`) reads each key with `snapctl get`
+and passes it as a CLI argument to obiraoke. The configure hook
+(`snap/hooks/configure`) validates values when they are set.
+
+Supported keys:
+
+- **port** -- TCP listen port. Must be numeric, 1-65535. Passed as `--port`.
+- **admin-password** -- Admin interface password. Passed as `--admin-password`.
+- **download-path** -- Song download directory. Defaults to
+  `$SNAP_COMMON/obiraoke-songs` if not set. Passed as `--download-path`.
+- **log-level** -- Logging level (DEBUG, INFO, WARNING, ERROR). Passed as
+  `--log-level`.
+- **headless** -- Boolean. If `true`, adds `--headless` flag. Defaults to
+  headless when not set.
+- **streaming-format** -- Must be `hls` or `mp4`. Passed as
+  `--streaming-format`.
+
+Example usage:
+
+```
+sudo snap set obiraoke port=8080
+sudo snap set obiraoke streaming-format=mp4
+sudo snap set obiraoke headless=true
+```
+
 ## bulma.min.css cascade overrides
 
 bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.

@@ -7,9 +7,46 @@ if [ -f "$SNAP/bin/pulseaudio-setup" ]; then
 fi
 
 export PIKARAOKE_CONFIG_DIR="$SNAP_USER_DATA/.pikaraoke"
-export PIKARAOKE_SONGS_DIR="$HOME/obiraoke-songs"
+export PIKARAOKE_SONGS_DIR="$SNAP_COMMON/obiraoke-songs"
 
-# Default to headless; caller can override via OBIRAOKE_ARGS
-OBIRAOKE_ARGS="${OBIRAOKE_ARGS:---headless}"
+# Read snap configuration keys (set via: snap set obiraoke key=value)
+OBIRAOKE_ARGS=""
+
+port="$(snapctl get port)" || true
+if [ -n "$port" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --port $port"
+fi
+
+admin_password="$(snapctl get admin-password)" || true
+if [ -n "$admin_password" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --admin-password $admin_password"
+fi
+
+download_path="$(snapctl get download-path)" || true
+if [ -n "$download_path" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --download-path $download_path"
+else
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --download-path $SNAP_COMMON/obiraoke-songs"
+fi
+
+log_level="$(snapctl get log-level)" || true
+if [ -n "$log_level" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --log-level $log_level"
+fi
+
+headless="$(snapctl get headless)" || true
+if [ "$headless" = "true" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --headless"
+fi
+
+streaming_format="$(snapctl get streaming-format)" || true
+if [ -n "$streaming_format" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --streaming-format $streaming_format"
+fi
+
+# Default to headless if no config was set for it
+if [ -z "$headless" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --headless"
+fi
 
 exec "$SNAP/bin/obiraoke" $OBIRAOKE_ARGS "$@"

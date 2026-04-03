@@ -129,7 +129,7 @@ def get_default_dl_dir(platform: str) -> str:
         Path string for the default download directory.
     """
     if os.environ.get("SNAP"):
-        return os.path.join(os.environ.get("HOME", "~"), "obiraoke-songs")
+        return os.path.join(os.environ.get("SNAP_COMMON", "/var/snap/obiraoke/common"), "obiraoke-songs")
     if is_raspberry_pi():
         return "~/pikaraoke-songs"
     elif is_windows():
