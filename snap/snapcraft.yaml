@@ -44,6 +44,9 @@ parts:
       - librubberband2
       - libslang2
       - libtheora0
+      - libass9
+      - libfdk-aac2
+      - libunibreak5
     prime:
       - -usr/lib/x86_64-linux-gnu/caca/libgl_plugin*
       - -usr/lib/x86_64-linux-gnu/libGLX_mesa*

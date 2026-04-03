@@ -251,6 +251,13 @@ the entry point was renamed to `obiraoke` in `pyproject.toml` during Sprint 6.
 The exec line now calls `$SNAP/bin/obiraoke`. The wrapper entry point must match
 the pyproject.toml entry point name exactly.
 
+## ffmpeg runtime dependencies
+
+The custom-built ffmpeg binary links against libass, libfdk-aac, and libunibreak
+at runtime. The snapcraft linter flagged these as missing dependencies. Added
+`libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the obiraoke
+part so they ship inside the snap.
+
 ## bulma.min.css cascade overrides
 
 bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.
