@@ -200,6 +200,13 @@ snap-writable areas (`$SNAP_USER_DATA`, private `/tmp`) or covered by existing
 interface plugs (`home` for `$HOME/obiraoke-songs`, `audio-playback` for the
 PulseAudio socket).
 
+## librubberband2 for pitch shifting
+
+librubberband2 required for ffmpeg pitch shift support. Added as a
+stage-package so ffmpeg's rubberband audio filter is functional inside
+the snap. The corresponding build-package (`librubberband-dev`) is also
+added so ffmpeg can compile against rubberband headers.
+
 ## Wrapper entry point rename (Sprint 6)
 
 The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but

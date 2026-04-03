@@ -36,12 +36,14 @@ parts:
       - setuptools
     build-packages:
       - libpulse-dev
+      - librubberband-dev
     stage-packages:
       - ffmpeg
       - libavcodec-extra
       - libpulse0
       - libasound2
       - libasound2-plugins
+      - librubberband2
       - libslang2
       - libtheora0
     prime:
