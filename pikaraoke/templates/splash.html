@@ -10,7 +10,7 @@
 <script src="{{ url_for('static', filename='js/subtitles-octopus.js') }}"></script>
 <script>
   // Use this config object to pass data from the jinja2 template to the splash.js code
-  const PikaraokeConfig = {
+  const ObiraokeConfig = {
     hasBgVideo: "{{ has_bg_video }}" == 'True',
     disableScore: "{{ disable_score }}" == 'True',
     bgMusicVolume: "{{ bg_music_volume }}" * 1,
@@ -130,7 +130,7 @@
     <p>
       {# MSG: Prompt for interaction in order to enable video autoplay. #} {%
       trans %}Due to limitations with browser permissions, you must interact
-      with the page once before it allows autoplay of videos. Pikaraoke will not
+      with the page once before it allows autoplay of videos. Obiraoke will not
       play otherwise. Click the button below to
       <a onClick="handleConfirmation()">confirm</a>.{% endtrans %}
     </p>

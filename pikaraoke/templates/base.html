@@ -12,6 +12,15 @@
   <script src="{{  url_for('static', filename='js.cookie-3.0.5.min.js') }}"></script>
   <script src="{{  url_for('static', filename='socket.io-4.8.3.min.js') }}"></script>
   <script src="{{  url_for('static', filename='spa-navigation.js') }}"></script>
+  <style>
+    @font-face {
+      font-family: "Ubuntu variable";
+      src: url("https://assets.ubuntu.com/v1/f1ea362b-Ubuntu[wdth,wght]-latin-v0.896a.woff2") format("woff2");
+      font-weight: 100 800;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
   <link rel="stylesheet" href="{{  url_for('static', filename='bulma.min.css') }}">
   <link rel="stylesheet" href="{{  url_for('static', filename='bulma-dark.css') }}">
   <link rel="stylesheet" href="{{  url_for('static', filename='custom.css') }}">
@@ -148,6 +157,9 @@
 </head>
 
 <style>
+  body {
+    font-family: "Ubuntu variable", "Ubuntu", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
   .navbar-item > i {
     margin-right: 2px;
   }
@@ -166,7 +178,7 @@
     right: 10px;
   }
   tr:nth-child(even) {
-    background-color: rgb(50, 55, 55);
+    background-color: #262626;
   }
   @media screen and (max-width: 1088px) {
     .navbar-brand > .navbar-item > span {
@@ -230,7 +242,7 @@
           </a>
           <a id="info" class="navbar-item" href="{{ url_for('info.info') }}">
             <i class="icon icon-info-circled-1" title="Info"></i>
-            <span>Pikaraoke</span>&nbsp;&nbsp;
+            <span>Obiraoke</span>&nbsp;&nbsp;
           </a>
         </div>
       </div>

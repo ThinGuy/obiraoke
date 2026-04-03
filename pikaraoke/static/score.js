@@ -59,7 +59,7 @@ async function rotateScore(scoreTextElement, duration) {
 
 async function startScore(staticPath) {
   try {
-    const r = await fetch(PikaraokeConfig.scorePhrasesUrl);
+    const r = await fetch(ObiraokeConfig.scorePhrasesUrl);
     scoreReviews = await r.json();
   } catch (_e) {
     // Network failure: keep the last successfully fetched phrases

@@ -493,8 +493,8 @@
 					<li><u>{% trans %}Youtube-dl (yt-dlp) version:{% endtrans %}</u> {{ youtubedl_version }}</li>
 					{# MSG: The version of the program "ffmpeg". #}
 					<li><u>{% trans %}FFmpeg version:{% endtrans %}</u> {{ ffmpeg_version }} {% if not is_transpose_enabled %} (missing lib-rubberband, pitch shift is not supported) {% endif %}</li>
-					{# MSG: The version of Pikaraoke running right now. #}
-					<li><u>{% trans %}Pikaraoke version:{% endtrans %}</u> {{ pikaraoke_version }}</li>
+					{# MSG: The version of Obiraoke running right now. #}
+					<li><u>{% trans %}Obiraoke version:{% endtrans %}</u> {{ pikaraoke_version }}</li>
 					</ul>
 				</div>
 			</div>
@@ -603,8 +603,8 @@
 					</p>
 
 					<div class="buttons">
-						{# MSG: Text for button which turns off Pikaraoke for everyone using it at your house. #}
-						<a id="quit-link" class="button is-primary" href="{{ url_for('admin.quit') }}">{% trans %}Quit Pikaraoke{% endtrans %}</a>
+						{# MSG: Text for button which turns off Obiraoke for everyone using it at your house. #}
+						<a id="quit-link" class="button is-primary" href="{{ url_for('admin.quit') }}">{% trans %}Quit Obiraoke{% endtrans %}</a>
 						{% if is_pi or is_linux %}
 							{# MSG: Text for button which reboots the machine running Pikaraoke. #}
 							<a id="restart-link" class="button is-primary" href="{{ url_for('admin.reboot') }}">{% trans %}Reboot System{% endtrans %}</a>

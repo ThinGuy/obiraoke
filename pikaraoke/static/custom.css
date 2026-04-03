@@ -29,7 +29,7 @@
 }
 
 .control-box a:hover {
-  color: #74ccb3;
+  color: #e95420;
 }
 
 .pagination {
@@ -83,7 +83,7 @@ body.hide-cursor * {
 
 /* Drag and drop highlight */
 .drag-chosen {
-  background-color: #3273dc !important;
+  background-color: #e95420 !important;
   opacity: 0.9;
 }
 
@@ -93,6 +93,6 @@ body.hide-cursor * {
 }
 
 @keyframes highlight-fade {
-  0% { background-color: #3273dc; }
+  0% { background-color: #e95420; }
   100% { background-color: transparent; }
 }
