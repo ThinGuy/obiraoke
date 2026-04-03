@@ -6,7 +6,16 @@
 /* Ubuntu variable font */
 @font-face {
 	font-family: "Ubuntu variable";
-	src: url("https://assets.ubuntu.com/v1/f1ea362b-Ubuntu[wdth,wght]-latin-v0.896a.woff2") format("woff2");
+	src: url("fonts/ubuntu-variable.woff2") format("woff2");
+	font-weight: 100 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Ubuntu Mono variable font */
+@font-face {
+	font-family: "Ubuntu Mono variable";
+	src: url("fonts/ubuntu-mono-variable.woff2") format("woff2");
 	font-weight: 100 800;
 	font-style: normal;
 	font-display: swap;
