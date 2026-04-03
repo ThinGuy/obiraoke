@@ -232,7 +232,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
     parser.add_argument(
         "--hide-overlay",
         action="store_true",
-        help="Hide all overlays that show on top of video, including current/next song, pikaraoke QR code and IP",
+        help="Hide all overlays that show on top of video, including current/next song, obiraoke QR code and IP",
         required=False,
     )
     parser.add_argument(
@@ -294,7 +294,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--limit-user-songs-by",
-        help=f"Limit the number of songs a user can add to queue. User name 'Pikaraoke' is always unlimited (default: {_DEFAULTS['limit_user_songs_by']} = unlimited)",
+        help=f"Limit the number of songs a user can add to queue. User name 'Obiraoke' is always unlimited (default: {_DEFAULTS['limit_user_songs_by']} = unlimited)",
         default=None,
         required=False,
     )

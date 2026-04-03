@@ -227,6 +227,20 @@ because `apt:` is not a valid snapcraft source type -- snapcraft only recognises
 URLs, local paths, and VCS repositories as source values. Building from the
 upstream tarball also avoids depending on Ubuntu's source packaging layout.
 
+## libasound.so.2 and libslang.so.2 prime exclusions
+
+`libasound.so.2` and `libslang.so.2` are top-level convenience symlinks that
+nothing in the snap links against directly. The actual versioned libraries
+(`libasound.so.2.0.0`, `libslang.so.2.3.3`, etc.) are kept by separate
+stage-packages. Excluding the bare `.so.2*` symlinks removes unnecessary files
+from the prime layer without affecting runtime behavior.
+
+## Help text rebranding (args.py)
+
+Two help strings in `pikaraoke/lib/args.py` still referenced the upstream
+project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Obiraoke")
+and `--hide-overlay` mentioned "pikaraoke QR code" (now "obiraoke QR code").
+
 ## Wrapper entry point rename (Sprint 6)
 
 The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but
