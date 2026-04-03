@@ -250,3 +250,7 @@ The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but
 the entry point was renamed to `obiraoke` in `pyproject.toml` during Sprint 6.
 The exec line now calls `$SNAP/bin/obiraoke`. The wrapper entry point must match
 the pyproject.toml entry point name exactly.
+
+## bulma.min.css cascade overrides
+
+bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.

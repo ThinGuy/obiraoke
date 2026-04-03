@@ -96,3 +96,22 @@ body.hide-cursor * {
   0% { background-color: #e95420; }
   100% { background-color: transparent; }
 }
+
+/* Ubuntu brand colour overrides for Bulma */
+.has-text-warning { color: #f99b11 !important; }
+.has-text-success { color: #0e8420 !important; }
+.has-text-danger { color: #c7162b !important; }
+.has-text-info { color: #0f95a1 !important; }
+.has-text-primary { color: #e95420 !important; }
+.button.is-primary { background-color: #e95420 !important; border-color: transparent !important; color: #fff !important; }
+.button.is-primary:hover { background-color: #c44210 !important; }
+.button.is-danger { background-color: #c7162b !important; border-color: transparent !important; color: #fff !important; }
+.button.is-success { background-color: #0e8420 !important; border-color: transparent !important; color: #fff !important; }
+.button.is-warning { background-color: #f99b11 !important; border-color: transparent !important; }
+.button.is-info { background-color: #0f95a1 !important; border-color: transparent !important; color: #fff !important; }
+.notification.is-warning { background-color: rgba(249,155,17,0.15) !important; color: #f99b11 !important; }
+.notification.is-info { background-color: rgba(15,149,161,0.15) !important; color: #0f95a1 !important; }
+.notification.is-danger { background-color: rgba(199,22,43,0.15) !important; color: #c7162b !important; }
+.tag.is-primary { background-color: #e95420 !important; color: #fff !important; }
+.tag.is-warning { background-color: #f99b11 !important; }
+.tag.is-danger { background-color: #c7162b !important; color: #fff !important; }

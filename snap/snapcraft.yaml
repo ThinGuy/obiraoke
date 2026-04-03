@@ -88,12 +88,34 @@ parts:
       - --disable-manpages
       - --disable-podpages
       - --disable-txtpages
+      - --enable-libx264
+      - --enable-libx265
+      - --enable-libvpx
+      - --enable-libmp3lame
+      - --enable-libopus
+      - --enable-libvorbis
+      - --enable-libtheora
+      - --enable-libwebp
+      - --enable-libfdk-aac
+      - --enable-libass
+      - --enable-libfreetype
     build-packages:
       - librubberband-dev
       - nasm
       - yasm
       - pkg-config
       - libssl-dev
+      - libx264-dev
+      - libx265-dev
+      - libvpx-dev
+      - libmp3lame-dev
+      - libopus-dev
+      - libvorbis-dev
+      - libtheora-dev
+      - libwebp-dev
+      - libfdk-aac-dev
+      - libass-dev
+      - libfreetype-dev
 
   wrapper:
     plugin: dump
