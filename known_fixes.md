@@ -214,15 +214,18 @@ self-documenting name. The flag, help text, and internal variable
 (`args.mascot_mode`) were updated in `pikaraoke/lib/args.py`. The underlying
 assets (`dolphly.png`, `the_drive_by_visualdon.mp4`) are unchanged.
 
-## ffmpeg built from apt source with rubberband support
+## ffmpeg built from upstream source tarball with rubberband support
 
 The stock Ubuntu ffmpeg package in core24 is not compiled with
 `--enable-librubberband`, so staging `librubberband2` alone does not enable
-pitch shifting. The ffmpeg part uses the autotools plugin with `source: apt:ffmpeg`
-to build ffmpeg from the Ubuntu apt source with `--enable-librubberband`,
-`--enable-gpl`, `--enable-nonfree`, `--disable-static`, and `--enable-shared`.
-This replaces the previous approach of downloading a static binary from
-`mwader/static-ffmpeg`, which stopped working when the upstream URL returned 404.
+pitch shifting. The ffmpeg part uses the autotools plugin with
+`source: https://ffmpeg.org/releases/ffmpeg-7.1.tar.gz` to build ffmpeg from
+the upstream source tarball with `--prefix=/usr`, `--enable-librubberband`,
+`--enable-gpl`, `--enable-nonfree`, `--disable-static`, `--enable-shared`, and
+documentation generation disabled. The previous `source: apt:ffmpeg` form failed
+because `apt:` is not a valid snapcraft source type -- snapcraft only recognises
+URLs, local paths, and VCS repositories as source values. Building from the
+upstream tarball also avoids depending on Ubuntu's source packaging layout.
 
 ## Wrapper entry point rename (Sprint 6)
 
