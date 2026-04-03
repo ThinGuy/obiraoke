@@ -311,9 +311,9 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--dolphly",
+        "--mascot-mode",
         action="store_true",
-        help="Enable top-secret DOLPHLY mode.",
+        help="Enable mascot mode, overriding the splash logo and background video.",
         required=False,
     )
 
@@ -331,7 +331,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
     bg_music_path = arg_path_parse(args.bg_music_path)
     bg_video_path = arg_path_parse(args.bg_video_path)
 
-    if args.dolphly:
+    if args.mascot_mode:
         logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "images", "dolphly.png")
         bg_video_path = os.path.join(
             os.path.dirname(__file__), "..", "static", "video", "the_drive_by_visualdon.mp4"
