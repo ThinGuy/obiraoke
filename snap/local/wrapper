@@ -12,4 +12,4 @@ export PIKARAOKE_SONGS_DIR="$HOME/obiraoke-songs"
 # Default to headless; caller can override via OBIRAOKE_ARGS
 OBIRAOKE_ARGS="${OBIRAOKE_ARGS:---headless}"
 
-exec "$SNAP/bin/pikaraoke" $OBIRAOKE_ARGS "$@"
+exec "$SNAP/bin/obiraoke" $OBIRAOKE_ARGS "$@"

@@ -199,3 +199,10 @@ No `layout` section was added to `snapcraft.yaml`. All paths are either within
 snap-writable areas (`$SNAP_USER_DATA`, private `/tmp`) or covered by existing
 interface plugs (`home` for `$HOME/obiraoke-songs`, `audio-playback` for the
 PulseAudio socket).
+
+## Wrapper entry point rename (Sprint 6)
+
+The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but
+the entry point was renamed to `obiraoke` in `pyproject.toml` during Sprint 6.
+The exec line now calls `$SNAP/bin/obiraoke`. The wrapper entry point must match
+the pyproject.toml entry point name exactly.
