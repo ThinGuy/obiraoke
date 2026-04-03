@@ -93,17 +93,6 @@
 				}
 			});
 
-			$("#update-ytdl-link").click(function (e) {
-				e.preventDefault();
-				if (
-					window.confirm(
-						// {# MSG: Confirmation text whe the user asks to update the Youtube-dl tool. #}
-						"{{ _('Are you sure you want to update Youtube-dl right now? Current and pending downloads may fail.') }}"
-					)
-				) {
-					location.href = this.href;
-				}
-			});
 
 		$("#expand-link").click(function (e) {
 			e.preventDefault();
@@ -516,35 +505,6 @@
 			</div>
 		</div>
 
-		{# MSG: Title of the updates section. #}
-		<h1>{% trans %}Updates{% endtrans %}</h1>
-
-		<div class="card">
-			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-				{# MSG: Label for the YT-DLP update on the updates section #}
-				<h3 class="title mb-0">{% trans %}YT-DLP update{% endtrans %}</h3>
-			</header>
-			<div class="card-content collapsible-content">
-				<div class="content">
-					{# MSG: Text explaining why you might want to update youtube-dl. #}
-					<p>{% trans %}
-						If downloads or searches stopped working, updating youtube-dl will probably fix it.<br/>
-						The current installed version is: "{{ youtubedl_version }}".
-					{% endtrans %}</p>
-					<a id="update-ytdl-link" class="button is-primary is-inverted" href="{{ url_for('admin.update_ytdl') }}"
-						{# MSG: Text for the link which will try and update youtube-dl on the machine running Pikaraoke. #}
-							>{% trans %}Update youtube-dl{% endtrans %}</a
-						>
-					<p class="mt-3 is-size-7 has-text-warning">
-						{# MSG: Help text which explains why updating youtube-dl can fail. The log is a file on the machine running Pikaraoke. #}
-						{% trans -%}
-							* This update link above may fail if you don't have proper file permissions.
-							Check the pikaraoke log for errors.
-						{%- endtrans %}
-					</p>
-				</div>
-			</div>
-		</div>
 
 		{% if is_pi %}
 

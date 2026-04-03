@@ -177,7 +177,7 @@ class Karaoke:
         self.youtubedl_version = get_youtubedl_version()
         self.is_raspberry_pi = is_raspberry_pi()
 
-        logging.info("PiKaraoke version: " + VERSION)
+        logging.info("Obiraoke version: " + VERSION)
 
         # Set non-preference attributes (not stored in config)
         self.port = port

@@ -57,6 +57,9 @@ def delayed_halt(cmd: int, k: Karaoke):
 @admin_bp.route("/update_ytdl")
 def update_ytdl():
     """Update yt-dlp to the latest version."""
+    if os.environ.get("SNAP"):
+        return jsonify({"error": "yt-dlp updates are handled by snap refresh"}), 503
+
     k = get_karaoke_instance()
 
     def update_youtube_dl():
