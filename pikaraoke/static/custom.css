@@ -115,3 +115,8 @@ body.hide-cursor * {
 .tag.is-primary { background-color: #e95420 !important; color: #fff !important; }
 .tag.is-warning { background-color: #f99b11 !important; }
 .tag.is-danger { background-color: #c7162b !important; color: #fff !important; }
+.tag.is-danger.is-light { background-color: rgba(199,22,43,0.15) !important; color: #c7162b !important; }
+.tag.is-light { background-color: rgba(255,255,255,0.2) !important; color: #fff !important; }
+.has-text-warning-light { color: #f99b11 !important; }
+.has-background-black-bis { background-color: #202020 !important; }
+.has-background-white-ter { background-color: #262626 !important; }

@@ -12,6 +12,15 @@
 	font-display: swap;
 }
 
+/* Ubuntu variable italic font */
+@font-face {
+	font-family: "Ubuntu variable";
+	src: url("fonts/ubuntu-variable-italic.woff2") format("woff2");
+	font-weight: 100 800;
+	font-style: italic;
+	font-display: swap;
+}
+
 /* Ubuntu Mono variable font */
 @font-face {
 	font-family: "Ubuntu Mono variable";
@@ -147,7 +156,7 @@ hr {
 }
 
 .button.is-primary[disabled] {
-	background-color: #3e5b7a;
+	background-color: #757575;
 }
 
 .button.is-link {
@@ -157,7 +166,7 @@ hr {
 }
 
 .button.is-link:hover {
-	background-color: #1fdeb8;
+	background-color: #70bbc2;
 }
 
 .button.is-info {
@@ -225,21 +234,21 @@ hr {
 }
 
 .input.is-success {
-	background: #defff0;
-	color: #035530;
-	border: 2px solid #2ba76f;
+	background: rgba(14, 132, 32, 0.15);
+	color: #0e8420;
+	border: 2px solid #0e8420;
 }
 
 .input.is-warning {
-	background: #fff3d8;
-	color: #674905;
-	border: 2px solid #ffb70f;
+	background: rgba(249, 155, 17, 0.15);
+	color: #f99b11;
+	border: 2px solid #f99b11;
 }
 
 .input.is-danger {
-	background: #ffd5de;
-	color: #4d0212;
-	border: 2px solid #ff6685;
+	background: rgba(199, 22, 43, 0.15);
+	color: #c7162b;
+	border: 2px solid #c7162b;
 }
 
 /* ===================================

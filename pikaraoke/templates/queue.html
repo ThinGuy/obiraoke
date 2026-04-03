@@ -196,7 +196,7 @@
                   <div class="box mb-4 has-background-dark">
                       <h4 class="title is-5 mb-2">${d.title}</h4>
                       <!-- inline style to ensure background visibility if theme overrides it -->
-                      <progress class="progress ${progressClass}" value="${d.progress}" max="100" style="background-color: #dbdbdb;">${d.progress}%</progress>
+                      <progress class="progress ${progressClass}" value="${d.progress}" max="100" style="background-color: var(--dark-border);">${d.progress}%</progress>
                       <div class="level is-mobile is-size-7 mt-1">
                           <div class="level-left">
                               <span class="level-item text-muted"><b>Status:</b>&nbsp;${d.status}</span>
@@ -226,7 +226,7 @@
               html += `<div class="content"><h5 class="title is-6 mb-2 has-text-danger">{{ _('Download Errors') }}</h5>`;
               status.errors.forEach(function(d) {
                   html += `
-                      <div class="box mb-2 p-3 has-background-white-ter is-flex is-align-items-center" style="border-left: 4px solid #f14668;">
+                      <div class="box mb-2 p-3 has-background-white-ter is-flex is-align-items-center" style="border-left: 4px solid #c7162b;">
                           <span class="icon has-text-danger mr-2"><i class="icon-cancel"></i></span>
                           <div class="is-flex-grow-1" style="min-width: 0;">
                               <p class="has-text-grey mb-0 is-truncated" title="${d.title || d.url}">${d.title || d.url}</p>
@@ -567,7 +567,7 @@
 </div>
 {% endif %}
 
-<div id="downloads-section" style="display:none; margin-top: 30px; border-top: 1px solid #dbdbdb; padding-top: 20px;">
+<div id="downloads-section" style="display:none; margin-top: 30px; border-top: 1px solid var(--dark-border); padding-top: 20px;">
     <h3 class="title is-4">{{ _('Download queue') }}</h3>
     <div id="downloads-container"></div>
 </div>

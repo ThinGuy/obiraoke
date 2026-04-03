@@ -8,7 +8,7 @@
 
 	.row {
 		display: flex;
-		border-bottom: 1px solid #cccccc;
+		border-bottom: 1px solid var(--dark-border);
 	}
 
 	.col-icon {
@@ -41,7 +41,7 @@
 		padding: 0.75rem;
 	}
 	ul.search_result_items li:nth-child(odd) {
-		background-color: rgb(50, 55, 55);
+		background-color: var(--dark-bg-secondary);
 	}
 	@media screen and (min-width: 768px) {
 		ul.search_result_items li {
@@ -94,7 +94,7 @@
 
 	#search-results .img-wrapper:hover img {
 		opacity: 0.7;
-		box-shadow: 0px 0px 3px 1px #878787;
+		box-shadow: 0px 0px 3px 1px var(--dark-border-light);
 	}
 
 	/* Semi-transparent circle behind the play icon */
@@ -612,7 +612,7 @@
 								<i class="icon icon-info-circled-1 is-size-4" title="Info"></i>
 							</span>
 						</div>
-						<div class="column has-text-warning-light">
+						<div class="column has-text-warning">
 							<p class="mb-1 is-italic">
 								{# MSG: Help text below the search bar. #} {% trans -%}- Type a song (title/artist) to search
 								the available songs and click 'Add to queue' to add it to the queue. {%- endtrans %}
@@ -658,7 +658,7 @@
 						</label>
 					</div>
 					<div class="has-text-right" style="margin-top: 5px">
-						<button class="button is-rounded is-primary" disabled id="direct-download-button">
+						<button class="button is-primary" disabled id="direct-download-button">
 							{# MSG: Button label for the direct download form's submit button. #} {% trans %}Download{%
 							endtrans %}
 						</button>
