@@ -214,15 +214,15 @@ self-documenting name. The flag, help text, and internal variable
 (`args.mascot_mode`) were updated in `pikaraoke/lib/args.py`. The underlying
 assets (`dolphly.png`, `the_drive_by_visualdon.mp4`) are unchanged.
 
-## Static ffmpeg binary for rubberband support
+## ffmpeg built from apt source with rubberband support
 
 The stock Ubuntu ffmpeg package in core24 is not compiled with
 `--enable-librubberband`, so staging `librubberband2` alone does not enable
-pitch shifting. Replaced the `ffmpeg` and `libavcodec-extra` stage-packages
-with a static ffmpeg binary from `mwader/static-ffmpeg` (v7.0), which includes
-rubberband and all codec support built in. The binary is downloaded during the
-build via a new `ffmpeg` part using the nil plugin and installed to
-`$CRAFT_PART_INSTALL/usr/bin/ffmpeg`.
+pitch shifting. The ffmpeg part uses the autotools plugin with `source: apt:ffmpeg`
+to build ffmpeg from the Ubuntu apt source with `--enable-librubberband`,
+`--enable-gpl`, `--enable-nonfree`, `--disable-static`, and `--enable-shared`.
+This replaces the previous approach of downloading a static binary from
+`mwader/static-ffmpeg`, which stopped working when the upstream URL returned 404.
 
 ## Wrapper entry point rename (Sprint 6)
 

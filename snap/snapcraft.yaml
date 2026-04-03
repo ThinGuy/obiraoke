@@ -72,13 +72,19 @@ parts:
       - -usr/lib/x86_64-linux-gnu/libzvbi-chains*
 
   ffmpeg:
-    plugin: nil
-    override-build: |
-      curl -fsSL -o "${CRAFT_PART_INSTALL}/usr/bin/ffmpeg" \
-        https://github.com/mwader/static-ffmpeg/releases/download/7.0/ffmpeg-amd64
-      chmod 755 "${CRAFT_PART_INSTALL}/usr/bin/ffmpeg"
+    plugin: autotools
+    source: apt:ffmpeg
+    autotools-configure-parameters:
+      - --enable-librubberband
+      - --enable-gpl
+      - --enable-nonfree
+      - --disable-static
+      - --enable-shared
     build-packages:
-      - curl
+      - librubberband-dev
+      - nasm
+      - yasm
+      - pkg-config
 
   wrapper:
     plugin: dump
