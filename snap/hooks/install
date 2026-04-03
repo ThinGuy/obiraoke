@@ -6,3 +6,9 @@ set -e
 # must be created here (running as root) with world-writable permissions.
 mkdir -p "$SNAP_COMMON/obiraoke-songs"
 chmod 0777 "$SNAP_COMMON/obiraoke-songs"
+
+# Create the logs directory and seed the log file for the daemon.
+mkdir -p "$SNAP_COMMON/logs"
+chmod 0755 "$SNAP_COMMON/logs"
+touch "$SNAP_COMMON/obiraoke.log"
+chmod 0644 "$SNAP_COMMON/obiraoke.log"

@@ -310,6 +310,24 @@ was removed.
 Any future `$SNAP_COMMON` subdirectory that non-root users need must follow the
 same pattern: create it in the install hook with world-writable permissions.
 
+## Autostart and daemon mode
+
+The snap includes a second app entry, `obiraoke-server`, configured as a
+`daemon: simple` service with `restart-condition: on-failure`. It uses the same
+wrapper script and plugs as the interactive `obiraoke` app but runs under
+systemd.
+
+**Autostart configuration key.** `snap set obiraoke autostart=true` enables
+the daemon via `snapctl start --enable`; setting it to `false` disables and
+stops it via `snapctl stop --disable`. The configure hook validates the value
+and rejects anything other than `true` or `false`.
+
+**File logging.** When the wrapper detects daemon mode (`SNAP_INSTANCE_NAME`
+and `JOURNAL_STREAM` both set), it redirects stdout and stderr to
+`$SNAP_COMMON/obiraoke.log`. Before starting, it checks the log file size and
+rotates it (moving to `.log.1`) if it exceeds 10 MB. The install hook creates
+`$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/obiraoke.log` (0644).
+
 ## bulma.min.css cascade overrides
 
 bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.

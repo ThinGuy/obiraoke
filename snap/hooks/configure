@@ -38,6 +38,23 @@ if [ ! -d "$SNAP_COMMON/obiraoke-songs" ]; then
     chmod 0777 "$SNAP_COMMON/obiraoke-songs"
 fi
 
+# Handle autostart toggle for the daemon service
+autostart="$(snapctl get autostart)" || true
+if [ -n "$autostart" ]; then
+    case "$autostart" in
+        true)
+            snapctl start --enable "$SNAP_INSTANCE_NAME.obiraoke-server"
+            ;;
+        false)
+            snapctl stop --disable "$SNAP_INSTANCE_NAME.obiraoke-server"
+            ;;
+        *)
+            echo "error: autostart must be 'true' or 'false', got '$autostart'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
 # The following keys are accepted without validation:
 # admin-password  -- any string
 # download-path   -- any path string

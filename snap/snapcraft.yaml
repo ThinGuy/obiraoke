@@ -13,6 +13,7 @@ description: |
     snap set obiraoke log-level=DEBUG
     snap set obiraoke headless=true
     snap set obiraoke streaming-format=mp4
+    snap set obiraoke autostart=true
 
   Keys:
     port              TCP listen port (1-65535)
@@ -21,6 +22,7 @@ description: |
     log-level         Logging level (DEBUG, INFO, WARNING, ERROR)
     headless          Run without a local browser window (default: true)
     streaming-format  Streaming format: hls or mp4
+    autostart         Enable daemon mode (true/false)
 grade: devel
 confinement: strict
 
@@ -30,6 +32,23 @@ platforms:
 apps:
   obiraoke:
     command: bin/wrapper
+    environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+      PYTHONPATH: $SNAP/lib/python3.12/site-packages
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib:$LD_LIBRARY_PATH
+      PULSE_RUNTIME_PATH: /run/user/1000/pulse
+      PULSE_SERVER: unix:/run/user/1000/pulse/native
+    plugs:
+      - network
+      - network-bind
+      - audio-playback
+      - home
+      - removable-media
+
+  obiraoke-server:
+    command: bin/wrapper
+    daemon: simple
+    restart-condition: on-failure
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
       PYTHONPATH: $SNAP/lib/python3.12/site-packages
