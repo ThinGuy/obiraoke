@@ -584,3 +584,25 @@ Removed all Raspberry Pi specific code and references:
 - **coraoke/templates/splash.html** -- Removed `hostap_info` references.
 - **tests/unit/test_get_platform.py** -- Removed `TestIsRaspberryPi` class and
   all `is_raspberry_pi` patches from remaining tests.
+
+## Snap name and string audit (obiraoke -> coraoke)
+
+Verified that all snap packaging files and Python source use the coraoke name
+consistently. No obiraoke references remain in:
+
+- **snap/snapcraft.yaml** -- `name: coraoke`, app stanzas `coraoke` and
+  `coraoke-server`, description text, and all `snap set coraoke` examples.
+- **snap/local/wrapper** -- `exec "$SNAP/bin/coraoke"`, environment variables
+  prefixed `CORAOKE_`, and `snapctl get` calls referencing coraoke.
+- **snap/hooks/configure** -- `snapctl start/stop` references use
+  `$SNAP_INSTANCE_NAME.coraoke-server`.
+- **snap/hooks/install** -- Directory paths use `coraoke-songs` and
+  `coraoke.log`.
+- **coraoke/*.py** -- No user-visible strings (logging, errors, warnings)
+  reference obiraoke.
+
+The `command: bin/wrapper` in both app stanzas is intentional. The wrapper
+handles PulseAudio setup, snap configuration key reading, daemon log rotation,
+and headless defaults before exec'ing `$SNAP/bin/coraoke`. Bypassing the
+wrapper by setting `command: bin/coraoke` directly would break snap
+configuration and audio.
