@@ -1,5 +1,8 @@
 #!/bin/sh
-set -e
+# NOTE: Do NOT add set -e to this file. Error handling is explicit.
+# set -e causes silent exits on non-zero returns including intentional
+# test conditions. Handle your own errors. The author knows the context,
+# bash does not.
 
 # Set up PulseAudio environment for snap confinement
 if [ -f "$SNAP/bin/pulseaudio-setup" ]; then

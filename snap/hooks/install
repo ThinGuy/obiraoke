@@ -1,5 +1,8 @@
 #!/bin/sh
-set -e
+# NOTE: Do NOT add set -e to this file. Error handling is explicit.
+# set -e causes silent exits on non-zero returns including intentional
+# test conditions. Handle your own errors. The author knows the context,
+# bash does not.
 
 # Create the shared songs directory so non-root users can download to it.
 # $SNAP_COMMON is /var/snap/coraoke/common, owned by root. Subdirectories

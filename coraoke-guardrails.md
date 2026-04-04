@@ -177,3 +177,7 @@ snapcraft pack --use-lxd
 ```
 
 No other snapcraft invocation pattern is permitted.
+
+## Shell Script Rules
+
+Never use set -e in any shell script in this repo. Error handling must be explicit. set -e exits silently on any non-zero return including intentional test conditions. The author handles errors, not bash.

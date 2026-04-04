@@ -688,3 +688,15 @@ The configure hook validates the theme directory exists and exits with an error
 if it does not. If the theme is valid, it sets the three branding keys
 automatically. Custom themes can be added by creating a new directory under
 `$SNAP_COMMON/themes/` with the same file layout as the default theme.
+
+## Removed set -e from snap shell scripts
+
+Removed `set -e` from `snap/hooks/install`, `snap/hooks/configure`, and
+`snap/local/wrapper`. `set -e` causes the shell to exit silently on any
+non-zero return code, including intentional test conditions like `|| true`
+guards and case-statement validation patterns. All three scripts already use
+explicit error handling (validation with `exit 1`, `|| true` fallbacks). The
+`set -e` was actively harmful: in the configure hook, `snapctl get` calls
+guarded with `|| true` could still trigger unexpected exits depending on shell
+implementation details. Each file now has a comment block explaining why
+`set -e` must not be re-added.
