@@ -6,9 +6,9 @@ ensuring queue logic is correct and maintainable.
 
 import pytest
 
-from pikaraoke.lib.events import EventSystem
-from pikaraoke.lib.preference_manager import PreferenceManager
-from pikaraoke.lib.queue_manager import QueueManager
+from obiraoke.lib.events import EventSystem
+from obiraoke.lib.preference_manager import PreferenceManager
+from obiraoke.lib.queue_manager import QueueManager
 
 
 def extract_title(path: str, *args) -> str:

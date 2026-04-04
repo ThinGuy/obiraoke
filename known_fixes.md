@@ -32,23 +32,23 @@ fails even though the interface is connected.
 The following locations are gated behind `os.environ.get("SNAP")` to ensure
 graceful degradation under snap strict confinement.
 
-1. **pikaraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
+1. **obiraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
    yt-dlp self-upgrade (`-U` flag and pip fallback) is skipped when `$SNAP` is
    set. A warning is logged directing the user to `snap refresh`. The function
    returns the current version immediately.
 
-2. **pikaraoke/routes/admin.py -- /shutdown and /reboot routes**
+2. **obiraoke/routes/admin.py -- /shutdown and /reboot routes**
    Both the route handler and `delayed_halt()` check for `$SNAP`. The route
    returns a 503 JSON response (`{"error": "... unavailable in snap confinement"}`). The `delayed_halt` fallback also logs a warning and returns
    early, preventing `os.system("shutdown now")` and `os.system("reboot")` from
    being called.
 
-3. **pikaraoke/routes/admin.py -- /expand_fs route (raspi-config)**
+3. **obiraoke/routes/admin.py -- /expand_fs route (raspi-config)**
    Same 503 pattern as shutdown/reboot. `raspi-config --expand-rootfs` is
    blocked under snap confinement at both the route level and inside
    `delayed_halt()`.
 
-4. **pikaraoke/lib/omxclient.py -- OMXClient.play_file()**
+4. **obiraoke/lib/omxclient.py -- OMXClient.play_file()**
    The hardcoded `/usr/bin/omxplayer` path is unreachable under snap strict
    confinement. When `$SNAP` is set, `play_file()` logs a warning and returns
    immediately. omxplayer is legacy; all playback is handled by the browser.
@@ -158,7 +158,7 @@ All application paths are now gated behind `os.environ.get("SNAP")` so the app
 resolves confined paths when running as a snap and keeps existing behavior
 otherwise. Grade remains `devel`.
 
-### Path changes in `pikaraoke/lib/get_platform.py`
+### Path changes in `obiraoke/lib/get_platform.py`
 
 1. **Config directory (`get_data_directory()`)**
 
@@ -188,7 +188,7 @@ otherwise. Grade remains `devel`.
 
 ### Files not changed
 
-- **`pikaraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
+- **`obiraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
   for all temporary file operations. No hardcoded `/tmp` paths.
 - **Test files** -- Mock values like `/tmp/12345` in test fixtures are arbitrary
   strings passed to mocked functions and do not affect runtime behavior.
@@ -211,7 +211,7 @@ added so ffmpeg can compile against rubberband headers.
 
 The `--dolphly` CLI flag was renamed to `--mascot-mode` to give the option a
 self-documenting name. The flag, help text, and internal variable
-(`args.mascot_mode`) were updated in `pikaraoke/lib/args.py`. The underlying
+(`args.mascot_mode`) were updated in `obiraoke/lib/args.py`. The underlying
 assets (`dolphly.png`, `the_drive_by_visualdon.mp4`) are unchanged.
 
 ## ffmpeg built from upstream source tarball with rubberband support
@@ -240,7 +240,7 @@ remains excluded.
 
 ## Help text rebranding (args.py)
 
-Two help strings in `pikaraoke/lib/args.py` still referenced the upstream
+Two help strings in `obiraoke/lib/args.py` still referenced the upstream
 project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Obiraoke")
 and `--hide-overlay` mentioned "pikaraoke QR code" (now "obiraoke QR code").
 
@@ -345,9 +345,26 @@ already in use. Added a socket-based pre-flight check in `main()` before
 ("Port NNNN is already in use. Is obiraoke already running?") and the process
 exits cleanly with `sys.exit(1)` instead of dumping a traceback.
 
+## Package rename (pikaraoke -> obiraoke)
+
+The Python package directory was renamed from `pikaraoke/` to `obiraoke/`. All
+internal imports (`from pikaraoke...` / `import pikaraoke`) were updated to
+`from obiraoke...` / `import obiraoke`. The following non-Python files were
+also updated to reference the new package path:
+
+- `pyproject.toml` -- entry point, hatch packages list, coverage omit paths
+- `release-please-config.json` -- changelog-path and version-file
+- `build_scripts/docker/Dockerfile` -- COPY directive for the package directory
+- `.github/workflows/ci.yml` -- pytest `--cov=` target
+- `.github/workflows/api-docs.yml` -- inline Python import
+
+Files NOT renamed: Docker user/home paths, upstream install scripts, snap
+wrapper environment variables, user-visible product name strings, and static
+asset paths inside the package.
+
 ## bulma.min.css replaced with obiraoke.css
 
-`bulma.min.css` was replaced with `pikaraoke/static/obiraoke.css`, a custom
+`bulma.min.css` was replaced with `obiraoke/static/obiraoke.css`, a custom
 stylesheet built on the UI spec color system (Section 2) with the Ubuntu
 variable font stack. All Bulma class names used in templates are re-implemented
 with spec-compliant values. No border-radius on structural elements.

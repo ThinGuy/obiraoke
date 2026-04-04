@@ -28,7 +28,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 RUN uv pip install pip
 
 COPY docs ./docs
-COPY pikaraoke ./pikaraoke
+COPY obiraoke ./obiraoke
 
 # Final install of the package itself (fast)
 RUN --mount=type=cache,target=/root/.cache/uv \

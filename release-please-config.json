@@ -6,8 +6,8 @@
             "release-type": "python",
             "include-component-in-tag": false,
             "include-v-in-tag": false,
-            "changelog-path": "pikaraoke/CHANGELOG.md",
-            "version-file": "pikaraoke/version.py"
+            "changelog-path": "obiraoke/CHANGELOG.md",
+            "version-file": "obiraoke/version.py"
         }
     }
 }

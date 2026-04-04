@@ -2,7 +2,7 @@
 
 import pytest
 
-from pikaraoke.lib.args import arg_path_parse, parse_volume
+from obiraoke.lib.args import arg_path_parse, parse_volume
 
 
 class TestArgPathParse:
