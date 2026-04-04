@@ -167,9 +167,9 @@ def get_data_directory() -> str:
         Path to the data directory.
     """
     if os.environ.get("SNAP"):
-        # Snap confinement: $SNAP_USER_DATA/.pikaraoke
+        # Snap confinement: $SNAP_USER_DATA/config
         base_path = os.environ.get("SNAP_USER_DATA", os.path.expanduser("~"))
-        path = os.path.join(base_path, ".pikaraoke")
+        path = os.path.join(base_path, "config")
     elif is_windows():
         # Windows: %APPDATA%/pikaraoke
         base_path = os.environ.get("APPDATA")

@@ -6,7 +6,7 @@ if [ -f "$SNAP/bin/pulseaudio-setup" ]; then
     . "$SNAP/bin/pulseaudio-setup"
 fi
 
-export PIKARAOKE_CONFIG_DIR="$SNAP_USER_DATA/.pikaraoke"
+export PIKARAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
 export PIKARAOKE_SONGS_DIR="$SNAP_COMMON/obiraoke-songs"
 
 # When running as a daemon, redirect output to a log file.

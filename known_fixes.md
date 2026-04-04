@@ -498,3 +498,19 @@ rendering blue instead of spec-compliant colors. Four issues found and fixed:
    per spec. Added an override rule in the template `<style>` block:
    `.pagination-link.is-current { background-color: #e95420 !important;
    border-color: #e95420 !important }`.
+
+## Snap config directory moved from dotfile to visible path
+
+Under snap strict confinement the `home` plug does not grant access to hidden
+directories (those starting with `.`). The config directory was
+`$SNAP_USER_DATA/.pikaraoke`, which is a hidden directory inside the user's snap
+data area. Changed to `$SNAP_USER_DATA/config` in two places:
+
+1. **`obiraoke/lib/get_platform.py` -- `get_data_directory()`** -- The snap
+   branch now joins `base_path` with `"config"` instead of `".pikaraoke"`.
+
+2. **`snap/local/wrapper`** -- The `PIKARAOKE_CONFIG_DIR` export now points to
+   `$SNAP_USER_DATA/config` instead of `$SNAP_USER_DATA/.pikaraoke`.
+
+Only the directory path changed. The database filename and all other file names
+inside the directory are unchanged.
