@@ -401,6 +401,27 @@ to document the new key.
 
 Usage: `snap set obiraoke proxy=http://proxy.example.com:3128`
 
+## fontello.css load order and spec-link class
+
+Links throughout the app rendered as browser-default blue instead of `#69c`
+because `fontello/css/fontello.css` loaded after `obiraoke.css` in
+`base.html`, resetting link colors in the cascade.
+
+**Fix:**
+
+1. Moved the `fontello.css` `<link>` in `obiraoke/templates/base.html` to load
+   **before** `obiraoke.css` so the custom `a` color rules win.
+
+2. Added `.spec-link` and `.spec-link:hover` rules in `obiraoke.css`
+   (`color: #69c !important` / `color: #70bbc2 !important`) as a targeted
+   class for links that must always use the dark-background link color.
+
+3. Applied `class="spec-link"` to the "Sort by Date", "Sort by Alphabetical",
+   and "Edit all songs" links in `obiraoke/templates/files.html`.
+
+The base `a` and `a:hover` rules already had `!important` and were correctly
+at the top level with no parent selector -- no changes needed there.
+
 ## Browse page (files.html) link color fixes
 
 Audited `obiraoke/templates/files.html` (the `/browse` route) for elements

@@ -29,6 +29,14 @@ a:hover {
   color: #70bbc2 !important;
 }
 
+.spec-link {
+  color: #69c !important;
+}
+
+.spec-link:hover {
+  color: #70bbc2 !important;
+}
+
 /* ===== LAYOUT ===== */
 
 .columns {

@@ -103,20 +103,20 @@
 	<span class="is-flex-grow-1">
 		{% if sort_order == "Alphabetical" %} {# MSG: Label which displays that the songs are currently sorted by
 		alphabetical order. #} {% trans %}Sorted Alphabetically{% endtrans %} |
-		<a href="{{ url_for('files.browse') }}?sort=date">
+		<a class="spec-link" href="{{ url_for('files.browse') }}?sort=date">
 			{# MSG: Button which changes how the songs are sorted so they become sorted by date. #} {% trans %}Sort by
 			Date{% endtrans %}
 		</a>
 		{% endif %} {% if sort_order == "Date" %} {# MSG: Label which displays that the songs are currently sorted by
 		date. #} {% trans %}Sorted by date{% endtrans %} |
-		<a href="{{ url_for('files.browse') }}">
+		<a class="spec-link" href="{{ url_for('files.browse') }}">
 			{# MSG: Button which changes how the songs are sorted so they become sorted by name. #} {% trans %}Sort by
 			Alphabetical{% endtrans %}
 		</a>
 		{% endif %}
 	</span>
 	{% if admin %}
-	<a class="batch-edit-btn" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
+	<a class="batch-edit-btn spec-link" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
 		><i class="icon icon-edit"></i>{# MSG: Button to open the batch song renamer page. #} {% trans %}Edit all songs{%
 		endtrans %}</a
 	>
