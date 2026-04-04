@@ -514,3 +514,10 @@ data area. Changed to `$SNAP_USER_DATA/config` in two places:
 
 Only the directory path changed. The database filename and all other file names
 inside the directory are unchanged.
+
+## Thin font weight bumped from 100 to 200
+
+The `em, i` reset rule and `.is-italic` class in `obiraoke/static/obiraoke.css`
+used `font-weight: 100`, which rendered nearly invisible at small sizes on some
+displays. Changed both rules to `font-weight: 200` (extra-light) for better
+legibility while preserving the lighter-than-body visual distinction.
