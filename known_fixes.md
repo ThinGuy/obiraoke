@@ -345,6 +345,15 @@ already in use. Added a socket-based pre-flight check in `main()` before
 ("Port NNNN is already in use. Is obiraoke already running?") and the process
 exits cleanly with `sys.exit(1)` instead of dumping a traceback.
 
-## bulma.min.css cascade overrides
+## bulma.min.css replaced with obiraoke.css
 
-bulma.min.css cascade overrides -- technical debt, plan removal in a future sprint.
+`bulma.min.css` was replaced with `pikaraoke/static/obiraoke.css`, a custom
+stylesheet built on the UI spec color system (Section 2) with the Ubuntu
+variable font stack. All Bulma class names used in templates are re-implemented
+with spec-compliant values. No border-radius on structural elements.
+
+`bulma-dark.css` remains as a temporary safety net during the transition. It
+will be removed once the replacement is fully validated across all pages.
+
+The `!important` override blocks in `custom.css` that existed to beat the Bulma
+cascade have been removed since they are no longer needed.
