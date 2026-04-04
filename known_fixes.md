@@ -649,5 +649,27 @@ first.
 
 **Keys intentionally left unset** (no sensible default):
 
-- `admin-password`, `proxy`, `bg-video-path`, `bg-music-path`, `logo-path`,
-  `download-path`
+- `admin-password`, `proxy`, `download-path`
+
+## Theme snap set key
+
+Added a `theme` snap configuration key that applies a named preset of branding
+assets. Setting `snap set coraoke theme=<name>` checks for
+`$SNAP_COMMON/themes/<name>/` and, if it exists, sets `logo-path`,
+`bg-video-path`, and `bg-music-path` to the corresponding files in that
+directory.
+
+The install hook creates `$SNAP_COMMON/themes/default/` and copies the built-in
+assets into it:
+
+- `$SNAP/coraoke/static/images/logo.png` to `logo.png`
+- `$SNAP/coraoke/static/video/the_drive_by_visualdon.mp4` to `bg-video.mp4`
+- `$SNAP/coraoke/static/music/` contents to `bg-music/`
+
+Directories are set to 0755 and files to 0644. The install hook also sets
+`theme=default` so the branding paths are configured out of the box.
+
+The configure hook validates the theme directory exists and exits with an error
+if it does not. If the theme is valid, it sets the three branding keys
+automatically. Custom themes can be added by creating a new directory under
+`$SNAP_COMMON/themes/` with the same file layout as the default theme.

@@ -25,6 +25,7 @@ description: |
     download-path        Song download directory (default: $SNAP_COMMON/coraoke-songs)
 
   Branding:
+    theme                Apply a named theme preset (e.g. snap set coraoke theme=default)
     logo-path            Custom logo image path
     bg-video-path        Custom background video path
     bg-music-path        Custom background music path

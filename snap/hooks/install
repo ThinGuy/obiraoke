@@ -13,10 +13,25 @@ chmod 0755 "$SNAP_COMMON/logs"
 touch "$SNAP_COMMON/coraoke.log"
 chmod 0644 "$SNAP_COMMON/coraoke.log"
 
+# Create the default theme directory and copy built-in assets into it.
+# Themes live under $SNAP_COMMON/themes/<name>/ and bundle logo, background
+# video, and background music into a single switchable preset.
+mkdir -p "$SNAP_COMMON/themes/default/bg-music"
+chmod 0755 "$SNAP_COMMON/themes/default"
+chmod 0755 "$SNAP_COMMON/themes/default/bg-music"
+
+cp "$SNAP/coraoke/static/images/logo.png" "$SNAP_COMMON/themes/default/logo.png"
+cp "$SNAP/coraoke/static/video/the_drive_by_visualdon.mp4" "$SNAP_COMMON/themes/default/bg-video.mp4"
+cp "$SNAP/coraoke/static/music/"* "$SNAP_COMMON/themes/default/bg-music/"
+
+chmod 0644 "$SNAP_COMMON/themes/default/logo.png"
+chmod 0644 "$SNAP_COMMON/themes/default/bg-video.mp4"
+find "$SNAP_COMMON/themes/default/bg-music" -type f -exec chmod 0644 {} +
+
 # Pre-populate snap configuration keys with default values so they are
 # immediately queryable after install. Keys with no sensible default
-# (admin-password, proxy, bg-video-path, bg-music-path, logo-path,
-# download-path) are left unset until the user configures them.
+# (admin-password, proxy, download-path) are left unset until the user
+# configures them.
 snapctl set port=5555
 snapctl set volume=0.85
 snapctl set bg-music-volume=0.3
@@ -33,3 +48,4 @@ snapctl set disable-bg-music=false
 snapctl set disable-bg-video=false
 snapctl set show-splash-clock=false
 snapctl set hide-url=false
+snapctl set theme=default
