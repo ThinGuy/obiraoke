@@ -422,6 +422,23 @@ because `fontello/css/fontello.css` loaded after `obiraoke.css` in
 The base `a` and `a:hover` rules already had `!important` and were correctly
 at the top level with no parent selector -- no changes needed there.
 
+## White link colors for dark background
+
+The base `a` color in `obiraoke.css` was `#69c` (a blue inherited from the
+Vanilla Framework dark-background link token). On a `#262626` dark background,
+blue links look out of place and are harder to read than white text.
+
+**Changes:**
+
+1. **`obiraoke/static/obiraoke.css`** -- Changed `a { color: #69c }` to
+   `color: #ffffff` and `a:hover` from `#70bbc2` to `#e95420` (Ubuntu Orange).
+   Updated `.spec-link` and `.spec-link:hover` to match.
+
+2. **`obiraoke/templates/files.html`** -- Added `#alpha-bar a` rule with
+   `color: rgba(255,255,255,0.7)` for a subtly dimmed default state,
+   `#alpha-bar a:hover` with `color: #ffffff`, and kept the existing
+   `#alpha-bar a.alpha-active` rule at `color: #e95420` with `font-weight: 700`.
+
 ## Browse page (files.html) link color fixes
 
 Audited `obiraoke/templates/files.html` (the `/browse` route) for elements

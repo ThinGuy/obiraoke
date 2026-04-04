@@ -21,20 +21,20 @@ body {
 }
 
 a {
-  color: #69c !important;
+  color: #ffffff !important;
   text-decoration: none;
 }
 
 a:hover {
-  color: #70bbc2 !important;
+  color: #e95420 !important;
 }
 
 .spec-link {
-  color: #69c !important;
+  color: #ffffff !important;
 }
 
 .spec-link:hover {
-  color: #70bbc2 !important;
+  color: #e95420 !important;
 }
 
 /* ===== LAYOUT ===== */
