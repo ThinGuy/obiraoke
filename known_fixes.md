@@ -750,3 +750,39 @@ to accommodate the fixed sidebar alongside the main content area.
 The current-user display and notification divs were moved from the navbar into
 the main-content area. The splash screen (`coraoke/templates/splash.html`) was
 not affected -- it has its own layout and extends `base.html` via `{% block body %}`.
+
+## Two-panel layout overhaul
+
+The centered max-width content box was replaced with a proper two-panel layout:
+fixed sidebar on the left, full-width content area on the right.
+
+**CSS changes (`coraoke/static/coraoke.css`):**
+
+- `html, body`: set `height: 100%`, `overflow: hidden`; body uses
+  `display: flex; flex-direction: row`.
+- `.main-content`: changed from flex child with `margin-left` to
+  `position: fixed; top: 0; right: 0; bottom: 0` with `left` toggled by
+  collapsed/expanded classes (52px / 208px). Background set to `#1a1a1a`,
+  `overflow-y: auto` for scrollable content.
+- `.main-content .container`: `max-width: none; width: 100%; padding: 1rem` --
+  removes all width constraints.
+- `.main-content .box`: `max-width: none; margin: 0; width: 100%`.
+- `.sidebar-pin-btn`: color changed from `rgba(255,255,255,0.5)` to `#ffffff`,
+  `font-size: 1.1rem` added.
+- `.sidebar-active`: background changed to `rgba(233,84,32,0.15)` (orange tint),
+  border-left set to `3px solid #e95420`.
+
+**Template changes (`coraoke/templates/base.html`):**
+
+- Removed the inner `.container` div with `max-width: 900px` that wrapped the
+  `.box`. The `.box` now sits directly inside `#main-content` with
+  `padding: 1rem`.
+- Added `updatePinColor()` function: the sidebar pin button turns `#e95420`
+  when pinned and `#ffffff` when unpinned, giving a visual indicator of
+  pinned state.
+
+**Background video default (no change needed):**
+
+- `karaoke.py` already defaults to `night_sea.mp4` for non-mascot mode.
+- `the_drive_by_visualdon.mp4` is only set when `--mascot-mode` is active
+  (in `args.py`).

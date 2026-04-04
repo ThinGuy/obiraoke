@@ -137,6 +137,12 @@
         var pinBtn = document.getElementById('sidebar-pin');
         var pinned = localStorage.getItem('sidebar-pinned') === 'true';
 
+        function updatePinColor() {
+          if (pinBtn) {
+            pinBtn.style.color = pinned ? '#e95420' : '#ffffff';
+          }
+        }
+
         function expand() {
           if (!sidebar) return;
           sidebar.classList.remove('sidebar-collapsed');
@@ -156,6 +162,7 @@
         if (pinned) {
           expand();
         }
+        updatePinColor();
 
         if (pinBtn) {
           pinBtn.addEventListener('click', function() {
@@ -166,6 +173,7 @@
             } else {
               collapse();
             }
+            updatePinColor();
           });
         }
 
@@ -287,15 +295,13 @@
       <div class="flash"></div>
     </div>
 
-    <div class="container" style="max-width: 900px;">
-      <div class="box" style="margin-top: 5px;">
-        <header class="title">
-          {% block header %}{% endblock %}
-        </header>
-        <div class="content">
-          {% block content %}
-          {% endblock %}
-        </div>
+    <div class="box" style="padding: 1rem;">
+      <header class="title">
+        {% block header %}{% endblock %}
+      </header>
+      <div class="content">
+        {% block content %}
+        {% endblock %}
       </div>
     </div>
   </div>

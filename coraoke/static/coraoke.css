@@ -12,16 +12,19 @@
 
 html,
 body {
+  height: 100%;
   background: #262626;
   color: #ffffff;
   font-family: "Ubuntu variable", "Ubuntu", -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+body {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
 em,
@@ -101,6 +104,12 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.main-content .container {
+  max-width: none;
+  width: 100%;
+  padding: 1rem;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -136,18 +145,27 @@ a:hover {
 }
 
 .main-content {
-  flex: 1;
-  min-height: 100vh;
-  transition: margin-left 0.2s ease;
-  padding: 1rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: #1a1a1a;
+  transition: left 0.2s ease;
 }
 
 .main-content-collapsed {
-  margin-left: 52px;
+  left: 52px;
 }
 
 .main-content-expanded {
-  margin-left: 208px;
+  left: 208px;
+}
+
+.main-content .box {
+  max-width: none;
+  margin: 0;
+  width: 100%;
 }
 
 .sidebar-header {
@@ -167,9 +185,10 @@ a:hover {
 .sidebar-pin-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
   cursor: pointer;
   padding: 0.5rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,8 +224,8 @@ a:hover {
 
 .sidebar-active {
   color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.08);
-  border-left-color: #e95420;
+  background: rgba(233, 84, 32, 0.15);
+  border-left: 3px solid #e95420;
 }
 
 .sidebar-item .icon {
