@@ -71,4 +71,81 @@ if [ -n "$proxy" ]; then
     CORAOKE_ARGS="$CORAOKE_ARGS --youtubedl-proxy $proxy"
 fi
 
+# Boolean keys -- add flag when set to "true"
+normalize_audio="$(snapctl get normalize-audio)" || true
+if [ "$normalize_audio" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --normalize-audio"
+fi
+
+disable_score="$(snapctl get disable-score)" || true
+if [ "$disable_score" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --disable-score"
+fi
+
+high_quality="$(snapctl get high-quality)" || true
+if [ "$high_quality" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --high-quality"
+fi
+
+prefer_hostname="$(snapctl get prefer-hostname)" || true
+if [ "$prefer_hostname" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --prefer-hostname"
+fi
+
+disable_bg_music="$(snapctl get disable-bg-music)" || true
+if [ "$disable_bg_music" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --disable-bg-music"
+fi
+
+disable_bg_video="$(snapctl get disable-bg-video)" || true
+if [ "$disable_bg_video" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --disable-bg-video"
+fi
+
+show_splash_clock="$(snapctl get show-splash-clock)" || true
+if [ "$show_splash_clock" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --show-splash-clock"
+fi
+
+hide_url="$(snapctl get hide-url)" || true
+if [ "$hide_url" = "true" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --hide-url"
+fi
+
+# Value keys -- pass as --key value when set
+volume="$(snapctl get volume)" || true
+if [ -n "$volume" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --volume $volume"
+fi
+
+bg_music_volume="$(snapctl get bg-music-volume)" || true
+if [ -n "$bg_music_volume" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --bg-music-volume $bg_music_volume"
+fi
+
+splash_delay="$(snapctl get splash-delay)" || true
+if [ -n "$splash_delay" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --splash-delay $splash_delay"
+fi
+
+screensaver_timeout="$(snapctl get screensaver-timeout)" || true
+if [ -n "$screensaver_timeout" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --screensaver-timeout $screensaver_timeout"
+fi
+
+bg_video_path="$(snapctl get bg-video-path)" || true
+if [ -n "$bg_video_path" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --bg-video-path $bg_video_path"
+fi
+
+bg_music_path="$(snapctl get bg-music-path)" || true
+if [ -n "$bg_music_path" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --bg-music-path $bg_music_path"
+fi
+
+logo_path="$(snapctl get logo-path)" || true
+if [ -n "$logo_path" ]; then
+    CORAOKE_ARGS="$CORAOKE_ARGS --logo-path $logo_path"
+fi
+
 exec "$SNAP/bin/coraoke" $CORAOKE_ARGS "$@"

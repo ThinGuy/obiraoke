@@ -606,3 +606,28 @@ handles PulseAudio setup, snap configuration key reading, daemon log rotation,
 and headless defaults before exec'ing `$SNAP/bin/coraoke`. Bypassing the
 wrapper by setting `command: bin/coraoke` directly would break snap
 configuration and audio.
+
+## Extended snap set interface
+
+Added runtime configuration keys to the snap set interface so users can
+customize playback, branding, network, and daemon behavior without editing
+config files.
+
+**Boolean keys** (added to wrapper as `--flag` when set to `true`):
+
+- `normalize-audio`, `disable-score`, `high-quality`, `prefer-hostname`,
+  `disable-bg-music`, `disable-bg-video`, `show-splash-clock`, `hide-url`
+
+**Value keys** (added to wrapper as `--key value` when set):
+
+- `volume`, `bg-music-volume`, `splash-delay`, `screensaver-timeout`,
+  `bg-video-path`, `bg-music-path`, `logo-path`
+- `admin-password` and `streaming-format` already existed and were verified.
+
+**Validation** (in configure hook):
+
+- `volume` and `bg-music-volume`: must be a number between 0 and 1.
+- `splash-delay` and `screensaver-timeout`: must be a non-negative integer.
+
+**snapcraft.yaml description** updated to document all keys grouped into
+Playback, Branding, Network, and Daemon categories with examples.

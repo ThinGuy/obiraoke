@@ -9,21 +9,42 @@ description: |
   Configuration via snap set:
     snap set coraoke port=8080
     snap set coraoke admin-password=secret
-    snap set coraoke download-path=/path/to/songs
-    snap set coraoke log-level=DEBUG
-    snap set coraoke headless=true
-    snap set coraoke streaming-format=mp4
+    snap set coraoke volume=0.85
+    snap set coraoke normalize-audio=true
+    snap set coraoke logo-path=/path/to/logo.png
+    snap set coraoke prefer-hostname=true
     snap set coraoke autostart=true
 
-  Keys:
-    port              TCP listen port (1-65535)
-    admin-password    Password for the admin interface
-    download-path     Song download directory (default: $SNAP_COMMON/coraoke-songs)
-    log-level         Logging level (DEBUG, INFO, WARNING, ERROR)
-    headless          Run without a local browser window (default: true)
-    streaming-format  Streaming format: hls or mp4
-    autostart         Enable daemon mode (true/false)
-    proxy             HTTP proxy for yt-dlp (e.g. snap set coraoke proxy=http://proxy.example.com:3128)
+  Playback:
+    volume               Master volume 0-1 (e.g. 0.85)
+    bg-music-volume      Background music volume 0-1 (e.g. 0.5)
+    normalize-audio      Normalize audio levels (true/false)
+    high-quality         Prefer higher quality downloads (true/false)
+    disable-score        Disable singing score display (true/false)
+    streaming-format     Streaming format: hls or mp4
+    download-path        Song download directory (default: $SNAP_COMMON/coraoke-songs)
+
+  Branding:
+    logo-path            Custom logo image path
+    bg-video-path        Custom background video path
+    bg-music-path        Custom background music path
+    disable-bg-music     Disable background music (true/false)
+    disable-bg-video     Disable background video (true/false)
+    show-splash-clock    Show clock on splash screen (true/false)
+    splash-delay         Splash screen delay in seconds (non-negative integer)
+    screensaver-timeout  Screensaver timeout in seconds (non-negative integer)
+    hide-url             Hide the URL overlay (true/false)
+
+  Network:
+    port                 TCP listen port (1-65535)
+    admin-password       Password for the admin interface
+    prefer-hostname      Use hostname instead of IP in URLs (true/false)
+    proxy                HTTP proxy for yt-dlp (e.g. http://proxy:3128)
+
+  Daemon:
+    autostart            Enable daemon mode (true/false)
+    headless             Run without a local browser window (default: true)
+    log-level            Logging level (DEBUG, INFO, WARNING, ERROR)
 grade: devel
 confinement: strict
 

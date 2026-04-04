@@ -55,9 +55,77 @@ if [ -n "$autostart" ]; then
     esac
 fi
 
+# Validate volume (must be a number between 0 and 1)
+volume="$(snapctl get volume)" || true
+if [ -n "$volume" ]; then
+    case "$volume" in
+        0|1|0.*|1.0|1.00)
+            # Extract numeric check: reject non-numeric and out-of-range
+            if ! printf '%s\n' "$volume" | grep -qE '^(0(\.[0-9]+)?|1(\.0+)?)$'; then
+                echo "error: volume must be a number between 0 and 1, got '$volume'" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            echo "error: volume must be a number between 0 and 1, got '$volume'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+# Validate bg-music-volume (must be a number between 0 and 1)
+bg_music_volume="$(snapctl get bg-music-volume)" || true
+if [ -n "$bg_music_volume" ]; then
+    case "$bg_music_volume" in
+        0|1|0.*|1.0|1.00)
+            if ! printf '%s\n' "$bg_music_volume" | grep -qE '^(0(\.[0-9]+)?|1(\.0+)?)$'; then
+                echo "error: bg-music-volume must be a number between 0 and 1, got '$bg_music_volume'" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            echo "error: bg-music-volume must be a number between 0 and 1, got '$bg_music_volume'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+# Validate splash-delay (must be a non-negative integer)
+splash_delay="$(snapctl get splash-delay)" || true
+if [ -n "$splash_delay" ]; then
+    case "$splash_delay" in
+        ''|*[!0-9]*)
+            echo "error: splash-delay must be a non-negative integer, got '$splash_delay'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+# Validate screensaver-timeout (must be a non-negative integer)
+screensaver_timeout="$(snapctl get screensaver-timeout)" || true
+if [ -n "$screensaver_timeout" ]; then
+    case "$screensaver_timeout" in
+        ''|*[!0-9]*)
+            echo "error: screensaver-timeout must be a non-negative integer, got '$screensaver_timeout'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
 # The following keys are accepted without validation:
-# admin-password  -- any string
-# download-path   -- any path string
-# log-level       -- passed through to the application
-# headless        -- boolean (true/false)
-# proxy           -- HTTP proxy URL for yt-dlp
+# admin-password       -- any string
+# download-path        -- any path string
+# log-level            -- passed through to the application
+# headless             -- boolean (true/false)
+# proxy                -- HTTP proxy URL for yt-dlp
+# normalize-audio      -- boolean (true/false)
+# disable-score        -- boolean (true/false)
+# high-quality         -- boolean (true/false)
+# prefer-hostname      -- boolean (true/false)
+# disable-bg-music     -- boolean (true/false)
+# disable-bg-video     -- boolean (true/false)
+# show-splash-clock    -- boolean (true/false)
+# hide-url             -- boolean (true/false)
+# bg-video-path        -- any path string
+# bg-music-path        -- any path string
+# logo-path            -- any path string
