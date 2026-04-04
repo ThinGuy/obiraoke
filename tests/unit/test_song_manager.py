@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from obiraoke.lib.song_manager import SongManager
+from coraoke.lib.song_manager import SongManager
 
 
 def _native(path: Path) -> str:

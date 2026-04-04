@@ -2,8 +2,8 @@
 
 import pytest
 
-from obiraoke.lib.karaoke_database import KaraokeDatabase
-from obiraoke.lib.library_scanner import (
+from coraoke.lib.karaoke_database import KaraokeDatabase
+from coraoke.lib.library_scanner import (
     LibraryScanner,
     _extract_youtube_id,
     build_song_record,

@@ -1,6 +1,6 @@
 """Unit tests for batch_song_renamer route-level logic."""
 
-from obiraoke.routes.batch_song_renamer import _names_match
+from coraoke.routes.batch_song_renamer import _names_match
 
 
 class TestNamesMatch:

@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from obiraoke.lib.metadata_parser import (
+from coraoke.lib.metadata_parser import (
     _detect_artist_first,
     clean_search_query,
     clear_song_name_cache,
@@ -355,7 +355,7 @@ RATE_LIMIT_RESPONSE = {"error": 29, "message": "Rate limit exceeded"}
 class TestRateLimiting:
     """Tests for Last.fm rate limiting, retry, and cache-skip behavior."""
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_error_29_triggers_retry_and_succeeds(self, mock_get, mock_sleep):
         rate_limit_resp = MagicMock(status_code=200)
@@ -370,7 +370,7 @@ class TestRateLimiting:
         assert "Viva La Vida" in result
         assert mock_get.call_count == 2
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_http_429_triggers_retry_and_succeeds(self, mock_get, mock_sleep):
         http_429_resp = MagicMock(status_code=429)
@@ -383,7 +383,7 @@ class TestRateLimiting:
         assert result is not None
         assert "Viva La Vida" in result
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_rate_limited_result_not_cached(self, mock_get, mock_sleep):
         rate_limit_resp = MagicMock(status_code=200)
@@ -400,7 +400,7 @@ class TestRateLimiting:
         assert result is not None
         assert "Viva La Vida" in result
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_genuine_no_results_is_cached(self, mock_get, mock_sleep):
         ok_resp = MagicMock(status_code=200)
@@ -413,7 +413,7 @@ class TestRateLimiting:
         assert result2 is None
         assert mock_get.call_count == 1
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_max_retries_exhausted(self, mock_get, mock_sleep):
         rate_limit_resp = MagicMock(status_code=200)
@@ -425,7 +425,7 @@ class TestRateLimiting:
         assert mock_get.call_count == 3
 
     @patch("requests.get")
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     def test_backoff_timing(self, mock_sleep, mock_get):
         rate_limit_resp = MagicMock(status_code=200)
         rate_limit_resp.json.return_value = RATE_LIMIT_RESPONSE
@@ -592,7 +592,7 @@ class TestSearchLastfmTracks:
         results = search_lastfm_tracks("Artist - Song")
         assert results == [{"name": "Song", "artist": "Artist"}]
 
-    @patch("obiraoke.lib.metadata_parser.time.sleep")
+    @patch("coraoke.lib.metadata_parser.time.sleep")
     @patch("requests.get")
     def test_returns_empty_on_rate_limit(self, mock_get, mock_sleep):
         rate_limit_resp = MagicMock(status_code=200)
@@ -614,7 +614,7 @@ class TestSearchLastfmTracks:
 class TestProvenanceRouting:
     """Tests for get_song_correct_name provenance-based routing."""
 
-    @patch("obiraoke.lib.metadata_parser.lookup_lastfm")
+    @patch("coraoke.lib.metadata_parser.lookup_lastfm")
     def test_youtube_file_with_separator_skips_lastfm(self, mock_lookup):
         result = get_song_correct_name(
             "Artist - Song Title", raw_filename="/songs/Artist - Song Title---dQw4w9WgXcQ.mp4"
@@ -622,7 +622,7 @@ class TestProvenanceRouting:
         mock_lookup.assert_not_called()
         assert result == "Artist - Song Title"
 
-    @patch("obiraoke.lib.metadata_parser.lookup_lastfm")
+    @patch("coraoke.lib.metadata_parser.lookup_lastfm")
     def test_youtube_file_without_separator_falls_through(self, mock_lookup):
         mock_lookup.return_value = "Sweet Caroline - Neil Diamond"
         result = get_song_correct_name(
@@ -631,20 +631,20 @@ class TestProvenanceRouting:
         mock_lookup.assert_called_once_with("Sweet Caroline")
         assert result == "Sweet Caroline - Neil Diamond"
 
-    @patch("obiraoke.lib.metadata_parser.lookup_lastfm")
+    @patch("coraoke.lib.metadata_parser.lookup_lastfm")
     def test_non_youtube_file_always_uses_lastfm(self, mock_lookup):
         mock_lookup.return_value = "Artist - Song"
         result = get_song_correct_name("Artist - Song", raw_filename="/songs/Artist - Song.mp4")
         mock_lookup.assert_called_once_with("Artist - Song")
         assert result == "Artist - Song"
 
-    @patch("obiraoke.lib.metadata_parser.lookup_lastfm")
+    @patch("coraoke.lib.metadata_parser.lookup_lastfm")
     def test_no_raw_filename_uses_lastfm(self, mock_lookup):
         mock_lookup.return_value = "Artist - Song"
         result = get_song_correct_name("Artist - Song")
         mock_lookup.assert_called_once_with("Artist - Song")
 
-    @patch("obiraoke.lib.metadata_parser.lookup_lastfm")
+    @patch("coraoke.lib.metadata_parser.lookup_lastfm")
     def test_youtube_bracket_format_with_separator(self, mock_lookup):
         result = get_song_correct_name(
             "Artist - Song", raw_filename="/songs/Artist - Song [dQw4w9WgXcQ].mp4"

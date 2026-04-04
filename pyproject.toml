@@ -1,5 +1,5 @@
 [project]
-name = "obiraoke"
+name = "coraoke"
 version = "1.19.0"
 description = "Youtube-based Karaoke machine for Ubuntu and Linux"
 authors = [{name = "Vic Wong"}]
@@ -42,18 +42,18 @@ dev = [
 ]
 
 [project.scripts]
-obiraoke = "obiraoke.app:main"
+coraoke = "coraoke.app:main"
 
 [project.urls]
-Homepage = "https://github.com/ThinGuy/obiraoke"
-Repository = "https://github.com/ThinGuy/obiraoke"
+Homepage = "https://github.com/ThinGuy/coraoke"
+Repository = "https://github.com/ThinGuy/coraoke"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["obiraoke"]
+packages = ["coraoke"]
 
 # Poetry-specific configuration (reads from [project] above)
 [tool.poetry]
@@ -81,8 +81,8 @@ pythonPlatform = "Linux"
 
 [tool.coverage.run]
 omit = [
-    "obiraoke/constants.py",
-    "obiraoke/app.py",
-    "obiraoke/lib/current_app.py",
-    "obiraoke/lib/args.py",
+    "coraoke/constants.py",
+    "coraoke/app.py",
+    "coraoke/lib/current_app.py",
+    "coraoke/lib/args.py",
 ]

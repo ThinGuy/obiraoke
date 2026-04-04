@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-# Validate snap configuration keys set via: snap set obiraoke key=value
+# Validate snap configuration keys set via: snap set coraoke key=value
 
 # Validate port (must be numeric 1-65535)
 port="$(snapctl get port)" || true
@@ -33,9 +33,9 @@ fi
 # Ensure the shared songs directory exists with world-writable permissions.
 # This covers the case where download-path is changed via snap set and the
 # default directory was not yet created (e.g. install hook did not run).
-if [ ! -d "$SNAP_COMMON/obiraoke-songs" ]; then
-    mkdir -p "$SNAP_COMMON/obiraoke-songs"
-    chmod 0777 "$SNAP_COMMON/obiraoke-songs"
+if [ ! -d "$SNAP_COMMON/coraoke-songs" ]; then
+    mkdir -p "$SNAP_COMMON/coraoke-songs"
+    chmod 0777 "$SNAP_COMMON/coraoke-songs"
 fi
 
 # Handle autostart toggle for the daemon service
@@ -43,10 +43,10 @@ autostart="$(snapctl get autostart)" || true
 if [ -n "$autostart" ]; then
     case "$autostart" in
         true)
-            snapctl start --enable "$SNAP_INSTANCE_NAME.obiraoke-server"
+            snapctl start --enable "$SNAP_INSTANCE_NAME.coraoke-server"
             ;;
         false)
-            snapctl stop --disable "$SNAP_INSTANCE_NAME.obiraoke-server"
+            snapctl stop --disable "$SNAP_INSTANCE_NAME.coraoke-server"
             ;;
         *)
             echo "error: autostart must be 'true' or 'false', got '$autostart'" >&2

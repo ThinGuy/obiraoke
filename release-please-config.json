@@ -2,12 +2,12 @@
     "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
     "packages": {
         ".": {
-            "package-name": "obiraoke",
+            "package-name": "coraoke",
             "release-type": "python",
             "include-component-in-tag": false,
             "include-v-in-tag": false,
-            "changelog-path": "obiraoke/CHANGELOG.md",
-            "version-file": "obiraoke/version.py"
+            "changelog-path": "coraoke/CHANGELOG.md",
+            "version-file": "coraoke/version.py"
         }
     }
 }

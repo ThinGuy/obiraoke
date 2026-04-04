@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from obiraoke.lib.get_platform import (
+from coraoke.lib.get_platform import (
     get_data_directory,
     get_default_dl_dir,
     get_installed_js_runtime,
@@ -143,12 +143,12 @@ class TestHasJsRuntime:
 
     def test_has_runtime(self):
         """Test when a JS runtime is available."""
-        with patch("obiraoke.lib.get_platform.get_installed_js_runtime", return_value="node"):
+        with patch("coraoke.lib.get_platform.get_installed_js_runtime", return_value="node"):
             assert has_js_runtime() is True
 
     def test_no_runtime(self):
         """Test when no JS runtime is available."""
-        with patch("obiraoke.lib.get_platform.get_installed_js_runtime", return_value=None):
+        with patch("coraoke.lib.get_platform.get_installed_js_runtime", return_value=None):
             assert has_js_runtime() is False
 
 
@@ -158,39 +158,39 @@ class TestGetPlatform:
     def test_osx_platform(self):
         """Test macOS detection."""
         with patch("sys.platform", "darwin"):
-            with patch("obiraoke.lib.get_platform.is_android", return_value=False):
-                with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_android", return_value=False):
+                with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
                     assert get_platform() == "osx"
 
     def test_windows_platform(self):
         """Test Windows detection."""
         # Ensure sys.platform is win32 so the 'linux' check in get_platform doesn't catch it early
         with patch("sys.platform", "win32"):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
-                with patch("obiraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
                         assert get_platform() == "windows"
 
     def test_linux_platform(self):
         """Test Linux detection."""
         with patch("sys.platform", "linux"):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("obiraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
                         assert get_platform() == "linux"
 
     def test_android_platform(self):
         """Test Android detection (takes priority over linux)."""
         with patch("sys.platform", "linux"):
-            with patch("obiraoke.lib.get_platform.is_android", return_value=True):
+            with patch("coraoke.lib.get_platform.is_android", return_value=True):
                 assert get_platform() == "android"
 
     def test_raspberry_pi_platform(self):
         """Test Raspberry Pi detection with model string."""
         mock_file = mock_open(read_data="Raspberry Pi 4 Model B Rev 1.2")
         with patch("sys.platform", "linux"):
-            with patch("obiraoke.lib.get_platform.is_android", return_value=False):
-                with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=True):
+            with patch("coraoke.lib.get_platform.is_android", return_value=False):
+                with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=True):
                     with patch("builtins.open", mock_file):
                         result = get_platform()
                         assert "Raspberry Pi" in result
@@ -198,9 +198,9 @@ class TestGetPlatform:
     def test_unknown_platform(self):
         """Test unknown platform detection."""
         with patch("sys.platform", "freebsd"):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("obiraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
                         assert get_platform() == "unknown"
 
 
@@ -209,22 +209,22 @@ class TestGetDefaultDlDir:
 
     def test_raspberry_pi_default(self):
         """Test default download dir on Raspberry Pi."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=True):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=True):
             result = get_default_dl_dir("Raspberry Pi 4")
-            assert result == "~/obiraoke-songs"
+            assert result == "~/coraoke-songs"
 
     def test_windows_default(self):
         """Test default download dir on Windows (no legacy)."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("windows")
-                    assert result == "~\\obiraoke-songs"
+                    assert result == "~\\coraoke-songs"
 
     def test_windows_legacy_exists(self):
         """Test Windows uses legacy dir if it exists."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
                 with patch("os.path.exists", return_value=True):
                     with patch(
                         "os.path.expanduser", return_value="C:\\Users\\test\\pikaraoke\\songs"
@@ -234,27 +234,27 @@ class TestGetDefaultDlDir:
 
     def test_linux_default(self):
         """Test default download dir on Linux (no legacy)."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("linux")
-                    assert result == "~/obiraoke-songs"
+                    assert result == "~/coraoke-songs"
 
     def test_linux_legacy_exists(self):
         """Test Linux uses legacy dir if it exists."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("os.path.exists", return_value=True):
                     result = get_default_dl_dir("linux")
                     assert result == "~/pikaraoke/songs"
 
     def test_osx_default(self):
         """Test default download dir on macOS."""
-        with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
+            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("osx")
-                    assert result == "~/obiraoke-songs"
+                    assert result == "~/coraoke-songs"
 
 
 class TestGetDataDirectory:
@@ -262,45 +262,45 @@ class TestGetDataDirectory:
 
     def test_windows_path(self):
         """Test that Windows returns the APPDATA path."""
-        with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
             with patch.dict(os.environ, {"APPDATA": "C:\\Users\\Test\\AppData\\Roaming"}):
                 # Mock os.path to be a MagicMock to avoid real FS interaction and cross-contamination
-                with patch("obiraoke.lib.get_platform.os.path") as mock_path:
+                with patch("coraoke.lib.get_platform.os.path") as mock_path:
                     # Configure mock to behave like ntpath (Windows)
                     mock_path.join.side_effect = ntpath.join
                     mock_path.exists.return_value = True  # Simulate dir exists
 
                     result = get_data_directory()
-                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\obiraoke"
+                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\coraoke"
 
     def test_windows_path_creation(self):
         """Test that Windows creates the directory if missing."""
-        with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
             with patch.dict(os.environ, {"APPDATA": "C:\\Users\\Test\\AppData\\Roaming"}):
                 with patch("os.makedirs") as mock_makedirs:
                     # Mock os.path completely to avoid real FS interaction
-                    with patch("obiraoke.lib.get_platform.os.path") as mock_path:
+                    with patch("coraoke.lib.get_platform.os.path") as mock_path:
                         # Configure mock to behave like ntpath (Windows)
                         mock_path.join.side_effect = ntpath.join
                         mock_path.exists.return_value = False  # Simulate dir MISSING
 
                         get_data_directory()
 
-                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\obiraoke"
+                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\coraoke"
                         mock_makedirs.assert_called_once_with(expected_path)
 
     def test_linux_path(self):
         """Test that Linux/Mac returns the home directory path."""
-        with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.obiraoke"):
+        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.expanduser", return_value="/home/test/.coraoke"):
                 with patch("os.path.exists", return_value=True):
                     result = get_data_directory()
-                    assert result == "/home/test/.obiraoke"
+                    assert result == "/home/test/.coraoke"
 
     def test_linux_path_creation(self):
         """Test that Linux creates the directory if missing."""
-        with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.obiraoke"):
+        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.expanduser", return_value="/home/test/.coraoke"):
                 with patch("os.path.exists", return_value=False):
                     with patch("os.makedirs") as mock_makedirs:
                         get_data_directory()

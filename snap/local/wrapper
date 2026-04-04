@@ -6,13 +6,13 @@ if [ -f "$SNAP/bin/pulseaudio-setup" ]; then
     . "$SNAP/bin/pulseaudio-setup"
 fi
 
-export PIKARAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
-export PIKARAOKE_SONGS_DIR="$SNAP_COMMON/obiraoke-songs"
+export CORAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
+export CORAOKE_SONGS_DIR="$SNAP_COMMON/coraoke-songs"
 
 # When running as a daemon, redirect output to a log file.
 # JOURNAL_STREAM is set by systemd for service units.
 if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then
-    LOG_FILE="$SNAP_COMMON/obiraoke.log"
+    LOG_FILE="$SNAP_COMMON/coraoke.log"
     LOG_MAX=10485760  # 10 MB
 
     # Rotate the log if it exceeds the cap
@@ -26,49 +26,49 @@ if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then
     exec >>"$LOG_FILE" 2>&1
 fi
 
-# Read snap configuration keys (set via: snap set obiraoke key=value)
-OBIRAOKE_ARGS=""
+# Read snap configuration keys (set via: snap set coraoke key=value)
+CORAOKE_ARGS=""
 
 port="$(snapctl get port)" || true
 if [ -n "$port" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --port $port"
+    CORAOKE_ARGS="$CORAOKE_ARGS --port $port"
 fi
 
 admin_password="$(snapctl get admin-password)" || true
 if [ -n "$admin_password" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --admin-password $admin_password"
+    CORAOKE_ARGS="$CORAOKE_ARGS --admin-password $admin_password"
 fi
 
 download_path="$(snapctl get download-path)" || true
 if [ -n "$download_path" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --download-path $download_path"
+    CORAOKE_ARGS="$CORAOKE_ARGS --download-path $download_path"
 else
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --download-path $SNAP_COMMON/obiraoke-songs"
+    CORAOKE_ARGS="$CORAOKE_ARGS --download-path $SNAP_COMMON/coraoke-songs"
 fi
 
 log_level="$(snapctl get log-level)" || true
 if [ -n "$log_level" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --log-level $log_level"
+    CORAOKE_ARGS="$CORAOKE_ARGS --log-level $log_level"
 fi
 
 headless="$(snapctl get headless)" || true
 if [ "$headless" = "true" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --headless"
+    CORAOKE_ARGS="$CORAOKE_ARGS --headless"
 fi
 
 streaming_format="$(snapctl get streaming-format)" || true
 if [ -n "$streaming_format" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --streaming-format $streaming_format"
+    CORAOKE_ARGS="$CORAOKE_ARGS --streaming-format $streaming_format"
 fi
 
 # Default to headless if no config was set for it
 if [ -z "$headless" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --headless"
+    CORAOKE_ARGS="$CORAOKE_ARGS --headless"
 fi
 
 proxy="$(snapctl get proxy)" || true
 if [ -n "$proxy" ]; then
-    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --youtubedl-proxy $proxy"
+    CORAOKE_ARGS="$CORAOKE_ARGS --youtubedl-proxy $proxy"
 fi
 
-exec "$SNAP/bin/obiraoke" $OBIRAOKE_ARGS "$@"
+exec "$SNAP/bin/coraoke" $CORAOKE_ARGS "$@"

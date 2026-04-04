@@ -32,23 +32,23 @@ fails even though the interface is connected.
 The following locations are gated behind `os.environ.get("SNAP")` to ensure
 graceful degradation under snap strict confinement.
 
-1. **obiraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
+1. **coraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
    yt-dlp self-upgrade (`-U` flag and pip fallback) is skipped when `$SNAP` is
    set. A warning is logged directing the user to `snap refresh`. The function
    returns the current version immediately.
 
-2. **obiraoke/routes/admin.py -- /shutdown and /reboot routes**
+2. **coraoke/routes/admin.py -- /shutdown and /reboot routes**
    Both the route handler and `delayed_halt()` check for `$SNAP`. The route
    returns a 503 JSON response (`{"error": "... unavailable in snap confinement"}`). The `delayed_halt` fallback also logs a warning and returns
    early, preventing `os.system("shutdown now")` and `os.system("reboot")` from
    being called.
 
-3. **obiraoke/routes/admin.py -- /expand_fs route (raspi-config)**
+3. **coraoke/routes/admin.py -- /expand_fs route (raspi-config)**
    Same 503 pattern as shutdown/reboot. `raspi-config --expand-rootfs` is
    blocked under snap confinement at both the route level and inside
    `delayed_halt()`.
 
-4. **obiraoke/lib/omxclient.py -- OMXClient.play_file()**
+4. **coraoke/lib/omxclient.py -- OMXClient.play_file()**
    The hardcoded `/usr/bin/omxplayer` path is unreachable under snap strict
    confinement. When `$SNAP` is set, `play_file()` logs a warning and returns
    immediately. omxplayer is legacy; all playback is handled by the browser.
@@ -103,7 +103,7 @@ architectures:
 ## libcaca exclusion
 
 libcaca is an ffmpeg transitive dependency providing ASCII art rendering that
-obiraoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
+coraoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
 and libglut, which are not staged in the snap, causing missing-dependency lint
 warnings from `snapcraft pack`. Only the OpenGL plugin under
 `usr/lib/x86_64-linux-gnu/caca/libgl_plugin*` is excluded from prime -- not the
@@ -140,16 +140,16 @@ Libraries excluded from prime because nothing in the snap links against them:
 - `libcaca++` -- C++ bindings for libcaca, unused by ffmpeg
 - `libcjson_utils` -- cJSON utility extensions unused by ffmpeg at runtime
 - `libfftw3_omp`, `libfftw3_threads` -- OpenMP/threaded FFTW variants unused by ffmpeg
-- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by obiraoke
+- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by coraoke
 - `libhwy_contrib`, `libhwy_test` -- Highway SIMD test/contrib libraries
 - `libicui18n` -- ICU internationalization library, no staged binary links against it
 - `libicuio`, `libicutest`, `libicutu` -- ICU I/O, test, and tool utility libraries not needed at runtime
-- `libjacknet`, `libjackserver` -- JACK audio server components (obiraoke uses PulseAudio)
-- `libpulse-simple` -- simplified PulseAudio API, unused (obiraoke uses libpulse0 directly)
-- `libsphinxad` -- PocketSphinx audio device library unused by obiraoke
+- `libjacknet`, `libjackserver` -- JACK audio server components (coraoke uses PulseAudio)
+- `libpulse-simple` -- simplified PulseAudio API, unused (coraoke uses libpulse0 directly)
+- `libsphinxad` -- PocketSphinx audio device library unused by coraoke
 - `libtheora.so` -- top-level Theora convenience lib (`libtheora.so.0`); ffmpeg links against `libtheoradec`/`libtheoraenc`, not `libtheora.so` itself
 - `libxcb-glx` -- XCB GLX extension, unused in headless snap
-- `libzvbi-chains` -- VBI capture chain library unused by obiraoke
+- `libzvbi-chains` -- VBI capture chain library unused by coraoke
 
 ## Strict Confinement Path Normalization (Sprint 5)
 
@@ -158,22 +158,22 @@ All application paths are now gated behind `os.environ.get("SNAP")` so the app
 resolves confined paths when running as a snap and keeps existing behavior
 otherwise. Grade remains `devel`.
 
-### Path changes in `obiraoke/lib/get_platform.py`
+### Path changes in `coraoke/lib/get_platform.py`
 
 1. **Config directory (`get_data_directory()`)**
 
    - Non-snap: `~/.pikaraoke` (unchanged)
    - Snap: `$SNAP_USER_DATA/.pikaraoke`
    - Why: Under strict confinement the home plug does not grant access to
-     dotfiles. `$SNAP_USER_DATA` (`~/snap/obiraoke/current`) is always writable
+     dotfiles. `$SNAP_USER_DATA` (`~/snap/coraoke/current`) is always writable
      by the confined process without any extra plugs.
 
 2. **Songs directory (`get_default_dl_dir()`)**
 
    - Non-snap: `~/pikaraoke-songs` (unchanged, with legacy fallbacks)
-   - Snap: `$HOME/obiraoke-songs`
+   - Snap: `$HOME/coraoke-songs`
    - Why: The `home` plug grants access to non-hidden files in `$HOME`. Using
-     the rebranded `obiraoke-songs` name avoids confusion with the upstream
+     the rebranded `coraoke-songs` name avoids confusion with the upstream
      project name. Legacy directory checks are skipped under snap because
      previous snap installs never created them.
 
@@ -188,7 +188,7 @@ otherwise. Grade remains `devel`.
 
 ### Files not changed
 
-- **`obiraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
+- **`coraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
   for all temporary file operations. No hardcoded `/tmp` paths.
 - **Test files** -- Mock values like `/tmp/12345` in test fixtures are arbitrary
   strings passed to mocked functions and do not affect runtime behavior.
@@ -197,7 +197,7 @@ otherwise. Grade remains `devel`.
 
 No `layout` section was added to `snapcraft.yaml`. All paths are either within
 snap-writable areas (`$SNAP_USER_DATA`, private `/tmp`) or covered by existing
-interface plugs (`home` for `$HOME/obiraoke-songs`, `audio-playback` for the
+interface plugs (`home` for `$HOME/coraoke-songs`, `audio-playback` for the
 PulseAudio socket).
 
 ## librubberband2 for pitch shifting
@@ -211,7 +211,7 @@ added so ffmpeg can compile against rubberband headers.
 
 The `--dolphly` CLI flag was renamed to `--mascot-mode` to give the option a
 self-documenting name. The flag, help text, and internal variable
-(`args.mascot_mode`) were updated in `obiraoke/lib/args.py`. The underlying
+(`args.mascot_mode`) were updated in `coraoke/lib/args.py`. The underlying
 assets (`dolphly.png`, `the_drive_by_visualdon.mp4`) are unchanged.
 
 ## ffmpeg built from upstream source tarball with rubberband support
@@ -240,37 +240,37 @@ remains excluded.
 
 ## Help text rebranding (args.py)
 
-Two help strings in `obiraoke/lib/args.py` still referenced the upstream
-project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Obiraoke")
-and `--hide-overlay` mentioned "pikaraoke QR code" (now "obiraoke QR code").
+Two help strings in `coraoke/lib/args.py` still referenced the upstream
+project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Coraoke")
+and `--hide-overlay` mentioned "pikaraoke QR code" (now "coraoke QR code").
 
 ## Wrapper entry point rename (Sprint 6)
 
 The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but
-the entry point was renamed to `obiraoke` in `pyproject.toml` during Sprint 6.
-The exec line now calls `$SNAP/bin/obiraoke`. The wrapper entry point must match
+the entry point was renamed to `coraoke` in `pyproject.toml` during Sprint 6.
+The exec line now calls `$SNAP/bin/coraoke`. The wrapper entry point must match
 the pyproject.toml entry point name exactly.
 
 ## ffmpeg runtime dependencies
 
 The custom-built ffmpeg binary links against libass, libfdk-aac, and libunibreak
 at runtime. The snapcraft linter flagged these as missing dependencies. Added
-`libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the obiraoke
+`libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the coraoke
 part so they ship inside the snap.
 
 ## Shared songs directory ($SNAP_COMMON)
 
-The snap songs directory was changed from `$HOME/obiraoke-songs` to
-`$SNAP_COMMON/obiraoke-songs` so that songs are shared across all users on the
-system. `$SNAP_COMMON` (`/var/snap/obiraoke/common`) is writable by the snap
+The snap songs directory was changed from `$HOME/coraoke-songs` to
+`$SNAP_COMMON/coraoke-songs` so that songs are shared across all users on the
+system. `$SNAP_COMMON` (`/var/snap/coraoke/common`) is writable by the snap
 daemon and persists across refreshes. This avoids each user maintaining a
 separate song library.
 
 ## Snap configuration interface
 
-The snap supports runtime configuration via `snap set obiraoke key=value`.
+The snap supports runtime configuration via `snap set coraoke key=value`.
 The wrapper script (`snap/local/wrapper`) reads each key with `snapctl get`
-and passes it as a CLI argument to obiraoke. The configure hook
+and passes it as a CLI argument to coraoke. The configure hook
 (`snap/hooks/configure`) validates values when they are set.
 
 Supported keys:
@@ -278,7 +278,7 @@ Supported keys:
 - **port** -- TCP listen port. Must be numeric, 1-65535. Passed as `--port`.
 - **admin-password** -- Admin interface password. Passed as `--admin-password`.
 - **download-path** -- Song download directory. Defaults to
-  `$SNAP_COMMON/obiraoke-songs` if not set. Passed as `--download-path`.
+  `$SNAP_COMMON/coraoke-songs` if not set. Passed as `--download-path`.
 - **log-level** -- Logging level (DEBUG, INFO, WARNING, ERROR). Passed as
   `--log-level`.
 - **headless** -- Boolean. If `true`, adds `--headless` flag. Defaults to
@@ -289,20 +289,20 @@ Supported keys:
 Example usage:
 
 ```
-sudo snap set obiraoke port=8080
-sudo snap set obiraoke streaming-format=mp4
-sudo snap set obiraoke headless=true
+sudo snap set coraoke port=8080
+sudo snap set coraoke streaming-format=mp4
+sudo snap set coraoke headless=true
 ```
 
 ## Install hook creates $SNAP_COMMON subdirectories
 
-`$SNAP_COMMON` (`/var/snap/obiraoke/common`) is owned by root. When obiraoke
+`$SNAP_COMMON` (`/var/snap/coraoke/common`) is owned by root. When coraoke
 runs as a normal user, it cannot create subdirectories there. Attempting to
-download songs to `$SNAP_COMMON/obiraoke-songs` fails with "Permission denied"
+download songs to `$SNAP_COMMON/coraoke-songs` fails with "Permission denied"
 if the directory does not already exist.
 
 The fix is `snap/hooks/install`, which runs as root during `snap install`. It
-creates `$SNAP_COMMON/obiraoke-songs` with mode 0777 so any user can write to
+creates `$SNAP_COMMON/coraoke-songs` with mode 0777 so any user can write to
 it. The configure hook (`snap/hooks/configure`) also creates the directory if
 missing, covering the case where the install hook did not run or the directory
 was removed.
@@ -312,28 +312,28 @@ same pattern: create it in the install hook with world-writable permissions.
 
 ## Autostart and daemon mode
 
-The snap includes a second app entry, `obiraoke-server`, configured as a
+The snap includes a second app entry, `coraoke-server`, configured as a
 `daemon: simple` service with `restart-condition: on-failure`. It uses the same
-wrapper script and plugs as the interactive `obiraoke` app but runs under
+wrapper script and plugs as the interactive `coraoke` app but runs under
 systemd.
 
-**Autostart configuration key.** `snap set obiraoke autostart=true` enables
+**Autostart configuration key.** `snap set coraoke autostart=true` enables
 the daemon via `snapctl start --enable`; setting it to `false` disables and
 stops it via `snapctl stop --disable`. The configure hook validates the value
 and rejects anything other than `true` or `false`.
 
 **File logging.** When the wrapper detects daemon mode (`SNAP_INSTANCE_NAME`
 and `JOURNAL_STREAM` both set), it redirects stdout and stderr to
-`$SNAP_COMMON/obiraoke.log`. Before starting, it checks the log file size and
+`$SNAP_COMMON/coraoke.log`. Before starting, it checks the log file size and
 rotates it (moving to `.log.1`) if it exceeds 10 MB. The install hook creates
-`$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/obiraoke.log` (0644).
+`$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/coraoke.log` (0644).
 
 ## Daemon install-mode: disable
 
-The `obiraoke-server` daemon in `snap/snapcraft.yaml` previously started
+The `coraoke-server` daemon in `snap/snapcraft.yaml` previously started
 automatically on `snap install`. This is wrong for a karaoke app -- the user
-should explicitly opt in with `snap set obiraoke autostart=true`. Added
-`install-mode: disable` to the `obiraoke-server` app stanza so the daemon is
+should explicitly opt in with `snap set coraoke autostart=true`. Added
+`install-mode: disable` to the `coraoke-server` app stanza so the daemon is
 installed but not started or enabled until the user sets `autostart=true`,
 which the configure hook handles via `snapctl start --enable`.
 
@@ -342,14 +342,14 @@ which the configure hook handles via `snapctl start --enable`.
 The gevent `WSGIServer` raises an `OSError` traceback when the listen port is
 already in use. Added a socket-based pre-flight check in `main()` before
 `server.start()`. If the port is occupied, a clear error message is logged
-("Port NNNN is already in use. Is obiraoke already running?") and the process
+("Port NNNN is already in use. Is coraoke already running?") and the process
 exits cleanly with `sys.exit(1)` instead of dumping a traceback.
 
-## Package rename (pikaraoke -> obiraoke)
+## Package rename (pikaraoke -> coraoke)
 
-The Python package directory was renamed from `pikaraoke/` to `obiraoke/`. All
+The Python package directory was renamed from `pikaraoke/` to `coraoke/`. All
 internal imports (`from pikaraoke...` / `import pikaraoke`) were updated to
-`from obiraoke...` / `import obiraoke`. The following non-Python files were
+`from coraoke...` / `import coraoke`. The following non-Python files were
 also updated to reference the new package path:
 
 - `pyproject.toml` -- entry point, hatch packages list, coverage omit paths
@@ -362,9 +362,9 @@ Files NOT renamed: Docker user/home paths, upstream install scripts, snap
 wrapper environment variables, user-visible product name strings, and static
 asset paths inside the package.
 
-## bulma.min.css replaced with obiraoke.css
+## bulma.min.css replaced with coraoke.css
 
-`bulma.min.css` was replaced with `obiraoke/static/obiraoke.css`, a custom
+`bulma.min.css` was replaced with `coraoke/static/coraoke.css`, a custom
 stylesheet built on the UI spec color system (Section 2) with the Ubuntu
 variable font stack. All Bulma class names used in templates are re-implemented
 with spec-compliant values. No border-radius on structural elements.
@@ -375,10 +375,10 @@ will be removed once the replacement is fully validated across all pages.
 The `!important` override blocks in `custom.css` that existed to beat the Bulma
 cascade have been removed since they are no longer needed.
 
-## Link and navbar color specificity (obiraoke.css)
+## Link and navbar color specificity (coraoke.css)
 
 Added `!important` to the base `a` and `a:hover` color rules in
-`obiraoke/static/obiraoke.css` so they win over `bulma-dark.css` in the
+`coraoke/static/coraoke.css` so they win over `bulma-dark.css` in the
 cascade. Also added `!important` to `.navbar-item`, `.navbar-item:hover`, and
 `.navbar-item.is-active` color rules, and `background-color: transparent !important` on `.navbar-item:hover` to prevent bulma-dark from painting a
 visible hover background on navbar links.
@@ -387,7 +387,7 @@ visible hover background on navbar links.
 
 Deleted `build_scripts/` (Docker build helpers, CI smoke tests, install scripts)
 and `docs/` (GitHub Pages config and legacy README). These are upstream
-artifacts that do not apply to the obiraoke snap packaging. `.github/` is
+artifacts that do not apply to the coraoke snap packaging. `.github/` is
 retained.
 
 ## Snap proxy configuration key
@@ -398,42 +398,42 @@ key with `snapctl get proxy` and appends the argument when set. The configure
 hook comment block and `snapcraft.yaml` description keys section are updated
 to document the new key.
 
-Usage: `snap set obiraoke proxy=http://proxy.example.com:3128`
+Usage: `snap set coraoke proxy=http://proxy.example.com:3128`
 
 ## fontello.css load order and spec-link class
 
 Links throughout the app rendered as browser-default blue instead of `#69c`
-because `fontello/css/fontello.css` loaded after `obiraoke.css` in
+because `fontello/css/fontello.css` loaded after `coraoke.css` in
 `base.html`, resetting link colors in the cascade.
 
 **Fix:**
 
-1. Moved the `fontello.css` `<link>` in `obiraoke/templates/base.html` to load
-   **before** `obiraoke.css` so the custom `a` color rules win.
+1. Moved the `fontello.css` `<link>` in `coraoke/templates/base.html` to load
+   **before** `coraoke.css` so the custom `a` color rules win.
 
-2. Added `.spec-link` and `.spec-link:hover` rules in `obiraoke.css`
+2. Added `.spec-link` and `.spec-link:hover` rules in `coraoke.css`
    (`color: #69c !important` / `color: #70bbc2 !important`) as a targeted
    class for links that must always use the dark-background link color.
 
 3. Applied `class="spec-link"` to the "Sort by Date", "Sort by Alphabetical",
-   and "Edit all songs" links in `obiraoke/templates/files.html`.
+   and "Edit all songs" links in `coraoke/templates/files.html`.
 
 The base `a` and `a:hover` rules already had `!important` and were correctly
 at the top level with no parent selector -- no changes needed there.
 
 ## White link colors for dark background
 
-The base `a` color in `obiraoke.css` was `#69c` (a blue inherited from the
+The base `a` color in `coraoke.css` was `#69c` (a blue inherited from the
 Vanilla Framework dark-background link token). On a `#262626` dark background,
 blue links look out of place and are harder to read than white text.
 
 **Changes:**
 
-1. **`obiraoke/static/obiraoke.css`** -- Changed `a { color: #69c }` to
+1. **`coraoke/static/coraoke.css`** -- Changed `a { color: #69c }` to
    `color: #ffffff` and `a:hover` from `#70bbc2` to `#e95420` (Ubuntu Orange).
    Updated `.spec-link` and `.spec-link:hover` to match.
 
-2. **`obiraoke/templates/files.html`** -- Added `#alpha-bar a` rule with
+2. **`coraoke/templates/files.html`** -- Added `#alpha-bar a` rule with
    `color: rgba(255,255,255,0.7)` for a subtly dimmed default state,
    `#alpha-bar a:hover` with `color: #ffffff`, and kept the existing
    `#alpha-bar a.alpha-active` rule at `color: #e95420` with `font-weight: 700`.
@@ -447,12 +447,12 @@ heading.
 
 ## Italic replaced with Ubuntu Thin (weight 100)
 
-All italic usage in `obiraoke/static/obiraoke.css` was replaced with Ubuntu Thin
+All italic usage in `coraoke/static/coraoke.css` was replaced with Ubuntu Thin
 (font-weight 100, font-style normal). This gives emphasized text a visually
 distinct lighter weight instead of a slanted style, which fits better with the
 Ubuntu variable font design.
 
-**Changes in `obiraoke.css`:**
+**Changes in `coraoke.css`:**
 
 1. Added `em, i { font-style: normal; font-weight: 100; }` to the reset/base
    section so all native italic elements render as thin weight instead.
@@ -472,7 +472,7 @@ Ubuntu variable font design.
 
 ## Browse page (files.html) link color fixes
 
-Audited `obiraoke/templates/files.html` (the `/browse` route) for elements
+Audited `coraoke/templates/files.html` (the `/browse` route) for elements
 rendering blue instead of spec-compliant colors. Four issues found and fixed:
 
 1. **`#alpha-bar` had `border-radius: 4px`** -- Removed. No border-radius on
@@ -485,7 +485,7 @@ rendering blue instead of spec-compliant colors. Four issues found and fixed:
    when active.
 
 3. **`.add-song-link.has-text-success` rendered as `#69c` (blue)** -- The
-   global `a { color: #69c !important }` rule in `obiraoke.css` overrode the
+   global `a { color: #69c !important }` rule in `coraoke.css` overrode the
    `.has-text-success` class, making the green "add to queue" icons appear
    blue. Added a higher-specificity rule
    `a.add-song-link.has-text-success { color: #0e8420 !important }` in the
@@ -504,7 +504,7 @@ directories (those starting with `.`). The config directory was
 `$SNAP_USER_DATA/.pikaraoke`, which is a hidden directory inside the user's snap
 data area. Changed to `$SNAP_USER_DATA/config` in two places:
 
-1. **`obiraoke/lib/get_platform.py` -- `get_data_directory()`** -- The snap
+1. **`coraoke/lib/get_platform.py` -- `get_data_directory()`** -- The snap
    branch now joins `base_path` with `"config"` instead of `".pikaraoke"`.
 
 2. **`snap/local/wrapper`** -- The `PIKARAOKE_CONFIG_DIR` export now points to
@@ -515,30 +515,30 @@ inside the directory are unchanged.
 
 ## Thin font weight bumped from 100 to 200
 
-The `em, i` reset rule and `.is-italic` class in `obiraoke/static/obiraoke.css`
+The `em, i` reset rule and `.is-italic` class in `coraoke/static/coraoke.css`
 used `font-weight: 100`, which rendered nearly invisible at small sizes on some
 displays. Changed both rules to `font-weight: 200` (extra-light) for better
 legibility while preserving the lighter-than-body visual distinction.
 
-## Rename pikaraoke.db and remaining pikaraoke internal names to obiraoke
+## Rename pikaraoke.db and remaining pikaraoke internal names to coraoke
 
-Renamed the SQLite database filename from `pikaraoke.db` to `obiraoke.db` in
-`obiraoke/lib/karaoke_database.py`. Also renamed all remaining internal
-references to "pikaraoke" in Python code to "obiraoke":
+Renamed the SQLite database filename from `pikaraoke.db` to `coraoke.db` in
+`coraoke/lib/karaoke_database.py`. Also renamed all remaining internal
+references to "pikaraoke" in Python code to "coraoke":
 
-- **Database**: `pikaraoke.db` to `obiraoke.db` in `karaoke_database.py`
-- **Data directories**: `~/.pikaraoke` to `~/.obiraoke` (Linux/macOS),
-  `%APPDATA%/pikaraoke` to `%APPDATA%/obiraoke` (Windows) in `get_platform.py`
+- **Database**: `pikaraoke.db` to `coraoke.db` in `karaoke_database.py`
+- **Data directories**: `~/.pikaraoke` to `~/.coraoke` (Linux/macOS),
+  `%APPDATA%/pikaraoke` to `%APPDATA%/coraoke` (Windows) in `get_platform.py`
 - **Download directories**: default paths changed from `pikaraoke-songs` to
-  `obiraoke-songs` in `get_platform.py`; legacy path checks kept as-is for
+  `coraoke-songs` in `get_platform.py`; legacy path checks kept as-is for
   migration from upstream pikaraoke installs
 - **Default download path**: `/usr/lib/pikaraoke/songs` to
-  `/usr/lib/obiraoke/songs` in `karaoke.py`
-- **System user**: `"Pikaraoke"` to `"Obiraoke"` in `queue_manager.py` and
+  `/usr/lib/coraoke/songs` in `karaoke.py`
+- **System user**: `"Pikaraoke"` to `"Coraoke"` in `queue_manager.py` and
   `download_manager.py`
-- **Function name**: `parse_pikaraoke_args` to `parse_obiraoke_args` in
+- **Function name**: `parse_pikaraoke_args` to `parse_coraoke_args` in
   `args.py` and `app.py`
-- **Template variable**: `pikaraoke_version` to `obiraoke_version` in
+- **Template variable**: `pikaraoke_version` to `coraoke_version` in
   `routes/info.py` and `templates/info.html`
 - **User-facing strings**: updated exit message and log messages in
   `routes/admin.py`, `routes/now_playing.py`, `karaoke.py`, and

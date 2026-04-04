@@ -2,10 +2,10 @@
 
 import pytest
 
-from obiraoke.lib.events import EventSystem
-from obiraoke.lib.preference_manager import PreferenceManager
-from obiraoke.lib.queue_manager import QueueManager
-from obiraoke.lib.song_manager import SongManager
+from coraoke.lib.events import EventSystem
+from coraoke.lib.preference_manager import PreferenceManager
+from coraoke.lib.queue_manager import QueueManager
+from coraoke.lib.song_manager import SongManager
 
 
 class MockPlaybackController:
@@ -120,7 +120,7 @@ class MockKaraoke:
         self._socketio = value
 
     # Import the actual methods we want to test
-    from obiraoke.karaoke import Karaoke
+    from coraoke.karaoke import Karaoke
 
     # Bind the real methods to our mock class
     get_now_playing = Karaoke.get_now_playing

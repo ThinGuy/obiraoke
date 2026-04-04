@@ -3,6 +3,7 @@
 ![Ubuntu Coraoke](coraoke-splash.png)
 
 ## Table of Contents
+
 - [Credit / Thanks](#credit--thanks)
 - [About](#about)
 - [Features](#features)
@@ -29,6 +30,7 @@ Ubuntu Coraoke is a strictly-confined snap implementation of [vicwomg](https://g
 [PiKaraoke](https://github.com/vicwomg/pikaraoke) brings a fun and professional "KTV" experience to any home, office, or colonoscopy examination room.
 
 Any platform that can run Snapd instantly becomes a full-featured karaoke station with:
+
 - A full-screen player and an instant web interface
 - Easy access via QR code or by visiting `http://<hostname>:5555` on any modern browser
 - A client-free experience — browse your local library, manage the queue, and access countless karaoke hits from YouTube, all from the Ubuntu Coraoke web UI on any device with a modern browser

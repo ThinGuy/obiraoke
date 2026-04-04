@@ -4,7 +4,7 @@ import threading
 
 import pytest
 
-from obiraoke.lib.song_list import SongList
+from coraoke.lib.song_list import SongList
 
 
 class TestSongListBasicOperations:

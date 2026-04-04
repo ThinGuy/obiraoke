@@ -2,13 +2,13 @@
 set -e
 
 # Create the shared songs directory so non-root users can download to it.
-# $SNAP_COMMON is /var/snap/obiraoke/common, owned by root. Subdirectories
+# $SNAP_COMMON is /var/snap/coraoke/common, owned by root. Subdirectories
 # must be created here (running as root) with world-writable permissions.
-mkdir -p "$SNAP_COMMON/obiraoke-songs"
-chmod 0777 "$SNAP_COMMON/obiraoke-songs"
+mkdir -p "$SNAP_COMMON/coraoke-songs"
+chmod 0777 "$SNAP_COMMON/coraoke-songs"
 
 # Create the logs directory and seed the log file for the daemon.
 mkdir -p "$SNAP_COMMON/logs"
 chmod 0755 "$SNAP_COMMON/logs"
-touch "$SNAP_COMMON/obiraoke.log"
-chmod 0644 "$SNAP_COMMON/obiraoke.log"
+touch "$SNAP_COMMON/coraoke.log"
+chmod 0644 "$SNAP_COMMON/coraoke.log"
