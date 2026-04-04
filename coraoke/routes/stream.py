@@ -1,5 +1,6 @@
 """Video streaming routes for transcoded media playback."""
 
+import logging
 import os
 import re
 import time
@@ -210,10 +211,13 @@ def stream_bg_video():
     """Stream the background video file."""
     k = get_karaoke_instance()
     file_path = k.bg_video_path
-    if k.bg_video_path is not None:
+    if file_path is not None and os.path.exists(file_path):
         return send_file(os.path.abspath(file_path), mimetype="video/mp4")
-    else:
-        return Response("Background video not found.", status=404)
+    if file_path is not None:
+        logging.getLogger(__name__).warning(
+            "Configured bg_video_path does not exist: %s", file_path
+        )
+    return Response("Background video not found.", status=404)
 
 
 # subtitle .ass

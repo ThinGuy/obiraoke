@@ -700,3 +700,35 @@ explicit error handling (validation with `exit 1`, `|| true` fallbacks). The
 guarded with `|| true` could still trigger unexpected exits depending on shell
 implementation details. Each file now has a comment block explaining why
 `set -e` must not be re-added.
+
+## Install hook theme asset copy paths
+
+The `cp` commands in `snap/hooks/install` that copy built-in theme assets
+referenced `$SNAP/coraoke/static/...` but the Python package is installed at
+`$SNAP/lib/python3.12/site-packages/coraoke/`, not `$SNAP/coraoke/`. Fixed all
+three `cp` commands to use the correct path prefix:
+`$SNAP/lib/python3.12/site-packages/coraoke/static/...`. Also added
+`2>/dev/null || true` to the music glob copy so a missing or empty music
+directory does not cause the install hook to fail.
+
+## Logo route graceful fallback
+
+The `/logo` route in `coraoke/routes/images.py` passed `k.logo_path` directly
+to `send_file` without checking whether the file exists. If the configured path
+pointed to a missing file (e.g. a theme asset not yet copied), Flask raised a
+`FileNotFoundError` and returned a 500 error.
+
+The route now checks `os.path.exists()` on the configured path. If the file is
+missing, it falls back to the built-in static logo at
+`coraoke/static/images/logo.png` and logs a warning.
+
+## Background video route graceful fallback
+
+The `/stream/bg_video` route in `coraoke/routes/stream.py` checked whether
+`k.bg_video_path` was not `None` but did not verify the file existed on disk.
+If the configured path pointed to a missing file, `send_file` raised a
+`FileNotFoundError` and returned a 500 error.
+
+The route now checks both `file_path is not None` and `os.path.exists()`. If
+the path is set but the file does not exist, it logs a warning and returns a
+404 instead of crashing.

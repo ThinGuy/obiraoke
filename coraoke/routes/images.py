@@ -1,4 +1,5 @@
 """Image serving routes for QR code and logo."""
+import logging
 import os
 
 import flask_babel
@@ -8,8 +9,13 @@ from flask_smorest import Blueprint
 from coraoke.lib.current_app import get_karaoke_instance
 
 _ = flask_babel.gettext
+logger = logging.getLogger(__name__)
 
 images_bp = Blueprint("images", __name__)
+
+_BUILTIN_LOGO = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "..", "static", "images", "logo.png")
+)
 
 
 @images_bp.route("/qrcode")
@@ -21,6 +27,10 @@ def qrcode():
 
 @images_bp.route("/logo")
 def logo():
-    """Get the PiKaraoke logo image."""
+    """Get the logo image, falling back to built-in static asset."""
     k = get_karaoke_instance()
-    return send_file(os.path.abspath(k.logo_path), mimetype="image/png")
+    logo_path = os.path.abspath(k.logo_path)
+    if not os.path.exists(logo_path):
+        logger.warning("Configured logo_path does not exist: %s — falling back to built-in logo", logo_path)
+        logo_path = _BUILTIN_LOGO
+    return send_file(logo_path, mimetype="image/png")
