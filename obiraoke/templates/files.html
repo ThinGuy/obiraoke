@@ -38,13 +38,26 @@
 <style>
 	#alpha-bar {
 		padding: 5px 10px;
-		border-radius: 4px;
 		margin-bottom: 10px;
 		position: sticky;
 		display: flex;
 		justify-content: space-between;
 		top: 3px;
 		z-index: 20;
+	}
+	#alpha-bar a.alpha-active {
+		color: #e95420 !important;
+		font-weight: 700;
+	}
+	a.add-song-link.has-text-success {
+		color: #0e8420 !important;
+	}
+	a.add-song-link.has-text-success:hover {
+		color: #0a6018 !important;
+	}
+	.pagination-link.is-current {
+		background-color: #e95420 !important;
+		border-color: #e95420 !important;
 	}
 	table {
 		width: 100%;
@@ -111,11 +124,11 @@
 </p>
 
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
-	<a href="{{ url_for('files.browse') }}" title="Show all"><i class="icon icon-list-bullet"></i></a>
-	<a href="{{ url_for('files.browse') }}?letter=numeric">#</a>
-	{% for letter in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+	<a href="{{ url_for('files.browse') }}" title="Show all"{% if not letter %} class="alpha-active"{% endif %}><i class="icon icon-list-bullet"></i></a>
+	<a href="{{ url_for('files.browse') }}?letter=numeric"{% if letter == 'numeric' %} class="alpha-active"{% endif %}>#</a>
+	{% for l in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
 	'u', 'v', 'w', 'x', 'y', 'z'] %}
-	<a href="{{ url_for('files.browse') }}?letter={{letter}}">{{letter.upper()}}</a>
+	<a href="{{ url_for('files.browse') }}?letter={{l}}"{% if letter == l %} class="alpha-active"{% endif %}>{{l.upper()}}</a>
 	{% endfor %}
 </div>
 

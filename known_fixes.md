@@ -400,3 +400,31 @@ hook comment block and `snapcraft.yaml` description keys section are updated
 to document the new key.
 
 Usage: `snap set obiraoke proxy=http://proxy.example.com:3128`
+
+## Browse page (files.html) link color fixes
+
+Audited `obiraoke/templates/files.html` (the `/browse` route) for elements
+rendering blue instead of spec-compliant colors. Four issues found and fixed:
+
+1. **`#alpha-bar` had `border-radius: 4px`** -- Removed. No border-radius on
+   structural elements per UI spec.
+
+2. **Active alpha-bar letter had no selected state** -- Added `alpha-active`
+   class via Jinja conditional (`{% if letter == l %}`) that applies
+   `color: #e95420 !important` and `font-weight: 700` to the currently
+   selected letter. The "show all" icon and "#" numeric link also highlight
+   when active.
+
+3. **`.add-song-link.has-text-success` rendered as `#69c` (blue)** -- The
+   global `a { color: #69c !important }` rule in `obiraoke.css` overrode the
+   `.has-text-success` class, making the green "add to queue" icons appear
+   blue. Added a higher-specificity rule
+   `a.add-song-link.has-text-success { color: #0e8420 !important }` in the
+   template `<style>` block to restore the correct green color.
+
+4. **`.pagination-link.is-current` used `#69c` background** -- The active
+   pagination page got its background from `bulma-dark.css`
+   (`var(--dark-link)` = `#69c`). Active/selected elements must use `#e95420`
+   per spec. Added an override rule in the template `<style>` block:
+   `.pagination-link.is-current { background-color: #e95420 !important;
+   border-color: #e95420 !important }`.
