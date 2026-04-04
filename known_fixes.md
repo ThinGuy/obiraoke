@@ -631,3 +631,23 @@ config files.
 
 **snapcraft.yaml description** updated to document all keys grouped into
 Playback, Branding, Network, and Daemon categories with examples.
+
+## Install hook pre-populates snap configuration defaults
+
+Added `snapctl set` calls to `snap/hooks/install` so all snap configuration
+keys have default values immediately after install. This means `snapctl get`
+returns a value for every supported key without the user needing to set them
+first.
+
+**Keys set with defaults:**
+
+- `port=5555`, `volume=0.85`, `bg-music-volume=0.3`, `splash-delay=2`,
+  `screensaver-timeout=300`, `headless=true`, `autostart=false`,
+  `streaming-format=hls`, `normalize-audio=false`, `disable-score=false`,
+  `high-quality=false`, `prefer-hostname=false`, `disable-bg-music=false`,
+  `disable-bg-video=false`, `show-splash-clock=false`, `hide-url=false`
+
+**Keys intentionally left unset** (no sensible default):
+
+- `admin-password`, `proxy`, `bg-video-path`, `bg-music-path`, `logo-path`,
+  `download-path`
