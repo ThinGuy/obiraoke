@@ -23,6 +23,7 @@ description: |
     headless          Run without a local browser window (default: true)
     streaming-format  Streaming format: hls or mp4
     autostart         Enable daemon mode (true/false)
+    proxy             HTTP proxy for yt-dlp (e.g. snap set obiraoke proxy=http://proxy.example.com:3128)
 grade: devel
 confinement: strict
 

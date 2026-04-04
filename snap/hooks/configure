@@ -60,3 +60,4 @@ fi
 # download-path   -- any path string
 # log-level       -- passed through to the application
 # headless        -- boolean (true/false)
+# proxy           -- HTTP proxy URL for yt-dlp

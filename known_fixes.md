@@ -374,3 +374,29 @@ will be removed once the replacement is fully validated across all pages.
 
 The `!important` override blocks in `custom.css` that existed to beat the Bulma
 cascade have been removed since they are no longer needed.
+
+## Link and navbar color specificity (obiraoke.css)
+
+Added `!important` to the base `a` and `a:hover` color rules in
+`obiraoke/static/obiraoke.css` so they win over `bulma-dark.css` in the
+cascade. Also added `!important` to `.navbar-item`, `.navbar-item:hover`, and
+`.navbar-item.is-active` color rules, and `background-color: transparent
+!important` on `.navbar-item:hover` to prevent bulma-dark from painting a
+visible hover background on navbar links.
+
+## Removed build_scripts/ and docs/ directories
+
+Deleted `build_scripts/` (Docker build helpers, CI smoke tests, install scripts)
+and `docs/` (GitHub Pages config and legacy README). These are upstream
+artifacts that do not apply to the obiraoke snap packaging. `.github/` is
+retained.
+
+## Snap proxy configuration key
+
+Added a `proxy` snap configuration key that passes an HTTP proxy URL to yt-dlp
+via `--youtubedl-proxy`. The wrapper script (`snap/local/wrapper`) reads the
+key with `snapctl get proxy` and appends the argument when set. The configure
+hook comment block and `snapcraft.yaml` description keys section are updated
+to document the new key.
+
+Usage: `snap set obiraoke proxy=http://proxy.example.com:3128`

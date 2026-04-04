@@ -66,4 +66,9 @@ if [ -z "$headless" ]; then
     OBIRAOKE_ARGS="$OBIRAOKE_ARGS --headless"
 fi
 
+proxy="$(snapctl get proxy)" || true
+if [ -n "$proxy" ]; then
+    OBIRAOKE_ARGS="$OBIRAOKE_ARGS --youtubedl-proxy $proxy"
+fi
+
 exec "$SNAP/bin/obiraoke" $OBIRAOKE_ARGS "$@"
