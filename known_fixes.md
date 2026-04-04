@@ -732,3 +732,21 @@ If the configured path pointed to a missing file, `send_file` raised a
 The route now checks both `file_path is not None` and `os.path.exists()`. If
 the path is set but the file does not exist, it logs a warning and returns a
 404 instead of crashing.
+
+## Sidebar navigation replaces horizontal navbar
+
+The horizontal navbar in `coraoke/templates/base.html` was replaced with a
+collapsible pinned sidebar. The sidebar is 52px wide when collapsed (icons only)
+and 208px when expanded (icons + labels). Users can pin it open via a toggle
+button; the pinned state persists in `localStorage`. On hover the sidebar
+temporarily expands if not pinned.
+
+The old navbar CSS (`.navbar`, `.navbar-brand`, `.navbar-menu`, `.navbar-end`,
+`.navbar-item`, `.navbar-burger`) was removed from `coraoke/static/coraoke.css`
+and replaced with sidebar styles (`.sidebar`, `.sidebar-item`,
+`.sidebar-active`, etc.). The body element uses `display: flex; flex-direction: row`
+to accommodate the fixed sidebar alongside the main content area.
+
+The current-user display and notification divs were moved from the navbar into
+the main-content area. The splash screen (`coraoke/templates/splash.html`) was
+not affected -- it has its own layout and extends `base.html` via `{% block body %}`.

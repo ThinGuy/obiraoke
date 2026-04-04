@@ -130,25 +130,54 @@
       });
       $("#notification-alt").hide()
 
-      // Navbar burger menu is handled by spa-navigation.js
+      // Sidebar toggle logic
+      (function() {
+        var sidebar = document.getElementById('sidebar');
+        var mainContent = document.getElementById('main-content');
+        var pinBtn = document.getElementById('sidebar-pin');
+        var pinned = localStorage.getItem('sidebar-pinned') === 'true';
 
-      // handle highlighting current nav bar location
-      var currentPath = window.location.pathname;
-      if (currentPath == "/") {
-        $("#home").addClass("is-active")
-      }
-      if (currentPath == "/queue") {
-        $("#queue").addClass("is-active")
-      }
-      if (currentPath == "/search") {
-        $("#search").addClass("is-active")
-      }
-      if (currentPath == "/browse") {
-        $("#browse").addClass("is-active")
-      }
-      if (currentPath == "/info") {
-        $("#info").addClass("is-active")
-      }
+        function expand() {
+          if (!sidebar) return;
+          sidebar.classList.remove('sidebar-collapsed');
+          sidebar.classList.add('sidebar-expanded');
+          mainContent.classList.remove('main-content-collapsed');
+          mainContent.classList.add('main-content-expanded');
+        }
+
+        function collapse() {
+          if (!sidebar) return;
+          sidebar.classList.remove('sidebar-expanded');
+          sidebar.classList.add('sidebar-collapsed');
+          mainContent.classList.remove('main-content-expanded');
+          mainContent.classList.add('main-content-collapsed');
+        }
+
+        if (pinned) {
+          expand();
+        }
+
+        if (pinBtn) {
+          pinBtn.addEventListener('click', function() {
+            pinned = !pinned;
+            localStorage.setItem('sidebar-pinned', pinned ? 'true' : 'false');
+            if (pinned) {
+              expand();
+            } else {
+              collapse();
+            }
+          });
+        }
+
+        if (sidebar) {
+          sidebar.addEventListener('mouseenter', function() {
+            if (!pinned) { expand(); }
+          });
+          sidebar.addEventListener('mouseleave', function() {
+            if (!pinned) { collapse(); }
+          });
+        }
+      })();
 
       // handle auto-close flash notifications
       setTimeout(function() { $("#notification").fadeOut()}, 3000);
@@ -173,30 +202,25 @@
   body {
     font-family: "Ubuntu variable", "Ubuntu", -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  .navbar-item > i {
-    margin-right: 2px;
-  }
   .base-notification {
     position: fixed;
     width: 500px;
     bottom: 5px;
     left: 50%;
     margin-left: -250px;
-    z-index: 20;
+    z-index: 200;
   }
   .current-user {
     position: fixed;
-    padding: 3px;
-    bottom: 5px;
+    top: 10px;
     right: 10px;
+    padding: 3px;
+    z-index: 101;
   }
   tr:nth-child(even) {
     background-color: #262626;
   }
   @media screen and (max-width: 1088px) {
-    .navbar-brand > .navbar-item > span {
-      display: none;
-    }
     .base-notification {
       position: fixed;
       width: 100%;
@@ -204,62 +228,49 @@
       left: 0px;
       margin-left: 0px;
     }
-    body {
-      min-height: 120vh;
-    }
-    .navbar-menu.is-active {
-      position: absolute;
-      right: 0px;
-    }
   }
 </style>
 
 <body>
 
   {% if not blank_page %}
-  <div class="container" style="padding: 5px; max-width: 900px;">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand" id="brand" style="padding-left: 10px">
-        <a id="home" class="navbar-item" href="{{ url_for('home.home') }}">
-          <i class="icon icon-home-2" title="Home"></i>
-          {# MSG: Navigation link for the home page. #}
-          <span>{% trans %}Home{% endtrans %}</span>
-        </a>
-
-        <a id="queue" class="navbar-item" href="{{ url_for('queue.queue') }}">
-          <i class="icon icon-list-numbered" title="Queue"></i>
-          {# MSG: Navigation link for the queue page. #}
-          <span>{% trans %}Queue{% endtrans %}</span>
-        </a>
-        <a id="search" class="navbar-item" href="{{ url_for('search.search') }}">
-          <i class="icon icon-search-1" title="Search"></i>
-          {# MSG: Navigation link for the search page add songs to the queue. #}
-          <span>{% trans %}Search{% endtrans %}</span>
-        </a>
-        <a id="browse" class="navbar-item" href="{{ url_for('files.browse') }}">
-          <i class="icon icon-folder-open-empty" title="Browse"></i>
-          {# MSG: Navigation link for the page where the user can add existing songs to the queue. #}
-          <span>{% trans %}Browse{% endtrans %}</span>
-        </a>
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="navbar-menu" id="menu">
-        <div class="navbar-end">
-          <a id="current-user" class="navbar-item is-hidden" href="#">
-            <i class="icon  icon-mic-1" title="Current user"></i>
-            <span></span>
-          </a>
-          <a id="info" class="navbar-item" href="{{ url_for('info.info') }}">
-            <i class="icon icon-info-circled-1" title="Info"></i>
-            <span>Coraoke</span>&nbsp;&nbsp;
-          </a>
-        </div>
-      </div>
+  <div id="sidebar" class="sidebar sidebar-collapsed">
+    <div class="sidebar-header">
+      <button id="sidebar-pin" class="sidebar-pin-btn" title="Pin sidebar">
+        <i class="icon icon-menu"></i>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('home.home') }}" class="sidebar-item {% if request.endpoint == 'home.home' %}sidebar-active{% endif %}" title="Now Playing">
+        <i class="icon icon-home-1"></i>
+        <span class="sidebar-label">Now Playing</span>
+      </a>
+      <a href="{{ url_for('queue.queue') }}" class="sidebar-item {% if request.endpoint == 'queue.queue' %}sidebar-active{% endif %}" title="Queue">
+        <i class="icon icon-list-bullet"></i>
+        <span class="sidebar-label">Queue</span>
+      </a>
+      <a href="{{ url_for('search.search') }}" class="sidebar-item {% if request.endpoint == 'search.search' %}sidebar-active{% endif %}" title="Search">
+        <i class="icon icon-search"></i>
+        <span class="sidebar-label">Search</span>
+      </a>
+      <a href="{{ url_for('files.browse') }}" class="sidebar-item {% if request.endpoint == 'files.browse' %}sidebar-active{% endif %}" title="Browse">
+        <i class="icon icon-folder-open-empty"></i>
+        <span class="sidebar-label">Browse</span>
+      </a>
+      <a href="{{ url_for('info.info') }}" class="sidebar-item {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" title="Info">
+        <i class="icon icon-info-circled-1"></i>
+        <span class="sidebar-label">Info</span>
+      </a>
     </nav>
+    <div class="sidebar-footer">
+      <span class="sidebar-label sidebar-version">coraoke v{{ version }}</span>
+    </div>
+  </div>
+  <div id="main-content" class="main-content main-content-collapsed">
+    <a id="current-user" class="current-user is-hidden" href="#">
+      <i class="icon icon-mic-1" title="Current user"></i>
+      <span></span>
+    </a>
 
     {% if get_flashed_messages() %}
     {% for category, message in get_flashed_messages(with_categories=true) %}
@@ -276,13 +287,15 @@
       <div class="flash"></div>
     </div>
 
-    <div class="box" style="margin-top: 5px;">
-      <header class="title">
-        {% block header %}{% endblock %}
-      </header>
-      <div class="content">
-        {% block content %}
-        {% endblock %}
+    <div class="container" style="max-width: 900px;">
+      <div class="box" style="margin-top: 5px;">
+        <header class="title">
+          {% block header %}{% endblock %}
+        </header>
+        <div class="content">
+          {% block content %}
+          {% endblock %}
+        </div>
       </div>
     </div>
   </div>
