@@ -50,7 +50,6 @@ def info():
         cpu=None,
         memory=None,
         disk=None,
-        is_pi=k.is_raspberry_pi,
         is_linux=is_linux,
         volume=int(k.volume * 100),
         bg_music_volume=int(k.bg_music_volume * 100),

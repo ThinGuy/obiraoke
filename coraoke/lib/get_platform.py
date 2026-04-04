@@ -1,25 +1,9 @@
 """Platform detection utilities for PiKaraoke."""
 
-import io
 import os
 import platform
 import shutil
 import sys
-
-
-def is_raspberry_pi() -> bool:
-    """Check if the current system is a Raspberry Pi.
-
-    Returns:
-        True if running on a Raspberry Pi, False otherwise.
-    """
-    try:
-        with io.open("/sys/firmware/devicetree/base/model", "r") as m:
-            if "raspberry pi" in m.read().lower():
-                return True
-    except Exception:
-        pass
-    return False
 
 
 def is_android() -> bool:
@@ -93,21 +77,12 @@ def get_platform() -> str:
 
     Returns:
         Platform identifier string: 'osx', 'android', 'linux', 'windows',
-        'unknown', or the Raspberry Pi model string if on a Pi.
+        or 'unknown'.
     """
     if is_macos():
         return "osx"
     elif is_android():
         return "android"
-    elif is_raspberry_pi():
-        try:
-            with open("/proc/device-tree/model", "r") as file:
-                model = file.read().strip()
-                if "Raspberry Pi" in model:
-                    return model  # Returns something like "Raspberry Pi 4 Model B Rev 1.2"
-                return "Raspberry Pi - unrecognized"
-        except FileNotFoundError:
-            return "Raspberry Pi - unrecognized"
     elif is_linux():
         return "linux"
     elif is_windows():
@@ -132,9 +107,7 @@ def get_default_dl_dir(platform: str) -> str:
         return os.path.join(
             os.environ.get("SNAP_COMMON", "/var/snap/coraoke/common"), "coraoke-songs"
         )
-    if is_raspberry_pi():
-        return "~/coraoke-songs"
-    elif is_windows():
+    if is_windows():
         legacy_directory = os.path.expanduser("~\\pikaraoke\\songs")
         if os.path.exists(legacy_directory):
             return legacy_directory
@@ -178,7 +151,7 @@ def get_data_directory() -> str:
             base_path = os.path.expanduser("~")
         path = os.path.join(base_path, "coraoke")
     else:
-        # Linux, macOS, Android, Raspberry Pi: ~/.coraoke
+        # Linux, macOS, Android: ~/.coraoke
         path = os.path.expanduser("~/.coraoke")
 
     # Ensure the directory exists

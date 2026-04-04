@@ -544,3 +544,43 @@ references to "pikaraoke" in Python code to "coraoke":
   `routes/admin.py`, `routes/now_playing.py`, `karaoke.py`, and
   `lib/args.py`
 - **Tests**: updated all corresponding test assertions
+
+## Removed legacy files and Raspberry Pi code
+
+Removed files and directories not needed for a snap-only Linux project:
+
+- **uv.lock** -- UV package manager lockfile, not used by snapcraft. Added to
+  `.gitignore` to prevent re-commit.
+- **release-please-config.json** -- Google release-please automation config,
+  not relevant for snap releases.
+- **code_quality/** -- Pre-commit config directory, removed entirely.
+- **coraoke/static/bulma.min.css** -- Bulma CSS framework, replaced by
+  coraoke.css. Dead weight.
+- **coraoke/static/bulma-dark.css** -- Unlinked from base.html, dead weight.
+  Removed the `<link>` tag from `base.html` as well.
+
+Removed all Raspberry Pi specific code and references:
+
+- **coraoke/lib/raspi_wifi_config.py** -- Deleted entirely. RaspiWiFi AP mode
+  configuration utility, not applicable to snap.
+- **coraoke/lib/omxclient.py** -- Deleted entirely. omxplayer is RPi legacy;
+  all playback is browser-based.
+- **coraoke/lib/get_platform.py** -- Removed `is_raspberry_pi()` function and
+  all code paths that called it (RPi branch in `get_platform()`, RPi default
+  download path fallback in `get_default_dl_dir()`).
+- **coraoke/karaoke.py** -- Removed `is_raspberry_pi` attribute and the RPi
+  IP-retry loop in `get_url()`.
+- **coraoke/routes/admin.py** -- Removed `/expand_fs` route entirely and the
+  raspi-config branch from `delayed_halt()`.
+- **coraoke/lib/current_app.py** -- Removed raspi-config branch from
+  `delayed_halt()`.
+- **coraoke/lib/browser.py** -- Removed RPi-specific browser profile skip and
+  `--disable-dev-shm-usage` flag.
+- **coraoke/routes/splash.py** -- Removed RaspiWiFi import and AP-mode text
+  detection block.
+- **coraoke/routes/info.py** -- Removed `is_pi` template variable.
+- **coraoke/templates/info.html** -- Removed "Expand Raspberry Pi filesystem"
+  section and `is_pi` conditional. Shutdown section now checks `is_linux` only.
+- **coraoke/templates/splash.html** -- Removed `hostap_info` references.
+- **tests/unit/test_get_platform.py** -- Removed `TestIsRaspberryPi` class and
+  all `is_raspberry_pi` patches from remaining tests.

@@ -97,11 +97,9 @@ class Browser:
         if browser_executable:
             cmd = [browser_executable]
 
-            # Use a persistent profile on desktop platforms to ensure flags are respected
-            # even if Chrome is already open and to preserve cookies (user name).
-            # Skip on Pi (dedicated kiosk device uses default profile).
-            if not self.karaoke.is_raspberry_pi:
-                cmd.append(f"--user-data-dir={self.browser_profile_dir}")
+            # Use a persistent profile to ensure flags are respected even if
+            # Chrome is already open and to preserve cookies (user name).
+            cmd.append(f"--user-data-dir={self.browser_profile_dir}")
 
             if self.window_size:
                 # Windowed mode: use --app for minimal UI, --new-window to ensure sizing works
@@ -132,10 +130,6 @@ class Browser:
                 cmd.append("--window-position=2000,0")
             else:
                 cmd.append("--window-position=0,0")
-
-            # Pi optimizations
-            if self.karaoke.is_raspberry_pi:
-                cmd.append("--disable-dev-shm-usage")
 
             # URL must be last argument for --kiosk mode
             if not self.window_size:

@@ -3,7 +3,6 @@
 import datetime
 import logging
 import os
-import subprocess
 import sys
 import threading
 import time
@@ -44,13 +43,6 @@ def delayed_halt(cmd: int, k: Karaoke):
         if os.environ.get("SNAP"):
             logging.warning("reboot is unavailable in snap confinement")
             return
-        os.system("reboot")
-    if cmd == 3:
-        if os.environ.get("SNAP"):
-            logging.warning("raspi-config is unavailable in snap confinement")
-            return
-        process = subprocess.Popen(["raspi-config", "--expand-rootfs"])
-        process.wait()
         os.system("reboot")
 
 
@@ -153,26 +145,6 @@ def reboot():
     else:
         # MSG: Message shown after trying to reboot the system without admin permissions.
         flash(_("You don't have permission to Reboot"), "is-danger")
-    return redirect(url_for("home.home"))
-
-
-@admin_bp.route("/expand_fs")
-def expand_fs():
-    """Expand filesystem on Raspberry Pi."""
-    if os.environ.get("SNAP"):
-        return jsonify(error="raspi-config is unavailable in snap confinement"), 503
-    k = get_karaoke_instance()
-    if is_admin() and k.is_raspberry_pi:
-        # MSG: Message shown after expanding the filesystem.
-        flash(_("Expanding filesystem and rebooting system now!"), "is-danger")
-        th = threading.Thread(target=delayed_halt, args=[3, k])
-        th.start()
-    elif not k.is_raspberry_pi:
-        # MSG: Message shown after trying to expand the filesystem on a non-raspberry pi device.
-        flash(_("Cannot expand fs on non-raspberry pi devices!"), "is-danger")
-    else:
-        # MSG: Message shown after trying to expand the filesystem without admin permissions
-        flash(_("You don't have permission to resize the filesystem"), "is-danger")
     return redirect(url_for("home.home"))
 
 

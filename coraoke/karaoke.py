@@ -23,7 +23,6 @@ from coraoke.lib.get_platform import (
     get_data_directory,
     get_os_version,
     get_platform,
-    is_raspberry_pi,
 )
 from coraoke.lib.karaoke_database import KaraokeDatabase
 from coraoke.lib.library_scanner import LibraryScanner, ScanResult
@@ -175,8 +174,6 @@ class Karaoke:
         self.is_transpose_enabled = is_transpose_enabled()
         self.supports_hardware_h264_encoding = supports_hardware_h264_encoding()
         self.youtubedl_version = get_youtubedl_version()
-        self.is_raspberry_pi = is_raspberry_pi()
-
         logging.info("Coraoke version: " + VERSION)
 
         # Set non-preference attributes (not stored in config)
@@ -344,22 +341,7 @@ class Karaoke:
         Returns:
             URL string in format http://ip:port
         """
-        if self.is_raspberry_pi:
-            # retry in case pi is still starting up
-            # and doesn't have an IP yet (occurs when launched from /etc/rc.local)
-            end_time = int(time.time()) + 30
-            while int(time.time()) < end_time:
-                addresses_str = (
-                    subprocess.check_output(["hostname", "-I"]).strip().decode("utf-8", "ignore")
-                )
-                addresses = addresses_str.split(" ")
-                self.ip = addresses[0]
-                if len(self.ip) < 7:
-                    logging.debug("Couldn't get IP, retrying....")
-                else:
-                    break
-        else:
-            self.ip = get_ip(self.platform)
+        self.ip = get_ip(self.platform)
 
         logging.debug("IP address (for QR code and splash screen): " + self.ip)
 

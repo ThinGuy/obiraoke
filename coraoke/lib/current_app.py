@@ -2,7 +2,6 @@
 
 import logging
 import os
-import subprocess
 import sys
 import time
 from typing import Any
@@ -76,7 +75,6 @@ def delayed_halt(cmd: int) -> None:
             0 = exit application
             1 = shutdown system
             2 = reboot system
-            3 = expand rootfs and reboot (Raspberry Pi)
     """
     time.sleep(1.5)
     k = get_karaoke_instance()
@@ -87,8 +85,4 @@ def delayed_halt(cmd: int) -> None:
     if cmd == 1:
         os.system("shutdown now")
     if cmd == 2:
-        os.system("reboot")
-    if cmd == 3:
-        process = subprocess.Popen(["raspi-config", "--expand-rootfs"])
-        process.wait()
         os.system("reboot")

@@ -19,6 +19,9 @@ docker-compose.yml
 # Briefcase build artifacts
 *.briefcase.toml
 
+# UV lockfile (not used by snapcraft)
+uv.lock
+
 # Snap build artifacts
 *.snap
 parts/

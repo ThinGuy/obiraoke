@@ -2,7 +2,7 @@
 
 import ntpath
 import os
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -14,36 +14,8 @@ from coraoke.lib.get_platform import (
     get_platform,
     has_js_runtime,
     is_android,
-    is_raspberry_pi,
     is_windows,
 )
-
-
-class TestIsRaspberryPi:
-    """Tests for the is_raspberry_pi function."""
-
-    def test_raspberry_pi_detected(self):
-        """Test detection when running on Raspberry Pi."""
-        mock_file = mock_open(read_data="Raspberry Pi 4 Model B Rev 1.2")
-        with patch("io.open", mock_file):
-            assert is_raspberry_pi() is True
-
-    def test_raspberry_pi_lowercase(self):
-        """Test detection with lowercase model string."""
-        mock_file = mock_open(read_data="raspberry pi 3 model b")
-        with patch("io.open", mock_file):
-            assert is_raspberry_pi() is True
-
-    def test_not_raspberry_pi(self):
-        """Test detection on non-Pi hardware."""
-        mock_file = mock_open(read_data="Generic ARM Board")
-        with patch("io.open", mock_file):
-            assert is_raspberry_pi() is False
-
-    def test_file_not_found(self):
-        """Test when device-tree file doesn't exist."""
-        with patch("io.open", side_effect=FileNotFoundError):
-            assert is_raspberry_pi() is False
 
 
 class TestIsAndroid:
@@ -159,25 +131,21 @@ class TestGetPlatform:
         """Test macOS detection."""
         with patch("sys.platform", "darwin"):
             with patch("coraoke.lib.get_platform.is_android", return_value=False):
-                with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-                    assert get_platform() == "osx"
+                assert get_platform() == "osx"
 
     def test_windows_platform(self):
         """Test Windows detection."""
-        # Ensure sys.platform is win32 so the 'linux' check in get_platform doesn't catch it early
         with patch("sys.platform", "win32"):
             with patch("coraoke.lib.get_platform.is_windows", return_value=True):
                 with patch("coraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-                        assert get_platform() == "windows"
+                    assert get_platform() == "windows"
 
     def test_linux_platform(self):
         """Test Linux detection."""
         with patch("sys.platform", "linux"):
             with patch("coraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("coraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-                        assert get_platform() == "linux"
+                    assert get_platform() == "linux"
 
     def test_android_platform(self):
         """Test Android detection (takes priority over linux)."""
@@ -185,76 +153,54 @@ class TestGetPlatform:
             with patch("coraoke.lib.get_platform.is_android", return_value=True):
                 assert get_platform() == "android"
 
-    def test_raspberry_pi_platform(self):
-        """Test Raspberry Pi detection with model string."""
-        mock_file = mock_open(read_data="Raspberry Pi 4 Model B Rev 1.2")
-        with patch("sys.platform", "linux"):
-            with patch("coraoke.lib.get_platform.is_android", return_value=False):
-                with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=True):
-                    with patch("builtins.open", mock_file):
-                        result = get_platform()
-                        assert "Raspberry Pi" in result
-
     def test_unknown_platform(self):
         """Test unknown platform detection."""
         with patch("sys.platform", "freebsd"):
             with patch("coraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("coraoke.lib.get_platform.is_android", return_value=False):
-                    with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-                        assert get_platform() == "unknown"
+                    assert get_platform() == "unknown"
 
 
 class TestGetDefaultDlDir:
     """Tests for the get_default_dl_dir function."""
 
-    def test_raspberry_pi_default(self):
-        """Test default download dir on Raspberry Pi."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=True):
-            result = get_default_dl_dir("Raspberry Pi 4")
-            assert result == "~/coraoke-songs"
-
     def test_windows_default(self):
         """Test default download dir on Windows (no legacy)."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
-                with patch("os.path.exists", return_value=False):
-                    result = get_default_dl_dir("windows")
-                    assert result == "~\\coraoke-songs"
+        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+            with patch("os.path.exists", return_value=False):
+                result = get_default_dl_dir("windows")
+                assert result == "~\\coraoke-songs"
 
     def test_windows_legacy_exists(self):
         """Test Windows uses legacy dir if it exists."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
-                with patch("os.path.exists", return_value=True):
-                    with patch(
-                        "os.path.expanduser", return_value="C:\\Users\\test\\pikaraoke\\songs"
-                    ):
-                        result = get_default_dl_dir("windows")
-                        assert "pikaraoke\\songs" in result
+        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+            with patch("os.path.exists", return_value=True):
+                with patch(
+                    "os.path.expanduser", return_value="C:\\Users\\test\\pikaraoke\\songs"
+                ):
+                    result = get_default_dl_dir("windows")
+                    assert "pikaraoke\\songs" in result
 
     def test_linux_default(self):
         """Test default download dir on Linux (no legacy)."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("os.path.exists", return_value=False):
-                    result = get_default_dl_dir("linux")
-                    assert result == "~/coraoke-songs"
+        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.exists", return_value=False):
+                result = get_default_dl_dir("linux")
+                assert result == "~/coraoke-songs"
 
     def test_linux_legacy_exists(self):
         """Test Linux uses legacy dir if it exists."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("os.path.exists", return_value=True):
-                    result = get_default_dl_dir("linux")
-                    assert result == "~/pikaraoke/songs"
+        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.exists", return_value=True):
+                result = get_default_dl_dir("linux")
+                assert result == "~/pikaraoke/songs"
 
     def test_osx_default(self):
         """Test default download dir on macOS."""
-        with patch("coraoke.lib.get_platform.is_raspberry_pi", return_value=False):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("os.path.exists", return_value=False):
-                    result = get_default_dl_dir("osx")
-                    assert result == "~/coraoke-songs"
+        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.exists", return_value=False):
+                result = get_default_dl_dir("osx")
+                assert result == "~/coraoke-songs"
 
 
 class TestGetDataDirectory:

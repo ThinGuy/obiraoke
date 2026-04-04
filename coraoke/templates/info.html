@@ -94,14 +94,6 @@
 			});
 
 
-		$("#expand-link").click(function (e) {
-			e.preventDefault();
-			// {# MSG: Confirmation text when the user wants to expand the filesystem to take the entire SD card. #}
-			if (window.confirm("Are you sure you want to expand the filesystem? This will reboot your raspberry pi.")) {
-				location.href = this.href;
-			}
-		});
-
 		// Collapsible card sections
 		$(".collapsible-header").click(function() {
 			$(this).toggleClass("is-collapsed");
@@ -506,33 +498,6 @@
 		</div>
 
 
-		{% if is_pi %}
-
-			{# MSG: Title of the updates section. #}
-			<h1>{% trans %}Other{% endtrans %}</h1>
-
-			<div class="card">
-				<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-					{# MSG: Title for section containing a few other options on the Info page. #}
-					<h3 class="title mb-0">{% trans %}Expand Raspberry Pi filesystem{% endtrans %}</h3>
-				</header>
-				<div class="card-content collapsible-content">
-					<div class="content">
-						{# MSG: Explainitory text which explains why you might want to expand the filesystem. #}
-						<p>{% trans -%}
-							If you just installed the pre-built pikaraoke pi image and your SD card is larger than 4GB,
-							you may want to expand the filesystem to utilize the remaining space. You only need to do this once.
-							This will reboot the system.
-						{%- endtrans %}</p>
-						<a id="expand-link"  class="button is-primary is-inverted" href="{{ url_for('admin.expand_fs') }}">
-							{# MSG: Text for button#}
-							{% trans %}Expand Raspberry Pi filesystem{% endtrans %}</a>
-					</div>
-				</div>
-			</div>
-
-		{% endif %}
-
 		{% if admin_password != none %}
 			{# MSG: Title of the admin section. #}
 			<h1>{% trans %}Admin{% endtrans %}</h1>
@@ -565,7 +530,7 @@
 					<div class="buttons">
 						{# MSG: Text for button which turns off Coraoke for everyone using it at your house. #}
 						<a id="quit-link" class="button is-primary" href="{{ url_for('admin.quit') }}">{% trans %}Quit Coraoke{% endtrans %}</a>
-						{% if is_pi or is_linux %}
+						{% if is_linux %}
 							{# MSG: Text for button which reboots the machine running Pikaraoke. #}
 							<a id="restart-link" class="button is-primary" href="{{ url_for('admin.reboot') }}">{% trans %}Reboot System{% endtrans %}</a>
 

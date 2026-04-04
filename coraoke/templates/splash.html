@@ -62,7 +62,6 @@
   <div id="clock" class="stroke has-text-white is-size-4" style="display: none;"></div>
   <div class="is-size-6 stroke">
     <div id="hostap">
-      {% for line in hostap_info %}{{ line }}<br />{% endfor %}
     </div>
   </div>
 </div>
@@ -182,7 +181,7 @@
         <div style="text-align: right">
           <img src="{{ url_for('images.qrcode') }}" width="30%" height="30%" />
         </div>
-        <div>{{ hostap_info[0] }}<br />{{ url }}</div>
+        <div>{{ url }}</div>
       </div>
     </div>
   </div>
