@@ -49,3 +49,4 @@ snapctl set disable-bg-video=false
 snapctl set show-splash-clock=false
 snapctl set hide-url=false
 snapctl set theme=default
+snapctl set preseed-url=""

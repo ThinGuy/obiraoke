@@ -651,6 +651,21 @@ first.
 
 - `admin-password`, `proxy`, `download-path`
 
+## Preseed URL snap configuration key
+
+Added a `preseed-url` snap configuration key that downloads and extracts a song
+tarball on first run. The wrapper script (`snap/local/wrapper`) reads the key
+with `snapctl get preseed-url` and, if set and `$SNAP_COMMON/.preseed-done` does
+not exist, downloads the tarball with `curl`, extracts it into
+`$SNAP_COMMON/coraoke-songs/`, and touches the sentinel file. Subsequent starts
+skip the download. To re-trigger preseed, delete `$SNAP_COMMON/.preseed-done`.
+
+The install hook sets `preseed-url=""` as a default. The configure hook comment
+block lists it as an accepted key. The `snapcraft.yaml` description documents
+it under a Preseed section.
+
+Usage: `snap set coraoke preseed-url=https://your.server/songs.tar.gz`
+
 ## Theme snap set key
 
 Added a `theme` snap configuration key that applies a named preset of branding

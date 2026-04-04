@@ -148,4 +148,15 @@ if [ -n "$logo_path" ]; then
     CORAOKE_ARGS="$CORAOKE_ARGS --logo-path $logo_path"
 fi
 
+preseed_url="$(snapctl get preseed-url)" || true
+if [ -n "$preseed_url" ]; then
+    if [ ! -f "$SNAP_COMMON/.preseed-done" ]; then
+        curl -fsSL "$preseed_url" -o "$SNAP_COMMON/.preseed.tar.gz"
+        tar -xzf "$SNAP_COMMON/.preseed.tar.gz" -C "$SNAP_COMMON/coraoke-songs/"
+        rm -f "$SNAP_COMMON/.preseed.tar.gz"
+        touch "$SNAP_COMMON/.preseed-done"
+        echo "Preseed complete from $preseed_url"
+    fi
+fi
+
 exec "$SNAP/bin/coraoke" $CORAOKE_ARGS "$@"

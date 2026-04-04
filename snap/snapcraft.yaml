@@ -42,6 +42,10 @@ description: |
     prefer-hostname      Use hostname instead of IP in URLs (true/false)
     proxy                HTTP proxy for yt-dlp (e.g. http://proxy:3128)
 
+  Preseed:
+    preseed-url   URL to a song tarball downloaded on first run (snap set coraoke preseed-url=https://your.server/songs.tar.gz)
+    Note: delete $SNAP_COMMON/.preseed-done to re-trigger preseed on next start.
+
   Daemon:
     autostart            Enable daemon mode (true/false)
     headless             Run without a local browser window (default: true)

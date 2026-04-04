@@ -145,3 +145,4 @@ fi
 # bg-music-path        -- any path string
 # logo-path            -- any path string
 # theme                -- named theme preset (sets logo/video/music paths)
+# preseed-url          -- URL to a song tarball for first-run preseed
