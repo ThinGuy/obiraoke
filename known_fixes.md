@@ -439,6 +439,13 @@ blue links look out of place and are harder to read than white text.
    `#alpha-bar a:hover` with `color: #ffffff`, and kept the existing
    `#alpha-bar a.alpha-active` rule at `color: #e95420` with `font-weight: 700`.
 
+## pyproject.toml readme field pointed to missing file
+
+The `readme` field in `pyproject.toml` referenced `docs/README.md`, which was
+removed when the `docs/` directory was deleted. Updated the field to point to
+`README.md` in the repo root and created a minimal `README.md` with the project
+heading.
+
 ## Browse page (files.html) link color fixes
 
 Audited `obiraoke/templates/files.html` (the `/browse` route) for elements

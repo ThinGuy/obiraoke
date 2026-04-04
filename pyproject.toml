@@ -3,7 +3,7 @@ name = "obiraoke"
 version = "1.19.0"
 description = "Youtube-based Karaoke machine for Ubuntu and Linux"
 authors = [{name = "Vic Wong"}]
-readme = "docs/README.md"
+readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["karaoke", "ktv", "video", "audio", "youtube", "ubuntu", "linux"]
 classifiers = [
