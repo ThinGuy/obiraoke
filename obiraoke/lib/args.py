@@ -62,7 +62,7 @@ default_dl_dir = get_default_dl_dir(platform)
 _DEFAULTS = PreferenceManager.DEFAULTS
 
 
-def parse_pikaraoke_args() -> argparse.Namespace:
+def parse_obiraoke_args() -> argparse.Namespace:
     """Parse command-line arguments for PiKaraoke.
 
     Returns:
@@ -116,7 +116,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         "--hide-splash-screen",
         "--headless",
         action="store_true",
-        help="Headless mode. Don't launch the splash screen/player on the pikaraoke server",
+        help="Headless mode. Don't launch the splash screen/player on the obiraoke server",
         required=False,
     )
     parser.add_argument(

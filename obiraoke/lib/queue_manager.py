@@ -41,7 +41,7 @@ class QueueManager:
     def is_user_limited(self, user: str) -> bool:
         """Check if a user has reached their queue limit."""
         limit = self._preferences.get_or_default("limit_user_songs_by")
-        if limit == 0 or user in ("Pikaraoke", "Randomizer"):
+        if limit == 0 or user in ("Obiraoke", "Randomizer"):
             return False
 
         now_playing_user = self._get_now_playing_user() if self._get_now_playing_user else None
@@ -96,7 +96,7 @@ class QueueManager:
     def enqueue(
         self,
         song_path: str,
-        user: str = "Pikaraoke",
+        user: str = "Obiraoke",
         semitones: int = 0,
         add_to_front: bool = False,
         log_action: bool = True,

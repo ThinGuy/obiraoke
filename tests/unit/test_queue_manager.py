@@ -572,7 +572,7 @@ class TestQueueManagerHelpers:
             get_available_songs=lambda: [],
         )
 
-        assert qm.is_user_limited("Pikaraoke") is False
+        assert qm.is_user_limited("Obiraoke") is False
         assert qm.is_user_limited("Randomizer") is False
 
     def test_is_user_limited_respects_limit(self, preferences, events):

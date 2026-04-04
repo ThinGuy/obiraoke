@@ -13,10 +13,7 @@ from obiraoke.lib.events import EventSystem
 from obiraoke.lib.preference_manager import PreferenceManager
 from obiraoke.lib.queue_manager import QueueManager
 from obiraoke.lib.song_manager import SongManager
-from obiraoke.lib.youtube_dl import (
-    build_ytdl_download_command,
-    get_youtube_id_from_url,
-)
+from obiraoke.lib.youtube_dl import build_ytdl_download_command, get_youtube_id_from_url
 
 
 class DownloadManager:
@@ -99,7 +96,7 @@ class DownloadManager:
         self,
         video_url: str,
         enqueue: bool = False,
-        user: str = "Pikaraoke",
+        user: str = "Obiraoke",
         title: str | None = None,
     ) -> None:
         """Queue a video for download.

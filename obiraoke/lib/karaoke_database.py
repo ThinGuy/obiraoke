@@ -47,7 +47,7 @@ class KaraokeDatabase:
 
     def __init__(self, db_path: str | None = None) -> None:
         if db_path is None:
-            db_path = os.path.join(get_data_directory(), "pikaraoke.db")
+            db_path = os.path.join(get_data_directory(), "obiraoke.db")
         self._db_path = db_path
         # All operations (including reads) share a single connection, so the
         # lock is required for thread safety -- Python's sqlite3.Connection is

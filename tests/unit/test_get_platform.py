@@ -211,7 +211,7 @@ class TestGetDefaultDlDir:
         """Test default download dir on Raspberry Pi."""
         with patch("obiraoke.lib.get_platform.is_raspberry_pi", return_value=True):
             result = get_default_dl_dir("Raspberry Pi 4")
-            assert result == "~/pikaraoke-songs"
+            assert result == "~/obiraoke-songs"
 
     def test_windows_default(self):
         """Test default download dir on Windows (no legacy)."""
@@ -219,7 +219,7 @@ class TestGetDefaultDlDir:
             with patch("obiraoke.lib.get_platform.is_windows", return_value=True):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("windows")
-                    assert result == "~\\pikaraoke-songs"
+                    assert result == "~\\obiraoke-songs"
 
     def test_windows_legacy_exists(self):
         """Test Windows uses legacy dir if it exists."""
@@ -238,7 +238,7 @@ class TestGetDefaultDlDir:
             with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("linux")
-                    assert result == "~/pikaraoke-songs"
+                    assert result == "~/obiraoke-songs"
 
     def test_linux_legacy_exists(self):
         """Test Linux uses legacy dir if it exists."""
@@ -254,7 +254,7 @@ class TestGetDefaultDlDir:
             with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
                 with patch("os.path.exists", return_value=False):
                     result = get_default_dl_dir("osx")
-                    assert result == "~/pikaraoke-songs"
+                    assert result == "~/obiraoke-songs"
 
 
 class TestGetDataDirectory:
@@ -271,7 +271,7 @@ class TestGetDataDirectory:
                     mock_path.exists.return_value = True  # Simulate dir exists
 
                     result = get_data_directory()
-                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\pikaraoke"
+                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\obiraoke"
 
     def test_windows_path_creation(self):
         """Test that Windows creates the directory if missing."""
@@ -286,21 +286,21 @@ class TestGetDataDirectory:
 
                         get_data_directory()
 
-                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\pikaraoke"
+                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\obiraoke"
                         mock_makedirs.assert_called_once_with(expected_path)
 
     def test_linux_path(self):
         """Test that Linux/Mac returns the home directory path."""
         with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.pikaraoke"):
+            with patch("os.path.expanduser", return_value="/home/test/.obiraoke"):
                 with patch("os.path.exists", return_value=True):
                     result = get_data_directory()
-                    assert result == "/home/test/.pikaraoke"
+                    assert result == "/home/test/.obiraoke"
 
     def test_linux_path_creation(self):
         """Test that Linux creates the directory if missing."""
         with patch("obiraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.pikaraoke"):
+            with patch("os.path.expanduser", return_value="/home/test/.obiraoke"):
                 with patch("os.path.exists", return_value=False):
                     with patch("os.makedirs") as mock_makedirs:
                         get_data_directory()

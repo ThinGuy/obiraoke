@@ -133,19 +133,19 @@ def get_default_dl_dir(platform: str) -> str:
             os.environ.get("SNAP_COMMON", "/var/snap/obiraoke/common"), "obiraoke-songs"
         )
     if is_raspberry_pi():
-        return "~/pikaraoke-songs"
+        return "~/obiraoke-songs"
     elif is_windows():
         legacy_directory = os.path.expanduser("~\\pikaraoke\\songs")
         if os.path.exists(legacy_directory):
             return legacy_directory
         else:
-            return "~\\pikaraoke-songs"
+            return "~\\obiraoke-songs"
     else:
         legacy_directory = "~/pikaraoke/songs"
         if os.path.exists(legacy_directory):
             return legacy_directory
         else:
-            return "~/pikaraoke-songs"
+            return "~/obiraoke-songs"
 
 
 def get_os_version() -> str:
@@ -171,15 +171,15 @@ def get_data_directory() -> str:
         base_path = os.environ.get("SNAP_USER_DATA", os.path.expanduser("~"))
         path = os.path.join(base_path, "config")
     elif is_windows():
-        # Windows: %APPDATA%/pikaraoke
+        # Windows: %APPDATA%/obiraoke
         base_path = os.environ.get("APPDATA")
         # Fallback if APPDATA is not set (rare, but possible)
         if not base_path:
             base_path = os.path.expanduser("~")
-        path = os.path.join(base_path, "pikaraoke")
+        path = os.path.join(base_path, "obiraoke")
     else:
-        # Linux, macOS, Android, Raspberry Pi: ~/.pikaraoke
-        path = os.path.expanduser("~/.pikaraoke")
+        # Linux, macOS, Android, Raspberry Pi: ~/.obiraoke
+        path = os.path.expanduser("~/.obiraoke")
 
     # Ensure the directory exists
     if not os.path.exists(path):

@@ -380,8 +380,7 @@ cascade have been removed since they are no longer needed.
 Added `!important` to the base `a` and `a:hover` color rules in
 `obiraoke/static/obiraoke.css` so they win over `bulma-dark.css` in the
 cascade. Also added `!important` to `.navbar-item`, `.navbar-item:hover`, and
-`.navbar-item.is-active` color rules, and `background-color: transparent
-!important` on `.navbar-item:hover` to prevent bulma-dark from painting a
+`.navbar-item.is-active` color rules, and `background-color: transparent !important` on `.navbar-item:hover` to prevent bulma-dark from painting a
 visible hover background on navbar links.
 
 ## Removed build_scripts/ and docs/ directories
@@ -496,8 +495,7 @@ rendering blue instead of spec-compliant colors. Four issues found and fixed:
    pagination page got its background from `bulma-dark.css`
    (`var(--dark-link)` = `#69c`). Active/selected elements must use `#e95420`
    per spec. Added an override rule in the template `<style>` block:
-   `.pagination-link.is-current { background-color: #e95420 !important;
-   border-color: #e95420 !important }`.
+   `.pagination-link.is-current { background-color: #e95420 !important; border-color: #e95420 !important }`.
 
 ## Snap config directory moved from dotfile to visible path
 
@@ -521,3 +519,28 @@ The `em, i` reset rule and `.is-italic` class in `obiraoke/static/obiraoke.css`
 used `font-weight: 100`, which rendered nearly invisible at small sizes on some
 displays. Changed both rules to `font-weight: 200` (extra-light) for better
 legibility while preserving the lighter-than-body visual distinction.
+
+## Rename pikaraoke.db and remaining pikaraoke internal names to obiraoke
+
+Renamed the SQLite database filename from `pikaraoke.db` to `obiraoke.db` in
+`obiraoke/lib/karaoke_database.py`. Also renamed all remaining internal
+references to "pikaraoke" in Python code to "obiraoke":
+
+- **Database**: `pikaraoke.db` to `obiraoke.db` in `karaoke_database.py`
+- **Data directories**: `~/.pikaraoke` to `~/.obiraoke` (Linux/macOS),
+  `%APPDATA%/pikaraoke` to `%APPDATA%/obiraoke` (Windows) in `get_platform.py`
+- **Download directories**: default paths changed from `pikaraoke-songs` to
+  `obiraoke-songs` in `get_platform.py`; legacy path checks kept as-is for
+  migration from upstream pikaraoke installs
+- **Default download path**: `/usr/lib/pikaraoke/songs` to
+  `/usr/lib/obiraoke/songs` in `karaoke.py`
+- **System user**: `"Pikaraoke"` to `"Obiraoke"` in `queue_manager.py` and
+  `download_manager.py`
+- **Function name**: `parse_pikaraoke_args` to `parse_obiraoke_args` in
+  `args.py` and `app.py`
+- **Template variable**: `pikaraoke_version` to `obiraoke_version` in
+  `routes/info.py` and `templates/info.html`
+- **User-facing strings**: updated exit message and log messages in
+  `routes/admin.py`, `routes/now_playing.py`, `karaoke.py`, and
+  `lib/args.py`
+- **Tests**: updated all corresponding test assertions

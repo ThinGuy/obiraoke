@@ -107,7 +107,7 @@ def quit():
     k = get_karaoke_instance()
     if is_admin():
         # MSG: Message shown after quitting pikaraoke.
-        msg = _("Exiting pikaraoke now!")
+        msg = _("Exiting obiraoke now!")
         flash(msg, "is-danger")
         k.send_notification(msg, "danger")
         th = threading.Thread(target=delayed_halt, args=[0, k])

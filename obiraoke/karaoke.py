@@ -89,7 +89,7 @@ class Karaoke:
         bg_music_path: str | None = None,
         bg_video_path: str | None = None,
         config_file_path: str = "config.ini",
-        download_path: str = "/usr/lib/pikaraoke/songs",
+        download_path: str = "/usr/lib/obiraoke/songs",
         hide_splash_screen: bool | None = None,
         log_level: int = logging.DEBUG,
         logo_path: str | None = None,
@@ -545,7 +545,7 @@ class Karaoke:
 
         This method blocks until stop() is called or KeyboardInterrupt.
         """
-        logging.debug("Starting PiKaraoke run loop")
+        logging.debug("Starting Obiraoke run loop")
         logging.info(f"Connect the player host to: {self.url}/splash")
         self.running = True
         while self.running:
@@ -581,5 +581,5 @@ class Karaoke:
                 self.playback_controller.log_output()
                 self.handle_run_loop()
             except KeyboardInterrupt:
-                logging.warning("Keyboard interrupt: Exiting pikaraoke...")
+                logging.warning("Keyboard interrupt: Exiting obiraoke...")
                 self.running = False

@@ -46,7 +46,7 @@ def info():
         ffmpeg_version=k.ffmpeg_version,
         is_transpose_enabled=k.is_transpose_enabled,
         youtubedl_version=youtubedl_version,
-        pikaraoke_version=VERSION,
+        obiraoke_version=VERSION,
         cpu=None,
         memory=None,
         disk=None,

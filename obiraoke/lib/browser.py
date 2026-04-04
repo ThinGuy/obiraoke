@@ -10,12 +10,7 @@ import time
 import webbrowser
 from typing import TYPE_CHECKING
 
-from obiraoke.lib.get_platform import (
-    get_data_directory,
-    is_linux,
-    is_macos,
-    is_windows,
-)
+from obiraoke.lib.get_platform import get_data_directory, is_linux, is_macos, is_windows
 
 if TYPE_CHECKING:
     from obiraoke.karaoke import Karaoke

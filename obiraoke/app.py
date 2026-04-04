@@ -17,7 +17,7 @@ from flask_socketio import SocketIO
 
 from obiraoke import VERSION, karaoke
 from obiraoke.constants import LANGUAGES
-from obiraoke.lib.args import parse_pikaraoke_args
+from obiraoke.lib.args import parse_obiraoke_args
 from obiraoke.lib.browser import Browser
 from obiraoke.lib.current_app import get_karaoke_instance
 from obiraoke.lib.ffmpeg import is_ffmpeg_installed
@@ -51,7 +51,7 @@ _ = flask_babel.gettext
 
 from gevent.pywsgi import WSGIServer
 
-args = parse_pikaraoke_args()
+args = parse_obiraoke_args()
 socketio = SocketIO(async_mode="gevent", cors_allowed_origins=args.url)
 babel = Babel()
 
@@ -146,7 +146,7 @@ def main() -> None:
     """
     platform = get_platform()
 
-    args = parse_pikaraoke_args()
+    args = parse_obiraoke_args()
 
     # --- LOGGING SETUP ---
     # Optional: Force the log file to go to AppData too, so you can debug installation issues
