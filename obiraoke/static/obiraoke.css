@@ -20,6 +20,12 @@ body {
   padding: 0;
 }
 
+em,
+i {
+  font-style: normal;
+  font-weight: 100;
+}
+
 a {
   color: #ffffff !important;
   text-decoration: none;
@@ -716,7 +722,8 @@ a:hover {
 }
 
 .is-italic {
-  font-style: italic;
+  font-style: normal;
+  font-weight: 100;
 }
 
 .is-truncated {

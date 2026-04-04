@@ -446,6 +446,31 @@ removed when the `docs/` directory was deleted. Updated the field to point to
 `README.md` in the repo root and created a minimal `README.md` with the project
 heading.
 
+## Italic replaced with Ubuntu Thin (weight 100)
+
+All italic usage in `obiraoke/static/obiraoke.css` was replaced with Ubuntu Thin
+(font-weight 100, font-style normal). This gives emphasized text a visually
+distinct lighter weight instead of a slanted style, which fits better with the
+Ubuntu variable font design.
+
+**Changes in `obiraoke.css`:**
+
+1. Added `em, i { font-style: normal; font-weight: 100; }` to the reset/base
+   section so all native italic elements render as thin weight instead.
+
+2. Changed `.is-italic` from `font-style: italic` to
+   `font-style: normal; font-weight: 100`.
+
+3. The `@font-face` for "Ubuntu variable" italic in `base.html` is kept but no
+   longer used for italic styling -- thin weight handles that role.
+
+**Affected elements in `search.html`:**
+
+- Two `<p class="is-italic">` help-text paragraphs (lines 616, 620) now render
+  at weight 100 instead of italic.
+- `<i>` tags wrapping search terms in the "Searching YouTube for" loader and
+  "Search results for" label pick up the `em, i` reset rule automatically.
+
 ## Browse page (files.html) link color fixes
 
 Audited `obiraoke/templates/files.html` (the `/browse` route) for elements
