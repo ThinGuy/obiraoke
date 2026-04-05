@@ -139,7 +139,7 @@
           var sidebar = document.getElementById('sidebar');
           var playerPanel = document.getElementById('player-panel');
           var pinBtn = document.getElementById('sidebar-pin');
-          var pinned = localStorage.getItem('sidebar-pinned') === 'true';
+          var pinned = localStorage.getItem('sidebar-pinned') !== 'false';
 
           function updatePinColor() {
             if (pinBtn) {

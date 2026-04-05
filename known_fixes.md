@@ -895,3 +895,24 @@ crash the rest of the page JS including the sidebar toggle.
   outside the sidebar and player IIFEs in try/catch blocks so a failure in one
   call does not prevent the rest of the ready block from executing.
 - The sidebar toggle IIFE (vanilla JS) was left unchanged.
+
+## Sidebar UX defaults and layout
+
+The sidebar defaulted to collapsed on first visit because the localStorage check
+required an explicit `'true'` value. Users had to discover and click the pin
+button before seeing any sidebar content.
+
+**Fix (base.html):** Changed the pinned check from
+`localStorage.getItem('sidebar-pinned') === 'true'` to
+`localStorage.getItem('sidebar-pinned') !== 'false'`. The sidebar now starts
+expanded unless the user has explicitly unpinned it.
+
+**Fix (coraoke.css):** Changed sidebar expanded width from a fixed 224px to
+`25vw` with `min-width: 200px` and `max-width: 320px`. The player panel left
+offset uses `clamp(200px, 25vw, 320px)` to stay in sync. Collapsed width
+remains 52px.
+
+**Fix (files.html):** Changed the `#alpha-bar` from a horizontal flex row
+(`display: flex; justify-content: space-between`) to a vertical column layout
+(`flex-direction: column; gap: 2px`) with each letter link as a block element.
+This fits the narrow sidebar context where a horizontal row overflows.

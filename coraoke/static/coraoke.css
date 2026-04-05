@@ -126,13 +126,16 @@ a:hover {
   display: flex;
   flex-direction: column;
   width: 52px;
+  min-width: 52px;
   transition: width 0.25s ease;
   z-index: 100;
   overflow: hidden;
 }
 
 .sidebar-expanded {
-  width: 224px;
+  width: 25vw;
+  min-width: 200px;
+  max-width: 320px;
 }
 
 /* Orange accent bar on the left edge */
@@ -296,7 +299,8 @@ a:hover {
 }
 
 .player-panel-expanded {
-  left: 224px;
+  left: 25vw;
+  left: clamp(200px, 25vw, 320px);
 }
 
 /* Player internal layout */
