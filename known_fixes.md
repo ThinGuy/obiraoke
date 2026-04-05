@@ -1111,3 +1111,13 @@ Socket.IO, Selectize.js, HLS.js, Fontello, Ubuntu Variable Font), Ubuntu
 Coreaoke contributors, and Ubuntu Core. Visiting the page emits a
 `credits_overlay` socket event that displays a 5-second overlay on the player
 panel. Blueprint registered in `app.py` as an internal (non-API) route.
+
+## Multi-channel splash screens
+
+Added channel query parameter to `/splash` for digital signage use cases.
+`/splash?channel=main` (default) shows the existing karaoke player.
+`/splash?channel=queue` shows a scrolling queue list with next-up display.
+`/splash?channel=lobby` shows the next singer, current song title, QR code,
+and song count for venue entrance screens. The `register_splash` socket event
+now accepts a `{channel}` payload so the server can log which channel each
+splash client is using. Invalid channel values fall back to `main`.

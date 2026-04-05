@@ -1,11 +1,13 @@
 """Splash screen / player display route."""
 
 import flask_babel
-from flask import jsonify, render_template
+from flask import jsonify, render_template, request
 from flask_smorest import Blueprint
 
 from coreaoke.karaoke import Karaoke
 from coreaoke.lib.current_app import get_karaoke_instance, get_site_name
+
+VALID_CHANNELS = {"main", "queue", "lobby"}
 
 _ = flask_babel.gettext
 
@@ -67,6 +69,9 @@ def splash():
     """Splash screen / player display for TV output."""
     k = get_karaoke_instance()
     site_name = get_site_name()
+    channel = request.args.get("channel", "main")
+    if channel not in VALID_CHANNELS:
+        channel = "main"
     return render_template(
         "splash.html",
         site_title=site_name,
@@ -81,4 +86,5 @@ def splash():
         disable_score=k.disable_score,
         bg_music_volume=k.bg_music_volume,
         has_bg_video=k.bg_video_path is not None,
+        channel=channel,
     )

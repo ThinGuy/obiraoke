@@ -57,6 +57,7 @@
         unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",
       },
       scorePhrasesUrl: "{{ url_for('splash.get_score_phrases') }}",
+      channel: "{{ channel }}",
     };
   </script>
   <script src="{{ url_for('static', filename='js/splash.js') }}"></script>
@@ -64,6 +65,55 @@
 
 <body>
 
+{% if channel == "queue" %}
+{# Queue channel: scrolling queue display for digital signage #}
+<div id="queue-channel" class="channel-view">
+  <div class="channel-header">
+    <h1 class="has-text-white stroke">{# MSG: Queue display heading #}{% trans %}Song Queue{% endtrans %}</h1>
+  </div>
+  <div id="queue-next-up" class="has-text-success stroke is-size-4" style="display: none">
+    <i class="icon icon-mic-1" title="Next singer"></i>
+    <span>{# MSG: Label for the next song to be played on queue display #}{% trans %}Up next:{% endtrans %}</span>
+    <span id="queue-next-song" class="has-text-warning"></span>
+    <span class="has-text-white"> - </span>
+    <span id="queue-next-singer" class="has-text-white"></span>
+  </div>
+  <div id="queue-list" class="queue-scroll"></div>
+</div>
+{% elif channel == "lobby" %}
+{# Lobby channel: venue entrance display #}
+<div id="lobby-channel" class="channel-view">
+  <div id="lobby-logo">
+    <img class="logo" src="{{ url_for('images.logo') }}" width="300px" alt="logo" />
+  </div>
+  <div id="lobby-singer" class="has-text-white stroke" style="display: none">
+    <div class="is-size-3 has-text-success">
+      <i class="icon icon-mic-1" title="Now singing"></i>
+      <span id="lobby-singer-name"></span>
+    </div>
+    <div id="lobby-song-title" class="is-size-4 has-text-warning"></div>
+  </div>
+  <div id="lobby-idle" class="has-text-white stroke is-size-3">
+    {# MSG: Lobby idle message when no one is singing #}{% trans %}Waiting for the next singer...{% endtrans %}
+  </div>
+  <div id="lobby-stats" class="has-text-white stroke is-size-5">
+    <span id="lobby-song-count"></span>
+  </div>
+  <div id="lobby-qr"{% if hide_url %} style="display: none"{% endif %}>
+    <img
+      src="{{ url_for('images.qrcode') }}"
+      width="200px"
+      style="image-rendering: pixelated"
+      alt="qrcode"
+    />
+    <div class="is-size-5 stroke has-text-white">{{ url }}</div>
+  </div>
+</div>
+{% else %}
+{# Main channel: default karaoke player #}
+{% endif %}
+
+{% if channel == "main" %}
 <div id="top-container" class="overlay">
 <i class="icon icon-mic-1 is-invisible" style="position: absolute" title="Current singer"></i>
   <div
@@ -223,7 +273,9 @@
   </div>
 </div>
 
-<audio id="background-music">
+{% endif %}
+
+<audio id="background-music"{% if channel != "main" %} style="display:none"{% endif %}>
   <source src="" type="audio/mpeg">
 </audio>
 
@@ -380,6 +432,43 @@
   .has-text-success {
     color: #0e8420 !important;
   }
+  /* Channel views (queue / lobby) */
+  .channel-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+  .channel-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  .queue-scroll {
+    width: 80%;
+    max-height: 70vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .queue-scroll::-webkit-scrollbar { display: none; }
+  .queue-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 1.2rem;
+  }
+  .queue-item .song-title { color: rgba(255, 255, 255, 0.85); }
+  .queue-item .singer-name { color: #0e8420; }
+  #lobby-channel {
+    gap: 30px;
+    text-align: center;
+  }
+  #lobby-qr { margin-top: 20px; }
   #splash-notification {
     position: absolute;
     top: 15px;

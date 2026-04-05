@@ -46,6 +46,10 @@ description: |
     preseed-url   URL to a song tarball downloaded on first run (snap set coreaoke preseed-url=https://your.server/songs.tar.gz)
     Note: delete $SNAP_COMMON/.preseed-done to re-trigger preseed on next start.
 
+  Digital Signage:
+    Connect any browser to http://host:5555/splash?channel=queue for lobby displays
+    Connect to http://host:5555/splash?channel=lobby for entrance screens
+
   Daemon:
     autostart            Enable daemon mode (true/false)
     headless             Run without a local browser window (default: true)

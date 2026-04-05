@@ -7,7 +7,8 @@ from flask import request
 from coreaoke.lib.current_app import get_karaoke_instance
 
 # Track connected splash screen clients and the elected master
-splash_connections = set()
+# Maps session ID to channel name
+splash_connections: dict[str, str] = {}
 master_splash_id = None
 
 
@@ -41,20 +42,21 @@ def setup_socket_events(socketio):
         k.reset_now_playing_notification()
 
     @socketio.on("register_splash")
-    def register_splash() -> None:
+    def register_splash(data: dict | None = None) -> None:
         """Handle splash screen registration and assign master/slave roles."""
         global master_splash_id
         sid = request.sid
-        splash_connections.add(sid)
-        logging.info(f"Splash screen registered: {sid}")
+        channel = (data or {}).get("channel", "main")
+        splash_connections[sid] = channel
+        logging.info(f"Splash screen registered: {sid} (channel={channel})")
 
         if master_splash_id is None:
             master_splash_id = sid
             socketio.emit("splash_role", "master", room=sid)
-            logging.info(f"Master splash screens assigned: {sid}")
+            logging.info(f"Master splash screen assigned: {sid}")
         else:
             socketio.emit("splash_role", "slave", room=sid)
-            logging.info(f"Slave splash screens assigned: {sid}")
+            logging.info(f"Slave splash screen assigned: {sid}")
 
     @socketio.on("playback_position")
     def handle_playback_position(position: float) -> None:
@@ -82,8 +84,8 @@ def setup_socket_events(socketio):
         global master_splash_id
         sid = request.sid
         if sid in splash_connections:
-            splash_connections.remove(sid)
-            logging.info(f"Splash screen disconnected: {sid}")
+            channel = splash_connections.pop(sid)
+            logging.info(f"Splash screen disconnected: {sid} (channel={channel})")
             if sid == master_splash_id:
                 master_splash_id = None
                 logging.info("Master splash disconnected, electing new master")

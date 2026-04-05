@@ -25,6 +25,7 @@ let scoreReviews = {
 let isMaster = false;
 let uiScale = null;
 let clockIntervalId = null;
+const channelName = CoreaokeConfig.channel || "main";
 
 // Browser detection
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -371,6 +372,47 @@ const handleNowPlayingUpdate = (np) => {
   }
 }
 
+const handleQueueUpdate = () => {
+  $.get("/get_queue", (data) => {
+    const queue = JSON.parse(data);
+    const listEl = $("#queue-list");
+    listEl.empty();
+    if (queue.length === 0) {
+      listEl.html('<div class="queue-item has-text-white" style="justify-content:center;opacity:0.5">Queue is empty</div>');
+      $("#queue-next-up").fadeOut();
+      return;
+    }
+    const first = queue[0];
+    $("#queue-next-song").text(first.title || "");
+    $("#queue-next-singer").text(first.user || "");
+    $("#queue-next-up").fadeIn();
+    queue.forEach((item, i) => {
+      listEl.append(
+        `<div class="queue-item"><span class="song-title">${i + 1}. ${item.title || ""}</span><span class="singer-name">${item.user || ""}</span></div>`
+      );
+    });
+  });
+};
+
+const handleLobbyNowPlaying = (np) => {
+  if (np.now_playing_user) {
+    $("#lobby-singer-name").text(np.now_playing_user);
+    $("#lobby-song-title").text(np.now_playing || "");
+    $("#lobby-singer").fadeIn();
+    $("#lobby-idle").hide();
+  } else {
+    $("#lobby-singer").fadeOut();
+    $("#lobby-idle").fadeIn();
+  }
+  $.get("/get_queue", (data) => {
+    const queue = JSON.parse(data);
+    const count = queue.length;
+    $("#lobby-song-count").text(
+      count === 1 ? "1 song in queue" : count + " songs in queue"
+    );
+  });
+};
+
 async function loadNowPlaying() {
   const data = await $.get("/now_playing");
   handleNowPlayingUpdate(JSON.parse(data));
@@ -553,7 +595,7 @@ const applyPreferencesReset = (defaults) => {
 const setupSocketEvents = () => {
   socket.on('connect', () => {
     console.log('Socket connected');
-    socket.emit("register_splash");
+    socket.emit("register_splash", {channel: channelName});
   });
   socket.on('splash_role', (role) => {
     isMaster = (role === "master");
@@ -629,6 +671,25 @@ const setupSocketEvents = () => {
   socket.on("preferences_reset", applyPreferencesReset);
   socket.on("score_phrases_update", (phrases) => { scoreReviews = phrases; });
 
+  // Channel-specific event listeners
+  if (channelName === "queue") {
+    socket.on("queue_update", handleQueueUpdate);
+    socket.on("now_playing", () => handleQueueUpdate());
+  }
+  if (channelName === "lobby") {
+    socket.on("now_playing", handleLobbyNowPlaying);
+    socket.on("queue_update", () => {
+      // Refresh song count on queue changes
+      $.get("/get_queue", (data) => {
+        const queue = JSON.parse(data);
+        const count = queue.length;
+        $("#lobby-song-count").text(
+          count === 1 ? "1 song in queue" : count + " songs in queue"
+        );
+      });
+    });
+  }
+
   socket.on("playback_position", (position) => {
     if (!isMaster) {
       const video = getVideoPlayer();
@@ -690,15 +751,20 @@ const setupUIScaling = () => {
 $(function () {
   // Setup various features and listeners
   setupUIScaling();
-  if (CoreaokeConfig.showSplashClock) startClock();
-  setupScreensaver();
-  setupOverlayMenus();
-  setupVideoPlayer();
-  setupBackgroundMusicPlayer();
 
-  // Handle browser compatibility
-  handleUnsupportedBrowser();
-  testAutoplayCapability();
+  if (channelName === "main") {
+    if (CoreaokeConfig.showSplashClock) startClock();
+    setupScreensaver();
+    setupOverlayMenus();
+    setupVideoPlayer();
+    setupBackgroundMusicPlayer();
+    handleUnsupportedBrowser();
+    testAutoplayCapability();
+  } else if (channelName === "queue") {
+    handleQueueUpdate();
+  } else if (channelName === "lobby") {
+    $.get("/now_playing", (data) => handleLobbyNowPlaying(JSON.parse(data)));
+  }
 });
 
 
@@ -709,5 +775,5 @@ handleSocketRecovery();
 // Fallback: if socket connected before listeners were attached, register now
 if (socket.connected) {
   console.log('Socket already connected, registering splash...');
-  socket.emit("register_splash");
+  socket.emit("register_splash", {channel: channelName});
 }
