@@ -222,6 +222,15 @@
                       newScript.textContent = oldScript.textContent;
                       oldScript.parentNode.replaceChild(newScript, oldScript);
                     });
+                    setTimeout(function() {
+                      if (window.$ && $.fn.selectize) {
+                        sc.querySelectorAll('select').forEach(function(el) {
+                          if (!el.selectize) {
+                            $(el).selectize({});
+                          }
+                        });
+                      }
+                    }, 100);
                   }
                 }
                 history.pushState({}, '', url);

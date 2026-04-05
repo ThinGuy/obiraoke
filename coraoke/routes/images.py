@@ -22,6 +22,8 @@ _BUILTIN_LOGO = os.path.normpath(
 def qrcode():
     """Get QR code image for the web interface URL."""
     k = get_karaoke_instance()
+    if not k.qr_code_path or not os.path.exists(k.qr_code_path):
+        return '', 404
     return send_file(k.qr_code_path, mimetype="image/png")
 
 

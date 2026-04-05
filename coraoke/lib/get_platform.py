@@ -103,6 +103,9 @@ def get_default_dl_dir(platform: str) -> str:
     Returns:
         Path string for the default download directory.
     """
+    songs_dir = os.environ.get("CORAOKE_SONGS_DIR")
+    if songs_dir:
+        return songs_dir
     if os.environ.get("SNAP"):
         return os.path.join(
             os.environ.get("SNAP_COMMON", "/var/snap/coraoke/common"), "coraoke-songs"

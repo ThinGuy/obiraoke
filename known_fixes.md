@@ -956,3 +956,38 @@ all `<script>` elements in the loaded content, clones each into a fresh
 `<script>` element (preserving attributes and textContent), and replaces the
 inert node with the new one. This forces the browser to evaluate each script,
 re-initializing selectize, socket.io handlers, and other page-specific JS.
+
+## QR code route FileNotFoundError at startup
+
+The `/qrcode` route in `coraoke/routes/images.py` called `send_file()` on
+`k.qr_code_path` without checking whether the file exists. At startup the QR
+code has not been generated yet, causing a `FileNotFoundError`.
+
+**Fix:** Added a guard identical to the logo route pattern: if
+`k.qr_code_path` is falsy or the file does not exist, return an empty 404
+instead of crashing.
+
+## Snap download path not reading CORAOKE_SONGS_DIR
+
+`get_default_dl_dir()` in `coraoke/lib/get_platform.py` constructed the snap
+download path from `SNAP_COMMON` but ignored the `CORAOKE_SONGS_DIR`
+environment variable that `snap/local/wrapper` explicitly exports. If
+`SNAP_COMMON` was unset or resolved incorrectly, yt-dlp would attempt to
+create `/var/snap/coraoke` (the fallback minus the `coraoke-songs` suffix)
+and fail with permission denied.
+
+**Fix:** `get_default_dl_dir()` now checks `CORAOKE_SONGS_DIR` first. If
+the wrapper already set the canonical songs directory, that value is returned
+directly, bypassing the `SNAP_COMMON` construction entirely.
+
+## Selectize not initializing on sidebar-injected content
+
+Re-executing `<script>` tags after sidebar AJAX navigation was not sufficient
+to initialize selectize dropdowns. Selectize binds to elements during
+`DOMContentLoaded`, which has already fired by the time sidebar content is
+injected via `innerHTML`.
+
+**Fix:** After the script re-execution loop in `loadSidebarContent()`, added
+a `setTimeout` (100 ms) that finds all `<select>` elements in the sidebar
+content and calls `$(el).selectize({})` on any that do not already have a
+selectize instance attached.
