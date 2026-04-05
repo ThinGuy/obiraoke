@@ -916,3 +916,25 @@ remains 52px.
 (`display: flex; justify-content: space-between`) to a vertical column layout
 (`flex-direction: column; gap: 2px`) with each letter link as a block element.
 This fits the narrow sidebar context where a horizontal row overflows.
+
+## Sidebar nav links trigger full-page flash/zoom via SPA interceptor
+
+Clicking sidebar nav links caused a visible flash and zoom because
+`spa-navigation.js` intercepted the clicks and performed a full SPA content
+swap (replacing `.box`), which is incorrect for sidebar links that should only
+update `#sidebar-content`.
+
+**Root cause:** `spa-navigation.js` intercepts all `a[href]` clicks via a
+delegated handler on `document`. The sidebar nav links had no exclusion marker,
+so the SPA system captured them before any sidebar-specific handler could act.
+
+**Fix (base.html):**
+1. Added `no-spa` class to all sidebar nav `<a>` tags so `spa-navigation.js`
+   skips them in its `shouldExcludeLink()` check.
+2. Added `data-sidebar-link="true"` attribute to each sidebar nav link.
+3. Added a new IIFE after the sidebar toggle logic that attaches direct click
+   listeners to `[data-sidebar-link]` elements. These listeners call
+   `e.preventDefault()` and `e.stopPropagation()`, then use `fetch()` to load
+   the target page, extract the new `#sidebar-content` from the response, and
+   replace the current sidebar content via `innerHTML`. The handler also calls
+   `history.pushState()` and updates the `sidebar-active` class.

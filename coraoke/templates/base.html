@@ -199,6 +199,36 @@
           }
         })();
 
+        // Sidebar AJAX content loading
+        (function() {
+          function loadSidebarContent(url) {
+            fetch(url)
+              .then(function(r) { return r.text(); })
+              .then(function(html) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var newContent = doc.getElementById('sidebar-content');
+                if (newContent) {
+                  var sc = document.getElementById('sidebar-content');
+                  if (sc) sc.innerHTML = newContent.innerHTML;
+                }
+                history.pushState({}, '', url);
+                document.querySelectorAll('.sidebar-item').forEach(function(el) {
+                  el.classList.remove('sidebar-active');
+                  if (el.getAttribute('href') === url) el.classList.add('sidebar-active');
+                });
+              });
+          }
+
+          document.querySelectorAll('[data-sidebar-link]').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              loadSidebarContent(el.getAttribute('href'));
+            });
+          });
+        })();
+
         // Player panel: now-playing updates via socket.io
         (function() {
           function updatePlayerNowPlaying(np) {
@@ -303,23 +333,23 @@
       </button>
     </div>
     <nav class="sidebar-nav">
-      <a href="{{ url_for('home.home') }}" class="sidebar-item {% if request.endpoint == 'home.home' %}sidebar-active{% endif %}" title="Now Playing">
+      <a href="{{ url_for('home.home') }}" class="sidebar-item no-spa {% if request.endpoint == 'home.home' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Now Playing">
         <i class="icon icon-home-1"></i>
         <span class="sidebar-label">Now Playing</span>
       </a>
-      <a href="{{ url_for('queue.queue') }}" class="sidebar-item {% if request.endpoint == 'queue.queue' %}sidebar-active{% endif %}" title="Queue">
+      <a href="{{ url_for('queue.queue') }}" class="sidebar-item no-spa {% if request.endpoint == 'queue.queue' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Queue">
         <i class="icon icon-list-bullet"></i>
         <span class="sidebar-label">Queue</span>
       </a>
-      <a href="{{ url_for('search.search') }}" class="sidebar-item {% if request.endpoint == 'search.search' %}sidebar-active{% endif %}" title="Search">
+      <a href="{{ url_for('search.search') }}" class="sidebar-item no-spa {% if request.endpoint == 'search.search' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Search">
         <i class="icon icon-search"></i>
         <span class="sidebar-label">Search</span>
       </a>
-      <a href="{{ url_for('files.browse') }}" class="sidebar-item {% if request.endpoint == 'files.browse' %}sidebar-active{% endif %}" title="Browse">
+      <a href="{{ url_for('files.browse') }}" class="sidebar-item no-spa {% if request.endpoint == 'files.browse' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Browse">
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
-      <a href="{{ url_for('info.info') }}" class="sidebar-item {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" title="Info">
+      <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Info">
         <i class="icon icon-info-circled-1"></i>
         <span class="sidebar-label">Info</span>
       </a>
