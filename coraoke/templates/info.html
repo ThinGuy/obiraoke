@@ -186,7 +186,7 @@
 				<p class="is-size-4 has-text-warning has-text-centered">{{ url }}</p>
 				{# MSG: Label before a QR code which brings a frind (pal) to the main page if scanned, so they can also add songs. QR code follows this text. #}
 				<p>{% trans %}Handy URL QR code to share with a pal:{% endtrans %}</p>
-				<img id="qr-img" width="300px" src="{{ url_for('images.qrcode') }}" style="image-rendering: pixelated" />
+				<img id="qr-img" width="150px" src="{{ url_for('images.qrcode') }}" style="image-rendering: pixelated" />
 			</div>
 		</div>
 	</div>
@@ -203,7 +203,7 @@
 					<form action="{{ url_for('admin.auth') }}" method="post">
 						<input type="hidden" name="next" value="{{ request.path }}" />
 						<div class="field has-addons mb-2">
-							<div class="control" style="width: 100%; max-width: 350px">
+							<div class="control" style="width: 100%;">
 								<input type="password" name="admin_password" class="input" />
 							</div>
 							<div class="control">

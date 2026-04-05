@@ -105,29 +105,26 @@
 </style>
 {% endblock %} {% block content %}
 
-<p class="is-flex is-justify-content-space-between">
-	<span class="is-flex-grow-1">
+<div style="font-size: 0.75rem; margin-bottom: 0.5rem;">
+	<span>
 		{% if sort_order == "Alphabetical" %} {# MSG: Label which displays that the songs are currently sorted by
-		alphabetical order. #} {% trans %}Sorted Alphabetically{% endtrans %} |
+		alphabetical order. #} {% trans %}Alphabetical{% endtrans %} |
 		<a class="spec-link" href="{{ url_for('files.browse') }}?sort=date">
-			{# MSG: Button which changes how the songs are sorted so they become sorted by date. #} {% trans %}Sort by
-			Date{% endtrans %}
+			{# MSG: Button which changes how the songs are sorted so they become sorted by date. #} {% trans %}By Date{% endtrans %}
 		</a>
 		{% endif %} {% if sort_order == "Date" %} {# MSG: Label which displays that the songs are currently sorted by
-		date. #} {% trans %}Sorted by date{% endtrans %} |
+		date. #} {% trans %}By Date{% endtrans %} |
 		<a class="spec-link" href="{{ url_for('files.browse') }}">
-			{# MSG: Button which changes how the songs are sorted so they become sorted by name. #} {% trans %}Sort by
-			Alphabetical{% endtrans %}
+			{# MSG: Button which changes how the songs are sorted so they become sorted by name. #} {% trans %}Alphabetical{% endtrans %}
 		</a>
 		{% endif %}
 	</span>
 	{% if admin %}
 	<a class="batch-edit-btn spec-link" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
-		><i class="icon icon-edit"></i>{# MSG: Button to open the batch song renamer page. #} {% trans %}Edit all songs{%
-		endtrans %}</a
+		><i class="icon icon-edit"></i>{# MSG: Button to open the batch song renamer page. #} {% trans %}Edit{% endtrans %}</a
 	>
 	{% endif%}
-</p>
+</div>
 
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
 	<a href="{{ url_for('files.browse') }}" title="Show all"{% if not letter %} class="alpha-active"{% endif %}><i class="icon icon-list-bullet"></i></a>

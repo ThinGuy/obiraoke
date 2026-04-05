@@ -751,38 +751,63 @@ The current-user display and notification divs were moved from the navbar into
 the main-content area. The splash screen (`coraoke/templates/splash.html`) was
 not affected -- it has its own layout and extends `base.html` via `{% block body %}`.
 
-## Two-panel layout overhaul
+## Full layout redesign: sidebar-as-control-panel + inline player
 
-The centered max-width content box was replaced with a proper two-panel layout:
-fixed sidebar on the left, full-width content area on the right.
+Replaced the two-panel (sidebar + full-width content) layout with a new design
+where the sidebar IS the control panel and the right side is a permanent player.
+
+**Layout concept:**
+
+- LEFT PANEL (sidebar): 52px collapsed (icons only), 224px expanded (icons +
+  full page content). All page content -- search form, queue list, browse
+  library, info -- renders INSIDE the sidebar when expanded.
+- RIGHT PANEL (player): Full-screen, always visible. Shows background video,
+  logo/mascot, now-playing overlay, QR code. The user never navigates away
+  from the player.
 
 **CSS changes (`coraoke/static/coraoke.css`):**
 
-- `html, body`: set `height: 100%`, `overflow: hidden`; body uses
-  `display: flex; flex-direction: row`.
-- `.main-content`: changed from flex child with `margin-left` to
-  `position: fixed; top: 0; right: 0; bottom: 0` with `left` toggled by
-  collapsed/expanded classes (52px / 208px). Background set to `#1a1a1a`,
-  `overflow-y: auto` for scrollable content.
-- `.main-content .container`: `max-width: none; width: 100%; padding: 1rem` --
-  removes all width constraints.
-- `.main-content .box`: `max-width: none; margin: 0; width: 100%`.
-- `.sidebar-pin-btn`: color changed from `rgba(255,255,255,0.5)` to `#ffffff`,
-  `font-size: 1.1rem` added.
-- `.sidebar-active`: background changed to `rgba(233,84,32,0.15)` (orange tint),
-  border-left set to `3px solid #e95420`.
+- Removed `.main-content`, `.main-content-collapsed`, `.main-content-expanded`
+  classes entirely.
+- `.sidebar-expanded` width changed from 208px to 224px.
+- Added `.sidebar::before` -- 4px Ubuntu Orange (#e95420) accent bar on left edge.
+- Added `.sidebar-logo` (32px, visible when expanded) and `.sidebar-title`
+  ("Coraoke" text, visible when expanded).
+- Added `.sidebar-content` -- `display: none` when collapsed, `display: block`
+  when expanded, with `flex: 1; overflow-y: auto; padding: 1rem`.
+- `.sidebar-label` changed from opacity transition to `display: none/inline`.
+- `.sidebar-version` set to `display: none` when collapsed.
+- Added `.player-panel` -- `position: fixed; left: 52px` (default) /
+  `left: 224px` (expanded); contains bg video, logo, now-playing, QR overlays.
+- Added compact sidebar content styles: headings at 1rem, inputs at 0.8rem,
+  tables at 0.75rem, cards/buttons scaled down for 224px width.
 
 **Template changes (`coraoke/templates/base.html`):**
 
-- Removed the inner `.container` div with `max-width: 900px` that wrapped the
-  `.box`. The `.box` now sits directly inside `#main-content` with
-  `padding: 1rem`.
-- Added `updatePinColor()` function: the sidebar pin button turns `#e95420`
-  when pinned and `#ffffff` when unpinned, giving a visual indicator of
-  pinned state.
+- Replaced `#main-content` div with `#sidebar-content` div inside the sidebar.
+  `{% block content %}` now renders inside the sidebar.
+- Added `#player-panel` div with player markup extracted from `splash.html`:
+  background video, logo image, now-playing overlay, QR code, up-next overlay.
+- Player panel uses socket.io `now_playing` events for live updates.
+- Sidebar toggle JS updated: expand/collapse now adjusts `player-panel` left
+  offset instead of `main-content`.
+- Logo (from `static/images/logo.png`) and app name "Coraoke" added to sidebar
+  header, visible when expanded.
 
-**Background video default (no change needed):**
+**Context processor (`coraoke/app.py`):**
 
-- `karaoke.py` already defaults to `night_sea.mp4` for non-mascot mode.
-- `the_drive_by_visualdon.mp4` is only set when `--mascot-mode` is active
-  (in `args.py`).
+- Added `inject_player_vars()` context processor providing `player_url`,
+  `player_hide_url`, and `player_has_bg_video` to all templates so the player
+  panel in base.html can render without route-specific variables.
+
+**Page template changes:**
+
+- `home.html`: removed `is-size-3`/`is-size-4` classes, removed `max-width`
+  constraint on control box, stacked volume controls for narrow width.
+- `queue.html`: stacked add-random and clear-all controls vertically.
+- `search.html`: stacked search/add-to-queue buttons below input, replaced
+  wide message article with compact help text.
+- `files.html`: shortened sort labels ("Alphabetical" / "By Date"), shortened
+  edit button text.
+- `info.html`: reduced QR image from 300px to 150px, removed max-width on
+  password input.

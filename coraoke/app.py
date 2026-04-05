@@ -138,6 +138,24 @@ socketio.init_app(app)
 setup_socket_events(socketio)
 
 
+@app.context_processor
+def inject_player_vars() -> dict:
+    """Make player-panel variables available in every template."""
+    try:
+        k = get_karaoke_instance()
+        return {
+            "player_url": k.url,
+            "player_hide_url": k.hide_url,
+            "player_has_bg_video": k.bg_video_path is not None,
+        }
+    except (RuntimeError, AttributeError):
+        return {
+            "player_url": "",
+            "player_hide_url": False,
+            "player_has_bg_video": False,
+        }
+
+
 def main() -> None:
     """Main entry point for the PiKaraoke application.
 

@@ -133,7 +133,7 @@
       // Sidebar toggle logic
       (function() {
         var sidebar = document.getElementById('sidebar');
-        var mainContent = document.getElementById('main-content');
+        var playerPanel = document.getElementById('player-panel');
         var pinBtn = document.getElementById('sidebar-pin');
         var pinned = localStorage.getItem('sidebar-pinned') === 'true';
 
@@ -147,16 +147,18 @@
           if (!sidebar) return;
           sidebar.classList.remove('sidebar-collapsed');
           sidebar.classList.add('sidebar-expanded');
-          mainContent.classList.remove('main-content-collapsed');
-          mainContent.classList.add('main-content-expanded');
+          if (playerPanel) {
+            playerPanel.classList.add('player-panel-expanded');
+          }
         }
 
         function collapse() {
           if (!sidebar) return;
           sidebar.classList.remove('sidebar-expanded');
           sidebar.classList.add('sidebar-collapsed');
-          mainContent.classList.remove('main-content-expanded');
-          mainContent.classList.add('main-content-collapsed');
+          if (playerPanel) {
+            playerPanel.classList.remove('player-panel-expanded');
+          }
         }
 
         if (pinned) {
@@ -187,6 +189,45 @@
         }
       })();
 
+      // Player panel: now-playing updates via socket.io
+      (function() {
+        function updatePlayerNowPlaying(np) {
+          var $np = $('#player-now-playing');
+          var $upNext = $('#player-up-next');
+          var $logo = $('#player-logo');
+
+          if (np.now_playing) {
+            $np.html(
+              '<p class="has-text-white" style="margin-bottom: 5px">' + np.now_playing + '</p>' +
+              '<div class="has-text-success"><i class="icon icon-mic-1"></i> ' + np.now_playing_user + '</div>'
+            ).show();
+            $logo.css('opacity', '0.3');
+          } else {
+            $np.hide();
+            $logo.css('opacity', '0.9');
+          }
+
+          if (np.up_next) {
+            $upNext.html(
+              '<b class="has-text-white">Up next:</b> <span class="has-text-warning">' + np.up_next + '</span>' +
+              '<div class="has-text-success"><b class="has-text-white">Next singer:</b> <i class="icon icon-mic-1"></i> ' + np.next_user + '</div>'
+            ).show();
+          } else {
+            $upNext.hide();
+          }
+        }
+
+        // Fetch initial state
+        $.get('{{ url_for("now_playing.now_playing") }}', function(data) {
+          updatePlayerNowPlaying(JSON.parse(data));
+        });
+
+        // Listen for live updates
+        window.socket.on('now_playing', function(np) {
+          updatePlayerNowPlaying(np);
+        });
+      })();
+
       // handle auto-close flash notifications
       setTimeout(function() { $("#notification").fadeOut()}, 3000);
 
@@ -197,8 +238,6 @@
         $("#current-user span").text(currentUser)
         $("#current-user").removeClass("is-hidden");
       };
-
-      // Username change handler is now in spa-navigation.js
 
     });
   </script>
@@ -219,11 +258,8 @@
     z-index: 200;
   }
   .current-user {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 3px;
-    z-index: 101;
+    position: static;
+    padding: 0.5rem 0;
   }
   tr:nth-child(even) {
     background-color: #262626;
@@ -242,8 +278,11 @@
 <body>
 
   {% if not blank_page %}
+  <!-- LEFT PANEL: Sidebar with nav + page content -->
   <div id="sidebar" class="sidebar sidebar-collapsed">
     <div class="sidebar-header">
+      <img class="sidebar-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Coraoke" />
+      <span class="sidebar-title">Coraoke</span>
       <button id="sidebar-pin" class="sidebar-pin-btn" title="Pin sidebar">
         <i class="icon icon-menu"></i>
       </button>
@@ -270,40 +309,62 @@
         <span class="sidebar-label">Info</span>
       </a>
     </nav>
+    <div id="sidebar-content" class="sidebar-content">
+      <a id="current-user" class="current-user is-hidden" href="#">
+        <i class="icon icon-mic-1" title="Current user"></i>
+        <span></span>
+      </a>
+
+      {% if get_flashed_messages() %}
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div id="notification" class="notification base-notification {{category}}">
+        <button id="notification-close" class="delete"></button>
+        <div class="flash">{{ message }}</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- Alternate notification for js-fired notifications using showNotification -->
+      <div id="notification-alt" class="notification base-notification" style="display: none">
+        <button id="notification-close" class="delete"></button>
+        <div class="flash"></div>
+      </div>
+
+      <header class="title">
+        {% block header %}{% endblock %}
+      </header>
+      {% block content %}
+      {% endblock %}
+    </div>
     <div class="sidebar-footer">
       <span class="sidebar-label sidebar-version">coraoke v{{ version }}</span>
     </div>
   </div>
-  <div id="main-content" class="main-content main-content-collapsed">
-    <a id="current-user" class="current-user is-hidden" href="#">
-      <i class="icon icon-mic-1" title="Current user"></i>
-      <span></span>
-    </a>
 
-    {% if get_flashed_messages() %}
-    {% for category, message in get_flashed_messages(with_categories=true) %}
-    <div id="notification" class="notification base-notification {{category}}">
-      <button id="notification-close" class="delete"></button>
-      <div class="flash">{{ message }}</div>
-    </div>
-    {% endfor %}
+  <!-- RIGHT PANEL: Player (always visible) -->
+  <div id="player-panel" class="player-panel">
+    <!-- Background video -->
+    {% if player_has_bg_video %}
+    <video class="player-bg-video" autoplay muted loop playsinline webkit-playsinline
+           poster="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+      <source src="{{ url_for('stream.stream_bg_video') }}" type="video/mp4" />
+    </video>
     {% endif %}
 
-    <!-- Alternate notification for js-fired notifications using showNotification -->
-    <div id="notification-alt" class="notification base-notification" style="display: none">
-      <button id="notification-close" class="delete"></button>
-      <div class="flash"></div>
+    <!-- Logo / mascot -->
+    <img id="player-logo" class="player-logo" src="{{ url_for('images.logo') }}" alt="Coraoke" />
+
+    <!-- Now playing overlay -->
+    <div id="player-now-playing" class="player-now-playing" style="display: none"></div>
+
+    <!-- QR code -->
+    <div class="player-qr"{% if player_hide_url %} style="display: none"{% endif %}>
+      <img src="{{ url_for('images.qrcode') }}" width="80" alt="QR code" />
+      <div class="is-size-7" style="color: #ffffff">&nbsp;{{ player_url }}</div>
     </div>
 
-    <div class="box" style="padding: 1rem;">
-      <header class="title">
-        {% block header %}{% endblock %}
-      </header>
-      <div class="content">
-        {% block content %}
-        {% endblock %}
-      </div>
-    </div>
+    <!-- Up next overlay -->
+    <div id="player-up-next" class="player-up-next" style="display: none"></div>
   </div>
   {% endif %}
 

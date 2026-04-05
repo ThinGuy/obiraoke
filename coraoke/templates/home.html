@@ -188,7 +188,7 @@
 </h1>
 {% endblock %} {% block content %}
 
-<p class="is-size-4 has-text-warning" id="now-playing">&nbsp;</p>
+<p class="has-text-warning" id="now-playing">&nbsp;</p>
 
 <hr />
 <h3>{# MSG: Title for the section displaying the next song to be played. #} {% trans %}Next Song{% endtrans %}</h3>
@@ -196,19 +196,19 @@
 <hr />
 
 {% if admin %}
-<div class="has-background-black-bis box control-box" style="max-width: 500px; display: none">
+<div class="has-background-black-bis box control-box" style="display: none">
 	{# MSG: Title of the box with controls such as pause and skip. #}
 	<h4>{% trans %}Player Control{% endtrans %}</h4>
-	<div class="is-size-3" style="display: flex; justify-content: space-between">
-		<div class="is-size-3">
+	<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+		<div>
 			{# MSG: Title attribute on the button to restart the current song. #}
-			<a title="{{ _('Restart Song') }}" id="restart"><i class="icon icon-to-start"></i> </a>&nbsp;&nbsp; {# MSG:
-			Title attribute on the button to play or pause the current song. #}
-			<a title="{{ _('Play/Pause') }}"><i id="pause-resume" class="icon icon-pause"></i> </a>&nbsp;&nbsp; {# MSG:
-			Title attribute on the button to skip to the next song. #}
+			<a title="{{ _('Restart Song') }}" id="restart"><i class="icon icon-to-start"></i> </a>&nbsp;
+			{# MSG: Title attribute on the button to play or pause the current song. #}
+			<a title="{{ _('Play/Pause') }}"><i id="pause-resume" class="icon icon-pause"></i> </a>&nbsp;
+			{# MSG: Title attribute on the button to skip to the next song. #}
 			<a title="{{ _('Stop Current Song') }}" id="skip"><i class="icon icon-to-end"></i> </a>
 		</div>
-		<div class="is-size-3" style="display: flex; align-items: center">
+		<div style="display: flex; align-items: center">
 			<i id="vol-down" class="icon icon-volume-down"></i>
 			<input
 				type="range"
@@ -217,7 +217,7 @@
 				value="{{ volume|default(0.85) }}"
 				step="0.025"
 				id="volume-slider"
-				style="margin: 0 8px 0px 5px; width: 100px"
+				style="margin: 0 4px; width: 80px"
 			/>
 			<i id="vol-up" class="icon icon-volume-up"></i>
 		</div>
@@ -225,37 +225,29 @@
 	<hr />
 
 	{% if is_transpose_enabled %}
-	<div class="is-flex" style="justify-content: space-between">
-		<div>
-			{# MSG: Title of a control to change the key/pitch of the playing song. #}
-			<h4>{% trans %}Change Key{% endtrans %}</h4>
-		</div>
-		<div class="is-flex">
-			<h4 id="semitones-label"></h4>
-			<a id="semitones-info"> <i class="icon icon-info-circled-1" title="Info"></i></a>
-		</div>
+	<div>
+		{# MSG: Title of a control to change the key/pitch of the playing song. #}
+		<h4>{% trans %}Change Key{% endtrans %}</h4>
+		<span id="semitones-label"></span>
+		<a id="semitones-info"> <i class="icon icon-info-circled-1" title="Info"></i></a>
 	</div>
-	<div style="width: 100%">
-		<div class="is-flex">
-			<input
-				type="range"
-				min="-12"
-				max="12"
-				value="0"
-				width="300px"
-				class="transpose-slider"
-				id="transpose"
-				style="width: 100%"
-			/>
-			<button id="submit-transpose" class="button is-rounded is-small" style="margin-left: 10px">
-				{# MSG: Label on the button to confirm the change in key/pitch of the playing song. #} {% trans %}Change{%
-				endtrans %}
-			</button>
-		</div>
+	<div>
+		<input
+			type="range"
+			min="-12"
+			max="12"
+			value="0"
+			class="transpose-slider"
+			id="transpose"
+			style="width: 100%"
+		/>
+		<button id="submit-transpose" class="button is-small" style="margin-top: 5px; width: 100%">
+			{# MSG: Label on the button to confirm the change in key/pitch of the playing song. #} {% trans %}Change{%
+			endtrans %}
+		</button>
 	</div>
 	{% endif %}
 </div>
 {% endif %}
 
-<div></div>
 {% endblock %}

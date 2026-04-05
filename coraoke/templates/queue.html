@@ -494,25 +494,25 @@
 
 {% block content %}
 
-<table class="table is-striped" id="auto-refresh" style="margin-bottom: 30px">
+<table class="table is-striped" id="auto-refresh" style="margin-bottom: 15px; width: 100%;">
 </table>
 
 {% if admin %}
-<div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
-	<div class="is-flex is-align-items-center">
+<div class="mb-3">
+	<div class="is-flex is-align-items-center mb-2">
 		<a class="add-random has-text-success" href="#"
-			><i class="icon icon-plus-circled is-size-5 mr-1"></i></a>
-			{% trans %}Add <input id="randomNumberInput" class="input mx-2 p-2" pattern="\d*" maxlength="2" value="3" min="1" max="99" style="width: 42px" /> random songs{% endtrans %}
+			><i class="icon icon-plus-circled mr-1"></i></a>
+			{% trans %}Add <input id="randomNumberInput" class="input mx-1 p-1" pattern="\d*" maxlength="2" value="3" min="1" max="99" style="width: 36px" /> random{% endtrans %}
 	</div>
 	<div>
-		<a class="button is-danger is-outlined confirm-clear" href="/queue/edit?action=clear">
+		<a class="button is-danger is-outlined is-small confirm-clear" href="/queue/edit?action=clear">
 		<i class="icon icon-trash-empty mr-1"></i>{% trans %}Clear all{% endtrans %}</a>
 	</div>
 </div>
 
 <div class="modal" id="song-options-modal">
   <div class="modal-background"></div>
-  <div class="modal-card" style="width: 90%; max-width: 400px;">
+  <div class="modal-card" style="width: 95%; max-width: 400px;">
     <header class="modal-card-head" style="padding: 15px;">
       <p class="modal-card-title is-size-6" id="modal-song-title" style="max-width: 95%">Song Options</p>
       <button class="delete" aria-label="close" onclick="closeSongOptions()"></button>
@@ -544,7 +544,7 @@
 
 <div class="modal" id="now-playing-options-modal">
   <div class="modal-background"></div>
-  <div class="modal-card" style="width: 90%; max-width: 400px;">
+  <div class="modal-card" style="width: 95%; max-width: 400px;">
     <header class="modal-card-head" style="padding: 15px;">
       <p class="modal-card-title is-size-6" id="np-modal-song-title" style="max-width: 95%">Now Playing</p>
       <button class="delete" aria-label="close" onclick="closeNowPlayingOptions()"></button>
