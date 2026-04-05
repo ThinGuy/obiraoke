@@ -1140,3 +1140,13 @@ turned orange (#e95420) when the sidebar was pinned; it now stays white
 (#ffffff) in all states, inheriting the dark sidebar background with no accent
 color. The sidebar title text was also corrected from "Coreaoke" to
 "Ubuntu Coreaoke" to match the UI spec branding requirement.
+
+## Sidebar hamburger toggle button -- ensure white in all interactive states
+
+The `.sidebar-pin-btn:hover` rule only covered the hover state. The `:focus`
+and `:active` states were missing, which could allow browser defaults or
+cascade inheritance to leak a non-white color onto the toggle button. Added
+explicit `:focus` and `:active` selectors alongside `:hover`, all setting
+`color: #ffffff` and `background: none`, so the hamburger icon renders white
+against the `#262626` sidebar background in every interactive state. No inline
+styles or classes in `base.html` applied orange to this element.

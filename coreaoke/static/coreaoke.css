@@ -197,8 +197,11 @@ a:hover {
   margin-left: auto;
 }
 
-.sidebar-pin-btn:hover {
+.sidebar-pin-btn:hover,
+.sidebar-pin-btn:focus,
+.sidebar-pin-btn:active {
   color: #ffffff;
+  background: none;
 }
 
 /* When collapsed, center the pin button */
