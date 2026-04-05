@@ -1020,3 +1020,29 @@ search help text unreadable at sidebar width.
 for `.sidebar-content p`, `.sidebar-content .is-italic`, `.sidebar-content em`,
 and `.sidebar-content i`. This is readable at sidebar width without being too
 large.
+
+## Player panel not playing songs (missing splash screen registration)
+
+The embedded player panel in `base.html` connects to socket.io but never
+registers as a splash screen client. The server requires clients to emit
+`register_splash` before it will stream video to them. The old standalone
+`splash.html` did this via `splash.js`, but the new `base.html` player panel
+did not replicate the registration.
+
+**Root cause:** `connectSocket()` in `base.html` called `io()` and listened
+for `connect`/`disconnect` but never emitted `register_splash`. Without
+registration the server never assigned a splash role and the client had no
+video element or HLS wiring to play the stream.
+
+**Fix:** Three changes in `base.html`:
+
+1. Added `window.socket.emit('register_splash')` inside the socket `connect`
+   handler and a `splash_role` listener so the server recognises the panel as a
+   splash screen client.
+2. Added a `<video id="player-video">` element inside `#player-panel` for
+   karaoke playback, separate from the existing background video.
+3. Extended the `now_playing` socket handler to set the video source URL, use
+   HLS.js for `.m3u8` streams, call `play()`, and toggle visibility between
+   the background video (idle) and the karaoke video (playing). Also wired up
+   `pause`, `play`, `skip`, `volume`, `restart`, and `playback_position`
+   socket events to the player panel video element.
