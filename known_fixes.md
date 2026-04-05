@@ -1091,3 +1091,14 @@ spans) rendered at various small sizes making the sidebar hard to read. A new
 grouped rule sets these elements to `0.875rem`. A companion rule bumps
 `.is-size-7` and `small` inside the sidebar to `0.8rem !important` so they
 remain legible.
+
+## Yellow/gold button and text colors replaced with spec colors
+
+The CSS and templates used Bulma-style `is-warning` amber (#f99b11) for buttons,
+tags, notifications, progress bars, and text. These yellow/gold colors are not
+in the spec palette. All `is-warning` component styles in `coreaoke.css` now use
+#e95420 (Ubuntu Orange) for backgrounds and #ffffff for text. The
+`.has-text-warning` helper class now renders as `rgba(255,255,255,0.7)` instead
+of amber. Inline `has-text-warning` overrides in `splash.html` and `info.html`
+were updated to match. The Search button (`is-warning`) and Add to queue button
+(`is-info`) in `search.html` were changed to `is-primary` (#e95420).

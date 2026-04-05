@@ -643,8 +643,8 @@ a:hover {
 }
 
 .tag.is-warning {
-  background: #f99b11;
-  color: #000000;
+  background: #e95420;
+  color: #ffffff;
 }
 
 .tag.is-success {
@@ -673,9 +673,9 @@ a:hover {
 }
 
 .notification.is-warning {
-  border-left-color: #f99b11;
-  background: rgba(249, 155, 17, 0.1);
-  color: #f99b11;
+  border-left-color: #e95420;
+  background: rgba(233, 84, 32, 0.1);
+  color: #e95420;
 }
 
 .notification.is-danger {
@@ -725,7 +725,7 @@ a:hover {
 }
 
 .progress.is-warning::-webkit-progress-value {
-  background: #f99b11;
+  background: #e95420;
 }
 
 .progress.is-danger::-webkit-progress-value {
@@ -835,9 +835,9 @@ a:hover {
 }
 
 .input.is-warning {
-  background: rgba(249, 155, 17, 0.15);
-  border-color: #f99b11;
-  color: #f99b11;
+  background: rgba(233, 84, 32, 0.15);
+  border-color: #e95420;
+  color: #e95420;
 }
 
 .input.is-danger {
@@ -933,12 +933,12 @@ a:hover {
 }
 
 .button.is-warning {
-  background: #f99b11;
-  color: #000000;
+  background: #e95420;
+  color: #ffffff;
 }
 
 .button.is-warning:hover {
-  background: #d4830e;
+  background: #c44210;
 }
 
 .button.is-info {
@@ -1079,11 +1079,11 @@ a:hover {
 }
 
 .has-text-warning {
-  color: #f99b11;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .has-text-warning-light {
-  color: #f99b11;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .has-text-danger {
