@@ -987,7 +987,11 @@ to initialize selectize dropdowns. Selectize binds to elements during
 `DOMContentLoaded`, which has already fired by the time sidebar content is
 injected via `innerHTML`.
 
-**Fix:** After the script re-execution loop in `loadSidebarContent()`, added
-a `setTimeout` (100 ms) that finds all `<select>` elements in the sidebar
-content and calls `$(el).selectize({})` on any that do not already have a
-selectize instance attached.
+**Fix:** Replaced the basic `setTimeout` selectize init in `loadSidebarContent()`
+with a more robust approach (200 ms delay for slower devices):
+- Uses `select:not(.selectized)` selector to skip already-initialized elements.
+- Applies specific options for `#song_query` (create: false, sortField, maxOptions,
+  placeholder).
+- Wraps each init in try/catch with a `console.warn` fallback.
+- Unlocks plain `input[type="text"]` elements that may be left disabled/readonly
+  after AJAX injection.

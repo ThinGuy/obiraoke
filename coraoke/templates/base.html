@@ -223,14 +223,29 @@
                       oldScript.parentNode.replaceChild(newScript, oldScript);
                     });
                     setTimeout(function() {
-                      if (window.$ && $.fn.selectize) {
-                        sc.querySelectorAll('select').forEach(function(el) {
-                          if (!el.selectize) {
-                            $(el).selectize({});
+                      var selects = sc.querySelectorAll('select:not(.selectized)');
+                      selects.forEach(function(el) {
+                        try {
+                          var opts = {};
+                          if (el.id === 'song_query') {
+                            opts = {
+                              create: false,
+                              sortField: 'text',
+                              maxOptions: 1000,
+                              placeholder: 'Available songs...'
+                            };
                           }
-                        });
-                      }
-                    }, 100);
+                          $(el).selectize(opts);
+                        } catch(e) {
+                          console.warn('selectize init failed for', el.id, e);
+                        }
+                      });
+                      var plainInputs = sc.querySelectorAll('input[type="text"]:not(.selectize-input *)');
+                      plainInputs.forEach(function(el) {
+                        el.removeAttribute('disabled');
+                        el.removeAttribute('readonly');
+                      });
+                    }, 200);
                   }
                 }
                 history.pushState({}, '', url);
