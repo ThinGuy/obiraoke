@@ -1111,3 +1111,12 @@ Socket.IO, Selectize.js, HLS.js, Fontello, Ubuntu Variable Font), Ubuntu
 Coreaoke contributors, and Ubuntu Core. Visiting the page emits a
 `credits_overlay` socket event that displays a 5-second overlay on the player
 panel. Blueprint registered in `app.py` as an internal (non-API) route.
+
+## Button colors updated to Vanilla Framework spec
+
+Primary/positive action buttons (`.button.is-primary`, `.button.is-success`,
+`.button.is-warning`) now use Vanilla Framework green `#0e8420` with hover
+`rgb(11, 108, 26)` instead of Ubuntu Orange. Destructive buttons
+(`.button.is-danger`) keep `#c7162b` with hover updated to `rgb(176, 19, 38)`.
+Ubuntu Orange `#e95420` is now reserved for sidebar active-item left border,
+sidebar active-item background tint, and the pin button when pinned.

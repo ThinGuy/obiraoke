@@ -906,12 +906,12 @@ a:hover {
 }
 
 .button.is-primary {
-  background: #e95420;
+  background: #0e8420;
   color: #ffffff;
 }
 
 .button.is-primary:hover {
-  background: #c44210;
+  background: rgb(11, 108, 26);
 }
 
 .button.is-danger {
@@ -920,7 +920,7 @@ a:hover {
 }
 
 .button.is-danger:hover {
-  background: #a01020;
+  background: rgb(176, 19, 38);
 }
 
 .button.is-success {
@@ -929,16 +929,16 @@ a:hover {
 }
 
 .button.is-success:hover {
-  background: #0a6018;
+  background: rgb(11, 108, 26);
 }
 
 .button.is-warning {
-  background: #e95420;
+  background: #0e8420;
   color: #ffffff;
 }
 
 .button.is-warning:hover {
-  background: #c44210;
+  background: rgb(11, 108, 26);
 }
 
 .button.is-info {
