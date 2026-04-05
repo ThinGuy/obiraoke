@@ -443,6 +443,13 @@ a:hover {
   margin: 0.5rem 0;
 }
 
+.sidebar-content p,
+.sidebar-content .is-italic,
+.sidebar-content em,
+.sidebar-content i {
+  font-size: 0.85rem;
+}
+
 .sidebar-content p {
   margin-bottom: 0.5rem;
 }

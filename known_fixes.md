@@ -1008,3 +1008,15 @@ lifecycle.
 `window.location.href` navigation instead of AJAX loading for:
 - The `/search` URL exactly.
 - Any URL containing `?query=` (search results pages that also rely on selectize).
+
+## Search help text too small in sidebar
+
+The compact sidebar content styles reduced font sizes aggressively for tables
+and buttons but did not set an explicit font-size for `p`, `.is-italic`, `em`,
+and `i` elements. These inherited a smaller size from parent rules, making the
+search help text unreadable at sidebar width.
+
+**Fix:** Added an explicit rule in `coraoke.css` setting `font-size: 0.85rem`
+for `.sidebar-content p`, `.sidebar-content .is-italic`, `.sidebar-content em`,
+and `.sidebar-content i`. This is readable at sidebar width without being too
+large.
