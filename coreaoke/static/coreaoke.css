@@ -518,7 +518,9 @@ a:hover {
   font-size: 0.7rem;
 }
 
-#alpha-bar a.alpha-active {
+#alpha-bar a.alpha-active,
+#alpha-bar a.alpha-active i,
+#alpha-bar a.alpha-active .icon {
   color: #0e8420 !important;
 }
 

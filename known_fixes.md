@@ -1158,3 +1158,12 @@ The active letter in the alpha-bar on the browse page was rendering orange
 `!important`. Added an override rule `#alpha-bar a.alpha-active` in
 `coreaoke/static/coreaoke.css` that sets the color to #0e8420 (Vanilla
 Framework green) to match the active/selected state color from the UI spec.
+
+## Alpha-bar active icon color -- extend rule to target child elements
+
+The previous `#alpha-bar a.alpha-active` rule set the link color to green but
+did not override the fontello icon color on child `<i>` or `.icon` elements
+inside the active link. The icon inherited orange from fontello CSS. Extended
+the rule to also target `#alpha-bar a.alpha-active i` and
+`#alpha-bar a.alpha-active .icon` with the same `color: #0e8420 !important`
+declaration, ensuring the icon inside the active alpha-bar link renders green.
