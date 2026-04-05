@@ -1,33 +1,69 @@
-{% extends 'base.html' %} {% block scripts %}
-<link
-  rel="stylesheet"
-  href="{{  url_for('static', filename='screensaver.css') }}"
-/>
-<link
-  rel="stylesheet"
-  href="{{  url_for('static', filename='score.css') }}"
-/>
-<script src="{{ url_for('static', filename='js/subtitles-octopus.js') }}"></script>
-<script>
-  // Use this config object to pass data from the jinja2 template to the splash.js code
-  const CoraokeConfig = {
-    hasBgVideo: "{{ has_bg_video }}" == 'True',
-    disableScore: "{{ disable_score }}" == 'True',
-    bgMusicVolume: "{{ bg_music_volume }}" * 1,
-    disableBgMusic: "{{ disable_bg_music }}" == 'True',
-    disableBgVideo: "{{ disable_bg_video }}" == 'True',
-    showSplashClock: "{{ show_splash_clock }}" == 'True',
-    screensaverTimeout: parseInt('{{ screensaver_timeout }}') || 0,
-    hideOverlay: "{{ hide_overlay }}" == 'True',
-    translations: {
-      socketConnectionLost: "{{ _('Connection lost. Is the server still running?') }}",
-      unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",
-    },
-    scorePhrasesUrl: "{{ url_for('splash.get_score_phrases') }}",
-  };
-</script>
-<script src="{{ url_for('static', filename='js/splash.js') }}"></script>
-{% endblock %} {% block body %}
+<!DOCTYPE html>
+<html data-theme="dark">
+
+<head>
+  {% if site_title %}
+  <title>{{ site_title }} - Splash</title>
+  {% else %}
+  <title>Coraoke - Splash</title>
+  {% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type=text/javascript src="{{  url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+  <script src="{{  url_for('static', filename='js.cookie-3.0.5.min.js') }}"></script>
+  <script src="{{  url_for('static', filename='socket.io-4.8.3.min.js') }}"></script>
+  <style>
+    @font-face {
+      font-family: "Ubuntu variable";
+      src: url("{{ url_for('static', filename='fonts/ubuntu-variable.woff2') }}") format("woff2");
+      font-weight: 100 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Ubuntu variable";
+      src: url("{{ url_for('static', filename='fonts/ubuntu-variable-italic.woff2') }}") format("woff2");
+      font-weight: 100 800;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Ubuntu Mono variable";
+      src: url("{{ url_for('static', filename='fonts/ubuntu-mono-variable.woff2') }}") format("woff2");
+      font-weight: 100 800;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <link rel="stylesheet" href="{{  url_for('static', filename='fontello/css/fontello.css') }}?v=2">
+  <link rel="stylesheet" href="{{  url_for('static', filename='coraoke.css') }}">
+  <link rel="stylesheet" href="{{  url_for('static', filename='custom.css') }}">
+  <link rel="icon" type="image/png" href="{{  url_for('static', filename='images/microphone.png') }}">
+  <link rel="stylesheet" href="{{  url_for('static', filename='screensaver.css') }}" />
+  <link rel="stylesheet" href="{{  url_for('static', filename='score.css') }}" />
+  <script src="{{ url_for('static', filename='js/subtitles-octopus.js') }}"></script>
+  <script>
+    // Use this config object to pass data from the jinja2 template to the splash.js code
+    const CoraokeConfig = {
+      hasBgVideo: "{{ has_bg_video }}" == 'True',
+      disableScore: "{{ disable_score }}" == 'True',
+      bgMusicVolume: "{{ bg_music_volume }}" * 1,
+      disableBgMusic: "{{ disable_bg_music }}" == 'True',
+      disableBgVideo: "{{ disable_bg_video }}" == 'True',
+      showSplashClock: "{{ show_splash_clock }}" == 'True',
+      screensaverTimeout: parseInt('{{ screensaver_timeout }}') || 0,
+      hideOverlay: "{{ hide_overlay }}" == 'True',
+      translations: {
+        socketConnectionLost: "{{ _('Connection lost. Is the server still running?') }}",
+        unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",
+      },
+      scorePhrasesUrl: "{{ url_for('splash.get_score_phrases') }}",
+    };
+  </script>
+  <script src="{{ url_for('static', filename='js/splash.js') }}"></script>
+</head>
+
+<body>
+
 <div id="top-container" class="overlay">
 <i class="icon icon-mic-1 is-invisible" style="position: absolute" title="Current singer"></i>
   <div
@@ -204,6 +240,9 @@
 <script src="{{  url_for('static', filename='score.js') }}"></script>
 
 <style>
+  body {
+    font-family: "Ubuntu variable", "Ubuntu", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
   html {
     overflow-y: hidden;
   }
@@ -263,9 +302,6 @@
     height: 100%;
     width: 100%;
     object-fit: contain;
-  }
-  body {
-    background-color: black;
   }
   .fw-fh-container {
     height: 100vh;
@@ -354,4 +390,6 @@
   }
 </style>
 
-{% endblock %}
+</body>
+
+</html>

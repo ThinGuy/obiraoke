@@ -528,7 +528,7 @@ class Karaoke:
         This method blocks until stop() is called or KeyboardInterrupt.
         """
         logging.debug("Starting Coraoke run loop")
-        logging.info(f"Connect the player host to: {self.url}/splash")
+        logging.info(f"Connect to the web UI at: {self.url}/")
         self.running = True
         while self.running:
             try:

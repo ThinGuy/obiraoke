@@ -811,3 +811,31 @@ where the sidebar IS the control panel and the right side is a permanent player.
   edit button text.
 - `info.html`: reduced QR image from 300px to 150px, removed max-width on
   password input.
+
+## Sidebar toggle icon, advertised URL, and splash standalone (fix-sidebar-toggle-url)
+
+**Sidebar toggle icon (`base.html`):**
+
+- Replaced the `icon-menu` fontello hamburger icon on the sidebar pin button
+  with an inline SVG panel icon that better represents sidebar expand/collapse.
+  The sidebar toggle JS (expand/collapse via `#sidebar-pin` click) was already
+  correctly wired; `#sidebar-content` visibility is driven by the
+  `.sidebar-expanded` CSS class on the parent `#sidebar` element.
+
+**Advertised URL (`karaoke.py`):**
+
+- Changed the startup log message from `Connect the player host to:
+  {url}/splash` to `Connect to the web UI at: {url}/`. The root URL loads the
+  web UI for singers. The `/splash` route is for dedicated TV/player screens
+  only and should not be the default advertised URL. `get_url()` already
+  returns `http://host:port` without a path suffix; only the log line was wrong.
+
+**Splash standalone template (`splash.html`):**
+
+- Removed `{% extends 'base.html' %}` and converted splash.html into a fully
+  standalone HTML document. The splash screen is for dedicated TV/player screens
+  and must never render the sidebar or any base.html UI chrome. All required
+  head assets (jQuery, Socket.IO, fonts, CSS) are now included directly.
+  The `blank_page=True` variable previously passed from the splash route
+  suppressed the sidebar in base.html, but extending base.html at all was
+  incorrect for a fullscreen player page.
