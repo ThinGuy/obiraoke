@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coraoke.lib.get_platform import (
+from coreaoke.lib.get_platform import (
     get_data_directory,
     get_default_dl_dir,
     get_installed_js_runtime,
@@ -115,12 +115,12 @@ class TestHasJsRuntime:
 
     def test_has_runtime(self):
         """Test when a JS runtime is available."""
-        with patch("coraoke.lib.get_platform.get_installed_js_runtime", return_value="node"):
+        with patch("coreaoke.lib.get_platform.get_installed_js_runtime", return_value="node"):
             assert has_js_runtime() is True
 
     def test_no_runtime(self):
         """Test when no JS runtime is available."""
-        with patch("coraoke.lib.get_platform.get_installed_js_runtime", return_value=None):
+        with patch("coreaoke.lib.get_platform.get_installed_js_runtime", return_value=None):
             assert has_js_runtime() is False
 
 
@@ -130,34 +130,34 @@ class TestGetPlatform:
     def test_osx_platform(self):
         """Test macOS detection."""
         with patch("sys.platform", "darwin"):
-            with patch("coraoke.lib.get_platform.is_android", return_value=False):
+            with patch("coreaoke.lib.get_platform.is_android", return_value=False):
                 assert get_platform() == "osx"
 
     def test_windows_platform(self):
         """Test Windows detection."""
         with patch("sys.platform", "win32"):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=True):
-                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+            with patch("coreaoke.lib.get_platform.is_windows", return_value=True):
+                with patch("coreaoke.lib.get_platform.is_android", return_value=False):
                     assert get_platform() == "windows"
 
     def test_linux_platform(self):
         """Test Linux detection."""
         with patch("sys.platform", "linux"):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+            with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
+                with patch("coreaoke.lib.get_platform.is_android", return_value=False):
                     assert get_platform() == "linux"
 
     def test_android_platform(self):
         """Test Android detection (takes priority over linux)."""
         with patch("sys.platform", "linux"):
-            with patch("coraoke.lib.get_platform.is_android", return_value=True):
+            with patch("coreaoke.lib.get_platform.is_android", return_value=True):
                 assert get_platform() == "android"
 
     def test_unknown_platform(self):
         """Test unknown platform detection."""
         with patch("sys.platform", "freebsd"):
-            with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-                with patch("coraoke.lib.get_platform.is_android", return_value=False):
+            with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
+                with patch("coreaoke.lib.get_platform.is_android", return_value=False):
                     assert get_platform() == "unknown"
 
 
@@ -166,14 +166,14 @@ class TestGetDefaultDlDir:
 
     def test_windows_default(self):
         """Test default download dir on Windows (no legacy)."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=True):
             with patch("os.path.exists", return_value=False):
                 result = get_default_dl_dir("windows")
-                assert result == "~\\coraoke-songs"
+                assert result == "~\\coreaoke-songs"
 
     def test_windows_legacy_exists(self):
         """Test Windows uses legacy dir if it exists."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=True):
             with patch("os.path.exists", return_value=True):
                 with patch(
                     "os.path.expanduser", return_value="C:\\Users\\test\\pikaraoke\\songs"
@@ -183,24 +183,24 @@ class TestGetDefaultDlDir:
 
     def test_linux_default(self):
         """Test default download dir on Linux (no legacy)."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
             with patch("os.path.exists", return_value=False):
                 result = get_default_dl_dir("linux")
-                assert result == "~/coraoke-songs"
+                assert result == "~/coreaoke-songs"
 
     def test_linux_legacy_exists(self):
         """Test Linux uses legacy dir if it exists."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
             with patch("os.path.exists", return_value=True):
                 result = get_default_dl_dir("linux")
                 assert result == "~/pikaraoke/songs"
 
     def test_osx_default(self):
         """Test default download dir on macOS."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
             with patch("os.path.exists", return_value=False):
                 result = get_default_dl_dir("osx")
-                assert result == "~/coraoke-songs"
+                assert result == "~/coreaoke-songs"
 
 
 class TestGetDataDirectory:
@@ -208,45 +208,45 @@ class TestGetDataDirectory:
 
     def test_windows_path(self):
         """Test that Windows returns the APPDATA path."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=True):
             with patch.dict(os.environ, {"APPDATA": "C:\\Users\\Test\\AppData\\Roaming"}):
                 # Mock os.path to be a MagicMock to avoid real FS interaction and cross-contamination
-                with patch("coraoke.lib.get_platform.os.path") as mock_path:
+                with patch("coreaoke.lib.get_platform.os.path") as mock_path:
                     # Configure mock to behave like ntpath (Windows)
                     mock_path.join.side_effect = ntpath.join
                     mock_path.exists.return_value = True  # Simulate dir exists
 
                     result = get_data_directory()
-                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\coraoke"
+                    assert result == "C:\\Users\\Test\\AppData\\Roaming\\coreaoke"
 
     def test_windows_path_creation(self):
         """Test that Windows creates the directory if missing."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=True):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=True):
             with patch.dict(os.environ, {"APPDATA": "C:\\Users\\Test\\AppData\\Roaming"}):
                 with patch("os.makedirs") as mock_makedirs:
                     # Mock os.path completely to avoid real FS interaction
-                    with patch("coraoke.lib.get_platform.os.path") as mock_path:
+                    with patch("coreaoke.lib.get_platform.os.path") as mock_path:
                         # Configure mock to behave like ntpath (Windows)
                         mock_path.join.side_effect = ntpath.join
                         mock_path.exists.return_value = False  # Simulate dir MISSING
 
                         get_data_directory()
 
-                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\coraoke"
+                        expected_path = "C:\\Users\\Test\\AppData\\Roaming\\coreaoke"
                         mock_makedirs.assert_called_once_with(expected_path)
 
     def test_linux_path(self):
         """Test that Linux/Mac returns the home directory path."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.coraoke"):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.expanduser", return_value="/home/test/.coreaoke"):
                 with patch("os.path.exists", return_value=True):
                     result = get_data_directory()
-                    assert result == "/home/test/.coraoke"
+                    assert result == "/home/test/.coreaoke"
 
     def test_linux_path_creation(self):
         """Test that Linux creates the directory if missing."""
-        with patch("coraoke.lib.get_platform.is_windows", return_value=False):
-            with patch("os.path.expanduser", return_value="/home/test/.coraoke"):
+        with patch("coreaoke.lib.get_platform.is_windows", return_value=False):
+            with patch("os.path.expanduser", return_value="/home/test/.coreaoke"):
                 with patch("os.path.exists", return_value=False):
                     with patch("os.makedirs") as mock_makedirs:
                         get_data_directory()

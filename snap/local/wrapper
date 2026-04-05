@@ -9,13 +9,13 @@ if [ -f "$SNAP/bin/pulseaudio-setup" ]; then
     . "$SNAP/bin/pulseaudio-setup"
 fi
 
-export CORAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
-export CORAOKE_SONGS_DIR="$SNAP_COMMON/coraoke-songs"
+export COREAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
+export COREAOKE_SONGS_DIR="$SNAP_COMMON/coreaoke-songs"
 
 # When running as a daemon, redirect output to a log file.
 # JOURNAL_STREAM is set by systemd for service units.
 if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then
-    LOG_FILE="$SNAP_COMMON/coraoke.log"
+    LOG_FILE="$SNAP_COMMON/coreaoke.log"
     LOG_MAX=10485760  # 10 MB
 
     # Rotate the log if it exceeds the cap
@@ -29,137 +29,137 @@ if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then
     exec >>"$LOG_FILE" 2>&1
 fi
 
-# Read snap configuration keys (set via: snap set coraoke key=value)
-CORAOKE_ARGS=""
+# Read snap configuration keys (set via: snap set coreaoke key=value)
+COREAOKE_ARGS=""
 
 port="$(snapctl get port)" || true
 if [ -n "$port" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --port $port"
+    COREAOKE_ARGS="$COREAOKE_ARGS --port $port"
 fi
 
 admin_password="$(snapctl get admin-password)" || true
 if [ -n "$admin_password" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --admin-password $admin_password"
+    COREAOKE_ARGS="$COREAOKE_ARGS --admin-password $admin_password"
 fi
 
 download_path="$(snapctl get download-path)" || true
 if [ -n "$download_path" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --download-path $download_path"
+    COREAOKE_ARGS="$COREAOKE_ARGS --download-path $download_path"
 else
-    CORAOKE_ARGS="$CORAOKE_ARGS --download-path $SNAP_COMMON/coraoke-songs"
+    COREAOKE_ARGS="$COREAOKE_ARGS --download-path $SNAP_COMMON/coreaoke-songs"
 fi
 
 log_level="$(snapctl get log-level)" || true
 if [ -n "$log_level" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --log-level $log_level"
+    COREAOKE_ARGS="$COREAOKE_ARGS --log-level $log_level"
 fi
 
 headless="$(snapctl get headless)" || true
 if [ "$headless" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --headless"
+    COREAOKE_ARGS="$COREAOKE_ARGS --headless"
 fi
 
 streaming_format="$(snapctl get streaming-format)" || true
 if [ -n "$streaming_format" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --streaming-format $streaming_format"
+    COREAOKE_ARGS="$COREAOKE_ARGS --streaming-format $streaming_format"
 fi
 
 # Default to headless if no config was set for it
 if [ -z "$headless" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --headless"
+    COREAOKE_ARGS="$COREAOKE_ARGS --headless"
 fi
 
 proxy="$(snapctl get proxy)" || true
 if [ -n "$proxy" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --youtubedl-proxy $proxy"
+    COREAOKE_ARGS="$COREAOKE_ARGS --youtubedl-proxy $proxy"
 fi
 
 # Boolean keys -- add flag when set to "true"
 normalize_audio="$(snapctl get normalize-audio)" || true
 if [ "$normalize_audio" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --normalize-audio"
+    COREAOKE_ARGS="$COREAOKE_ARGS --normalize-audio"
 fi
 
 disable_score="$(snapctl get disable-score)" || true
 if [ "$disable_score" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --disable-score"
+    COREAOKE_ARGS="$COREAOKE_ARGS --disable-score"
 fi
 
 high_quality="$(snapctl get high-quality)" || true
 if [ "$high_quality" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --high-quality"
+    COREAOKE_ARGS="$COREAOKE_ARGS --high-quality"
 fi
 
 prefer_hostname="$(snapctl get prefer-hostname)" || true
 if [ "$prefer_hostname" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --prefer-hostname"
+    COREAOKE_ARGS="$COREAOKE_ARGS --prefer-hostname"
 fi
 
 disable_bg_music="$(snapctl get disable-bg-music)" || true
 if [ "$disable_bg_music" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --disable-bg-music"
+    COREAOKE_ARGS="$COREAOKE_ARGS --disable-bg-music"
 fi
 
 disable_bg_video="$(snapctl get disable-bg-video)" || true
 if [ "$disable_bg_video" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --disable-bg-video"
+    COREAOKE_ARGS="$COREAOKE_ARGS --disable-bg-video"
 fi
 
 show_splash_clock="$(snapctl get show-splash-clock)" || true
 if [ "$show_splash_clock" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --show-splash-clock"
+    COREAOKE_ARGS="$COREAOKE_ARGS --show-splash-clock"
 fi
 
 hide_url="$(snapctl get hide-url)" || true
 if [ "$hide_url" = "true" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --hide-url"
+    COREAOKE_ARGS="$COREAOKE_ARGS --hide-url"
 fi
 
 # Value keys -- pass as --key value when set
 volume="$(snapctl get volume)" || true
 if [ -n "$volume" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --volume $volume"
+    COREAOKE_ARGS="$COREAOKE_ARGS --volume $volume"
 fi
 
 bg_music_volume="$(snapctl get bg-music-volume)" || true
 if [ -n "$bg_music_volume" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --bg-music-volume $bg_music_volume"
+    COREAOKE_ARGS="$COREAOKE_ARGS --bg-music-volume $bg_music_volume"
 fi
 
 splash_delay="$(snapctl get splash-delay)" || true
 if [ -n "$splash_delay" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --splash-delay $splash_delay"
+    COREAOKE_ARGS="$COREAOKE_ARGS --splash-delay $splash_delay"
 fi
 
 screensaver_timeout="$(snapctl get screensaver-timeout)" || true
 if [ -n "$screensaver_timeout" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --screensaver-timeout $screensaver_timeout"
+    COREAOKE_ARGS="$COREAOKE_ARGS --screensaver-timeout $screensaver_timeout"
 fi
 
 bg_video_path="$(snapctl get bg-video-path)" || true
 if [ -n "$bg_video_path" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --bg-video-path $bg_video_path"
+    COREAOKE_ARGS="$COREAOKE_ARGS --bg-video-path $bg_video_path"
 fi
 
 bg_music_path="$(snapctl get bg-music-path)" || true
 if [ -n "$bg_music_path" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --bg-music-path $bg_music_path"
+    COREAOKE_ARGS="$COREAOKE_ARGS --bg-music-path $bg_music_path"
 fi
 
 logo_path="$(snapctl get logo-path)" || true
 if [ -n "$logo_path" ]; then
-    CORAOKE_ARGS="$CORAOKE_ARGS --logo-path $logo_path"
+    COREAOKE_ARGS="$COREAOKE_ARGS --logo-path $logo_path"
 fi
 
 preseed_url="$(snapctl get preseed-url)" || true
 if [ -n "$preseed_url" ]; then
     if [ ! -f "$SNAP_COMMON/.preseed-done" ]; then
         curl -fsSL "$preseed_url" -o "$SNAP_COMMON/.preseed.tar.gz"
-        tar -xzf "$SNAP_COMMON/.preseed.tar.gz" -C "$SNAP_COMMON/coraoke-songs/"
+        tar -xzf "$SNAP_COMMON/.preseed.tar.gz" -C "$SNAP_COMMON/coreaoke-songs/"
         rm -f "$SNAP_COMMON/.preseed.tar.gz"
         touch "$SNAP_COMMON/.preseed-done"
         echo "Preseed complete from $preseed_url"
     fi
 fi
 
-exec "$SNAP/bin/coraoke" $CORAOKE_ARGS "$@"
+exec "$SNAP/bin/coreaoke" $COREAOKE_ARGS "$@"

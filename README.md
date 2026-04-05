@@ -1,6 +1,6 @@
-# Ubuntu Coraoke
+# Ubuntu Coreaoke
 
-![Ubuntu Coraoke](coraoke-splash.png)
+![Ubuntu Coreaoke](coreaoke-splash.png)
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ If this software has made your life better, eliminated male patterned baldness, 
 
 ## About
 
-Ubuntu Coraoke is a strictly-confined snap implementation of [vicwomg](https://github.com/vicwomg)'s [PiKaraoke](https://github.com/vicwomg/pikaraoke), targeting Ubuntu Core, Ubuntu, and any Linux with [Snapd](https://snapcraft.io/snapd).
+Ubuntu Coreaoke is a strictly-confined snap implementation of [vicwomg](https://github.com/vicwomg)'s [PiKaraoke](https://github.com/vicwomg/pikaraoke), targeting Ubuntu Core, Ubuntu, and any Linux with [Snapd](https://snapcraft.io/snapd).
 
 [PiKaraoke](https://github.com/vicwomg/pikaraoke) brings a fun and professional "KTV" experience to any home, office, or colonoscopy examination room.
 
@@ -33,7 +33,7 @@ Any platform that can run Snapd instantly becomes a full-featured karaoke statio
 
 - A full-screen player and an instant web interface
 - Easy access via QR code or by visiting `http://<hostname>:5555` on any modern browser
-- A client-free experience — browse your local library, manage the queue, and access countless karaoke hits from YouTube, all from the Ubuntu Coraoke web UI on any device with a modern browser
+- A client-free experience — browse your local library, manage the queue, and access countless karaoke hits from YouTube, all from the Ubuntu Coreaoke web UI on any device with a modern browser
 
 ## Features
 
@@ -48,17 +48,17 @@ Any platform that can run Snapd instantly becomes a full-featured karaoke statio
 ## Screenshots
 
 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-<img width="250" alt="coraoke-nowplaying" src="https://user-images.githubusercontent.com/4107190/95813193-2cd5c180-0ccc-11eb-89f4-11a69676dc6f.png">
-<img width="250" alt="coraoke-queue" src="https://user-images.githubusercontent.com/4107190/95813195-2d6e5800-0ccc-11eb-8f00-1369350a8a1c.png">
-<img width="250" alt="coraoke-browse" src="https://user-images.githubusercontent.com/4107190/95813182-27787700-0ccc-11eb-82c8-fde7f0a631c1.png">
-<img width="250" alt="coraoke-search1" src="https://user-images.githubusercontent.com/4107190/95813197-2e06ee80-0ccc-11eb-9bf9-ddb24d988332.png">
-<img width="250" alt="coraoke-search2" src="https://user-images.githubusercontent.com/4107190/95813190-2ba49480-0ccc-11eb-84e3-f902cbd489a2.png">
-<img width="400" height="300" alt="coraoke-tv" src="https://user-images.githubusercontent.com/4107190/95813564-019fa200-0ccd-11eb-95e1-57a002c357a3.png">
+<img width="250" alt="coreaoke-nowplaying" src="https://user-images.githubusercontent.com/4107190/95813193-2cd5c180-0ccc-11eb-89f4-11a69676dc6f.png">
+<img width="250" alt="coreaoke-queue" src="https://user-images.githubusercontent.com/4107190/95813195-2d6e5800-0ccc-11eb-8f00-1369350a8a1c.png">
+<img width="250" alt="coreaoke-browse" src="https://user-images.githubusercontent.com/4107190/95813182-27787700-0ccc-11eb-82c8-fde7f0a631c1.png">
+<img width="250" alt="coreaoke-search1" src="https://user-images.githubusercontent.com/4107190/95813197-2e06ee80-0ccc-11eb-9bf9-ddb24d988332.png">
+<img width="250" alt="coreaoke-search2" src="https://user-images.githubusercontent.com/4107190/95813190-2ba49480-0ccc-11eb-84e3-f902cbd489a2.png">
+<img width="400" height="300" alt="coreaoke-tv" src="https://user-images.githubusercontent.com/4107190/95813564-019fa200-0ccd-11eb-95e1-57a002c357a3.png">
 </div>
 
 ## Supported Devices / OS / Platforms
 
-Ubuntu Coraoke is a strictly-confined snap that runs directly on Ubuntu Core or on any platform with Snapd installed.
+Ubuntu Coreaoke is a strictly-confined snap that runs directly on Ubuntu Core or on any platform with Snapd installed.
 
 Check [here](https://snapcraft.io/docs/tutorials/install-the-daemon/) for any distributions added since this guide was last updated.
 
@@ -83,63 +83,63 @@ Installation is done via the [Snap Store](https://snapcraft.io/).
 ### Installation
 
 ```sh
-sudo snap install coraoke
+sudo snap install coreaoke
 ```
 
 ### Upgrading
 
 ```sh
-sudo snap refresh coraoke
+sudo snap refresh coreaoke
 ```
 
 ### Removing while preserving song library
 
 ```sh
-sudo snap remove coraoke
+sudo snap remove coreaoke
 ```
 
 ### Removing and purging all downloaded content
 
 ```sh
-sudo snap remove coraoke --purge
+sudo snap remove coreaoke --purge
 ```
 
 ## Usage
 
-Run coraoke from the command line:
+Run coreaoke from the command line:
 
 ```sh
-coraoke
+coreaoke
 ```
 
 Launches the player in "headed" mode via your default browser. Scan the QR code to connect mobile remotes.
 
-Use `coraoke --headless` to run as a background server for external browsers.
+Use `coreaoke --headless` to run as a background server for external browsers.
 
-- Set Ubuntu Coraoke to autostart in headless mode: `sudo snap set coraoke autostart=true`
-- Ubuntu Coraoke is available at `http://localhost:5555` on the device it was installed on.
+- Set Ubuntu Coreaoke to autostart in headless mode: `sudo snap set coreaoke autostart=true`
+- Ubuntu Coreaoke is available at `http://localhost:5555` on the device it was installed on.
 
 ### Snap Configuration
 
-Ubuntu Coraoke can be configured via `snap set` without touching the command line:
+Ubuntu Coreaoke can be configured via `snap set` without touching the command line:
 
 | Key | Description | Example |
 |-----|-------------|---------|
-| `port` | HTTP listen port (default: 5555) | `sudo snap set coraoke port=8080` |
-| `admin-password` | Lock down admin features | `sudo snap set coraoke admin-password=secret` |
-| `download-path` | Custom songs directory | `sudo snap set coraoke download-path=/mnt/songs` |
-| `log-level` | Logging verbosity | `sudo snap set coraoke log-level=DEBUG` |
-| `headless` | Run without local browser | `sudo snap set coraoke headless=true` |
-| `streaming-format` | `hls` or `mp4` | `sudo snap set coraoke streaming-format=mp4` |
-| `autostart` | Start on boot | `sudo snap set coraoke autostart=true` |
-| `proxy` | HTTP proxy for yt-dlp | `sudo snap set coraoke proxy=http://proxy.example.com:3128` |
+| `port` | HTTP listen port (default: 5555) | `sudo snap set coreaoke port=8080` |
+| `admin-password` | Lock down admin features | `sudo snap set coreaoke admin-password=secret` |
+| `download-path` | Custom songs directory | `sudo snap set coreaoke download-path=/mnt/songs` |
+| `log-level` | Logging verbosity | `sudo snap set coreaoke log-level=DEBUG` |
+| `headless` | Run without local browser | `sudo snap set coreaoke headless=true` |
+| `streaming-format` | `hls` or `mp4` | `sudo snap set coreaoke streaming-format=mp4` |
+| `autostart` | Start on boot | `sudo snap set coreaoke autostart=true` |
+| `proxy` | HTTP proxy for yt-dlp | `sudo snap set coreaoke proxy=http://proxy.example.com:3128` |
 
 ## Help/Options
 
 Full help is available via:
 
 ```sh
-coraoke --help
+coreaoke --help
 ```
 
 ```
@@ -147,7 +147,7 @@ options:
   -h, --help            show this help message and exit
   -p PORT, --port PORT  Desired http port (default: 5555)
   -d DOWNLOAD_PATH [DOWNLOAD_PATH ...], --download-path DOWNLOAD_PATH [DOWNLOAD_PATH ...]
-                        Desired path for downloaded songs. (default: /var/snap/coraoke/common/coraoke-songs)
+                        Desired path for downloaded songs. (default: /var/snap/coreaoke/common/coreaoke-songs)
   --youtubedl-proxy YOUTUBEDL_PROXY
                         Proxy server to use for youtube-dl, in case blocked by a firewall
   --ytdl-args YTDL_ARGS
@@ -156,7 +156,7 @@ options:
                         Logging level int value (DEBUG: 10, INFO: 20, WARNING: 30, ERROR: 40, CRITICAL: 50). (default: 20)
   --prefer-hostname     Use the local hostname instead of the IP as the connection URL.
   --hide-splash-screen, --headless
-                        Headless mode. Don't launch the splash screen/player on the coraoke server
+                        Headless mode. Don't launch the splash screen/player on the coreaoke server
   --logo-path LOGO_PATH [LOGO_PATH ...]
                         Path to a custom logo image file for the splash screen. Recommended dimensions ~ 2048x1024px
   -u URL, --url URL     Override the displayed IP address with a supplied URL.

@@ -2,10 +2,10 @@
 
 import pytest
 
-from coraoke.lib.events import EventSystem
-from coraoke.lib.preference_manager import PreferenceManager
-from coraoke.lib.queue_manager import QueueManager
-from coraoke.lib.song_manager import SongManager
+from coreaoke.lib.events import EventSystem
+from coreaoke.lib.preference_manager import PreferenceManager
+from coreaoke.lib.queue_manager import QueueManager
+from coreaoke.lib.song_manager import SongManager
 
 
 class MockPlaybackController:
@@ -120,7 +120,7 @@ class MockKaraoke:
         self._socketio = value
 
     # Import the actual methods we want to test
-    from coraoke.karaoke import Karaoke
+    from coreaoke.karaoke import Karaoke
 
     # Bind the real methods to our mock class
     get_now_playing = Karaoke.get_now_playing

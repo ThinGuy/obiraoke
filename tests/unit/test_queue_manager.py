@@ -6,9 +6,9 @@ ensuring queue logic is correct and maintainable.
 
 import pytest
 
-from coraoke.lib.events import EventSystem
-from coraoke.lib.preference_manager import PreferenceManager
-from coraoke.lib.queue_manager import QueueManager
+from coreaoke.lib.events import EventSystem
+from coreaoke.lib.preference_manager import PreferenceManager
+from coreaoke.lib.queue_manager import QueueManager
 
 
 def extract_title(path: str, *args) -> str:
@@ -572,7 +572,7 @@ class TestQueueManagerHelpers:
             get_available_songs=lambda: [],
         )
 
-        assert qm.is_user_limited("Coraoke") is False
+        assert qm.is_user_limited("Coreaoke") is False
         assert qm.is_user_limited("Randomizer") is False
 
     def test_is_user_limited_respects_limit(self, preferences, events):

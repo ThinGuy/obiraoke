@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from coraoke.lib.events import EventSystem
+from coreaoke.lib.events import EventSystem
 
 
 def test_event_system_emit_calls_handler():

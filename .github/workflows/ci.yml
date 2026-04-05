@@ -94,7 +94,7 @@ jobs:
       uses: astral-sh/setup-uv@v4
 
     - name: Run tests
-      run: uv run pytest tests/ -v --cov=coraoke --cov-report=term-missing --cov-report=xml:coverage.xml
+      run: uv run pytest tests/ -v --cov=coreaoke --cov-report=term-missing --cov-report=xml:coverage.xml
 
   docker-smoketest:
     runs-on: ubuntu-latest

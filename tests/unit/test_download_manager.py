@@ -4,9 +4,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coraoke.lib.download_manager import DownloadManager
-from coraoke.lib.events import EventSystem
-from coraoke.lib.preference_manager import PreferenceManager
+from coreaoke.lib.download_manager import DownloadManager
+from coreaoke.lib.events import EventSystem
+from coreaoke.lib.preference_manager import PreferenceManager
 
 
 @pytest.fixture
@@ -147,7 +147,7 @@ class TestDownloadManagerExecuteDownload:
 
     @patch("flask_babel._", side_effect=lambda x: x)
     @patch("subprocess.Popen")
-    @patch("coraoke.lib.download_manager.build_ytdl_download_command")
+    @patch("coreaoke.lib.download_manager.build_ytdl_download_command")
     def test_execute_download_success(
         self, mock_build_cmd, mock_popen, mock_gettext, download_manager, song_manager, events
     ):
@@ -177,7 +177,7 @@ class TestDownloadManagerExecuteDownload:
 
     @patch("flask_babel._", side_effect=lambda x: x)
     @patch("subprocess.Popen")
-    @patch("coraoke.lib.download_manager.build_ytdl_download_command")
+    @patch("coreaoke.lib.download_manager.build_ytdl_download_command")
     def test_execute_download_with_enqueue(
         self,
         mock_build_cmd,
@@ -211,7 +211,7 @@ class TestDownloadManagerExecuteDownload:
     @patch("flask_babel._", side_effect=lambda x: x)
     @patch("subprocess.run")
     @patch("subprocess.Popen")
-    @patch("coraoke.lib.youtube_dl.build_ytdl_download_command")
+    @patch("coreaoke.lib.youtube_dl.build_ytdl_download_command")
     def test_execute_download_failure(
         self, mock_build_cmd, mock_popen, mock_run, mock_gettext, download_manager, events
     ):
@@ -240,7 +240,7 @@ class TestDownloadManagerExecuteDownload:
 
     @patch("flask_babel._", side_effect=lambda x: x)
     @patch("subprocess.Popen")
-    @patch("coraoke.lib.download_manager.build_ytdl_download_command")
+    @patch("coreaoke.lib.download_manager.build_ytdl_download_command")
     def test_execute_download_enqueue_without_path(
         self, mock_build_cmd, mock_popen, mock_gettext, download_manager, song_manager, events
     ):
@@ -354,7 +354,7 @@ class TestDownloadManagerSpecialCharacters:
     )
     @patch("flask_babel._", side_effect=lambda x: x)
     @patch("subprocess.Popen")
-    @patch("coraoke.lib.download_manager.build_ytdl_download_command")
+    @patch("coreaoke.lib.download_manager.build_ytdl_download_command")
     def test_execute_download_special_characters_enqueue(
         self,
         mock_build_cmd,

@@ -4,7 +4,7 @@
 # test conditions. Handle your own errors. The author knows the context,
 # bash does not.
 
-# Validate snap configuration keys set via: snap set coraoke key=value
+# Validate snap configuration keys set via: snap set coreaoke key=value
 
 # Validate port (must be numeric 1-65535)
 port="$(snapctl get port)" || true
@@ -36,9 +36,9 @@ fi
 # Ensure the shared songs directory exists with world-writable permissions.
 # This covers the case where download-path is changed via snap set and the
 # default directory was not yet created (e.g. install hook did not run).
-if [ ! -d "$SNAP_COMMON/coraoke-songs" ]; then
-    mkdir -p "$SNAP_COMMON/coraoke-songs"
-    chmod 0777 "$SNAP_COMMON/coraoke-songs"
+if [ ! -d "$SNAP_COMMON/coreaoke-songs" ]; then
+    mkdir -p "$SNAP_COMMON/coreaoke-songs"
+    chmod 0777 "$SNAP_COMMON/coreaoke-songs"
 fi
 
 # Handle autostart toggle for the daemon service
@@ -46,10 +46,10 @@ autostart="$(snapctl get autostart)" || true
 if [ -n "$autostart" ]; then
     case "$autostart" in
         true)
-            snapctl start --enable "$SNAP_INSTANCE_NAME.coraoke-server"
+            snapctl start --enable "$SNAP_INSTANCE_NAME.coreaoke-server"
             ;;
         false)
-            snapctl stop --disable "$SNAP_INSTANCE_NAME.coraoke-server"
+            snapctl stop --disable "$SNAP_INSTANCE_NAME.coreaoke-server"
             ;;
         *)
             echo "error: autostart must be 'true' or 'false', got '$autostart'" >&2

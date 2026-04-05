@@ -2,7 +2,7 @@
 
 import pytest
 
-from coraoke.lib.args import arg_path_parse, parse_volume
+from coreaoke.lib.args import arg_path_parse, parse_volume
 
 
 class TestArgPathParse:

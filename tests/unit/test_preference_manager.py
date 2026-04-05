@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from coraoke.lib.preference_manager import PreferenceManager
+from coreaoke.lib.preference_manager import PreferenceManager
 
 
 @pytest.fixture
@@ -372,7 +372,7 @@ class MinimalKaraoke:
         self.preferences = PreferenceManager(config_file_path, target=self)
 
     # Import the actual _load_preferences method to test
-    from coraoke.karaoke import Karaoke
+    from coreaoke.karaoke import Karaoke
 
     _load_preferences = Karaoke._load_preferences
 

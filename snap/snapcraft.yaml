@@ -1,4 +1,4 @@
-name: coraoke
+name: coreaoke
 base: core24
 version: '1.19.0'
 summary: OB-01's Karaoke Party
@@ -7,13 +7,13 @@ description: |
   queuing, and playback with pitch shifting and streaming.
 
   Configuration via snap set:
-    snap set coraoke port=8080
-    snap set coraoke admin-password=secret
-    snap set coraoke volume=0.85
-    snap set coraoke normalize-audio=true
-    snap set coraoke logo-path=/path/to/logo.png
-    snap set coraoke prefer-hostname=true
-    snap set coraoke autostart=true
+    snap set coreaoke port=8080
+    snap set coreaoke admin-password=secret
+    snap set coreaoke volume=0.85
+    snap set coreaoke normalize-audio=true
+    snap set coreaoke logo-path=/path/to/logo.png
+    snap set coreaoke prefer-hostname=true
+    snap set coreaoke autostart=true
 
   Playback:
     volume               Master volume 0-1 (e.g. 0.85)
@@ -22,10 +22,10 @@ description: |
     high-quality         Prefer higher quality downloads (true/false)
     disable-score        Disable singing score display (true/false)
     streaming-format     Streaming format: hls or mp4
-    download-path        Song download directory (default: $SNAP_COMMON/coraoke-songs)
+    download-path        Song download directory (default: $SNAP_COMMON/coreaoke-songs)
 
   Branding:
-    theme                Apply a named theme preset (e.g. snap set coraoke theme=default)
+    theme                Apply a named theme preset (e.g. snap set coreaoke theme=default)
     logo-path            Custom logo image path
     bg-video-path        Custom background video path
     bg-music-path        Custom background music path
@@ -43,7 +43,7 @@ description: |
     proxy                HTTP proxy for yt-dlp (e.g. http://proxy:3128)
 
   Preseed:
-    preseed-url   URL to a song tarball downloaded on first run (snap set coraoke preseed-url=https://your.server/songs.tar.gz)
+    preseed-url   URL to a song tarball downloaded on first run (snap set coreaoke preseed-url=https://your.server/songs.tar.gz)
     Note: delete $SNAP_COMMON/.preseed-done to re-trigger preseed on next start.
 
   Daemon:
@@ -63,7 +63,7 @@ platforms:
   amd64:
 
 apps:
-  coraoke:
+  coreaoke:
     command: bin/wrapper
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
@@ -78,7 +78,7 @@ apps:
       - home
       - removable-media
 
-  coraoke-server:
+  coreaoke-server:
     command: bin/wrapper
     daemon: simple
     install-mode: disable
@@ -97,7 +97,7 @@ apps:
       - removable-media
 
 parts:
-  coraoke:
+  coreaoke:
     plugin: python
     source: .
     python-packages:

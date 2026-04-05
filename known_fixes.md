@@ -32,23 +32,23 @@ fails even though the interface is connected.
 The following locations are gated behind `os.environ.get("SNAP")` to ensure
 graceful degradation under snap strict confinement.
 
-1. **coraoke/lib/youtube_dl.py -- upgrade_youtubedl()**
+1. **coreaoke/lib/youtube_dl.py -- upgrade_youtubedl()**
    yt-dlp self-upgrade (`-U` flag and pip fallback) is skipped when `$SNAP` is
    set. A warning is logged directing the user to `snap refresh`. The function
    returns the current version immediately.
 
-2. **coraoke/routes/admin.py -- /shutdown and /reboot routes**
+2. **coreaoke/routes/admin.py -- /shutdown and /reboot routes**
    Both the route handler and `delayed_halt()` check for `$SNAP`. The route
    returns a 503 JSON response (`{"error": "... unavailable in snap confinement"}`). The `delayed_halt` fallback also logs a warning and returns
    early, preventing `os.system("shutdown now")` and `os.system("reboot")` from
    being called.
 
-3. **coraoke/routes/admin.py -- /expand_fs route (raspi-config)**
+3. **coreaoke/routes/admin.py -- /expand_fs route (raspi-config)**
    Same 503 pattern as shutdown/reboot. `raspi-config --expand-rootfs` is
    blocked under snap confinement at both the route level and inside
    `delayed_halt()`.
 
-4. **coraoke/lib/omxclient.py -- OMXClient.play_file()**
+4. **coreaoke/lib/omxclient.py -- OMXClient.play_file()**
    The hardcoded `/usr/bin/omxplayer` path is unreachable under snap strict
    confinement. When `$SNAP` is set, `play_file()` logs a warning and returns
    immediately. omxplayer is legacy; all playback is handled by the browser.
@@ -103,7 +103,7 @@ architectures:
 ## libcaca exclusion
 
 libcaca is an ffmpeg transitive dependency providing ASCII art rendering that
-coraoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
+coreaoke does not use. Its OpenGL plugin (`libgl_plugin.so`) pulls in libGLU
 and libglut, which are not staged in the snap, causing missing-dependency lint
 warnings from `snapcraft pack`. Only the OpenGL plugin under
 `usr/lib/x86_64-linux-gnu/caca/libgl_plugin*` is excluded from prime -- not the
@@ -140,16 +140,16 @@ Libraries excluded from prime because nothing in the snap links against them:
 - `libcaca++` -- C++ bindings for libcaca, unused by ffmpeg
 - `libcjson_utils` -- cJSON utility extensions unused by ffmpeg at runtime
 - `libfftw3_omp`, `libfftw3_threads` -- OpenMP/threaded FFTW variants unused by ffmpeg
-- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by coraoke
+- `libflite_cmu_grapheme_lang`, `libflite_cmu_grapheme_lex`, `libflite_cmu_indic_lang`, `libflite_cmu_indic_lex`, `libflite_cmu_time_awb` -- Flite TTS language/lexicon data unused by coreaoke
 - `libhwy_contrib`, `libhwy_test` -- Highway SIMD test/contrib libraries
 - `libicui18n` -- ICU internationalization library, no staged binary links against it
 - `libicuio`, `libicutest`, `libicutu` -- ICU I/O, test, and tool utility libraries not needed at runtime
-- `libjacknet`, `libjackserver` -- JACK audio server components (coraoke uses PulseAudio)
-- `libpulse-simple` -- simplified PulseAudio API, unused (coraoke uses libpulse0 directly)
-- `libsphinxad` -- PocketSphinx audio device library unused by coraoke
+- `libjacknet`, `libjackserver` -- JACK audio server components (coreaoke uses PulseAudio)
+- `libpulse-simple` -- simplified PulseAudio API, unused (coreaoke uses libpulse0 directly)
+- `libsphinxad` -- PocketSphinx audio device library unused by coreaoke
 - `libtheora.so` -- top-level Theora convenience lib (`libtheora.so.0`); ffmpeg links against `libtheoradec`/`libtheoraenc`, not `libtheora.so` itself
 - `libxcb-glx` -- XCB GLX extension, unused in headless snap
-- `libzvbi-chains` -- VBI capture chain library unused by coraoke
+- `libzvbi-chains` -- VBI capture chain library unused by coreaoke
 
 ## Strict Confinement Path Normalization (Sprint 5)
 
@@ -158,22 +158,22 @@ All application paths are now gated behind `os.environ.get("SNAP")` so the app
 resolves confined paths when running as a snap and keeps existing behavior
 otherwise. Grade remains `devel`.
 
-### Path changes in `coraoke/lib/get_platform.py`
+### Path changes in `coreaoke/lib/get_platform.py`
 
 1. **Config directory (`get_data_directory()`)**
 
    - Non-snap: `~/.pikaraoke` (unchanged)
    - Snap: `$SNAP_USER_DATA/.pikaraoke`
    - Why: Under strict confinement the home plug does not grant access to
-     dotfiles. `$SNAP_USER_DATA` (`~/snap/coraoke/current`) is always writable
+     dotfiles. `$SNAP_USER_DATA` (`~/snap/coreaoke/current`) is always writable
      by the confined process without any extra plugs.
 
 2. **Songs directory (`get_default_dl_dir()`)**
 
    - Non-snap: `~/pikaraoke-songs` (unchanged, with legacy fallbacks)
-   - Snap: `$HOME/coraoke-songs`
+   - Snap: `$HOME/coreaoke-songs`
    - Why: The `home` plug grants access to non-hidden files in `$HOME`. Using
-     the rebranded `coraoke-songs` name avoids confusion with the upstream
+     the rebranded `coreaoke-songs` name avoids confusion with the upstream
      project name. Legacy directory checks are skipped under snap because
      previous snap installs never created them.
 
@@ -188,7 +188,7 @@ otherwise. Grade remains `devel`.
 
 ### Files not changed
 
-- **`coraoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
+- **`coreaoke/lib/file_resolver.py`** -- Already uses `tempfile.gettempdir()`
   for all temporary file operations. No hardcoded `/tmp` paths.
 - **Test files** -- Mock values like `/tmp/12345` in test fixtures are arbitrary
   strings passed to mocked functions and do not affect runtime behavior.
@@ -197,7 +197,7 @@ otherwise. Grade remains `devel`.
 
 No `layout` section was added to `snapcraft.yaml`. All paths are either within
 snap-writable areas (`$SNAP_USER_DATA`, private `/tmp`) or covered by existing
-interface plugs (`home` for `$HOME/coraoke-songs`, `audio-playback` for the
+interface plugs (`home` for `$HOME/coreaoke-songs`, `audio-playback` for the
 PulseAudio socket).
 
 ## librubberband2 for pitch shifting
@@ -211,7 +211,7 @@ added so ffmpeg can compile against rubberband headers.
 
 The `--dolphly` CLI flag was renamed to `--mascot-mode` to give the option a
 self-documenting name. The flag, help text, and internal variable
-(`args.mascot_mode`) were updated in `coraoke/lib/args.py`. The underlying
+(`args.mascot_mode`) were updated in `coreaoke/lib/args.py`. The underlying
 assets (`dolphly.png`, `the_drive_by_visualdon.mp4`) are unchanged.
 
 ## ffmpeg built from upstream source tarball with rubberband support
@@ -240,37 +240,37 @@ remains excluded.
 
 ## Help text rebranding (args.py)
 
-Two help strings in `coraoke/lib/args.py` still referenced the upstream
-project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Coraoke")
-and `--hide-overlay` mentioned "pikaraoke QR code" (now "coraoke QR code").
+Two help strings in `coreaoke/lib/args.py` still referenced the upstream
+project name. `--limit-user-songs-by` mentioned "Pikaraoke" (now "Coreaoke")
+and `--hide-overlay` mentioned "pikaraoke QR code" (now "coreaoke QR code").
 
 ## Wrapper entry point rename (Sprint 6)
 
 The snap wrapper script (`snap/local/wrapper`) invoked `$SNAP/bin/pikaraoke` but
-the entry point was renamed to `coraoke` in `pyproject.toml` during Sprint 6.
-The exec line now calls `$SNAP/bin/coraoke`. The wrapper entry point must match
+the entry point was renamed to `coreaoke` in `pyproject.toml` during Sprint 6.
+The exec line now calls `$SNAP/bin/coreaoke`. The wrapper entry point must match
 the pyproject.toml entry point name exactly.
 
 ## ffmpeg runtime dependencies
 
 The custom-built ffmpeg binary links against libass, libfdk-aac, and libunibreak
 at runtime. The snapcraft linter flagged these as missing dependencies. Added
-`libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the coraoke
+`libass9`, `libfdk-aac2`, and `libunibreak5` as stage-packages on the coreaoke
 part so they ship inside the snap.
 
 ## Shared songs directory ($SNAP_COMMON)
 
-The snap songs directory was changed from `$HOME/coraoke-songs` to
-`$SNAP_COMMON/coraoke-songs` so that songs are shared across all users on the
-system. `$SNAP_COMMON` (`/var/snap/coraoke/common`) is writable by the snap
+The snap songs directory was changed from `$HOME/coreaoke-songs` to
+`$SNAP_COMMON/coreaoke-songs` so that songs are shared across all users on the
+system. `$SNAP_COMMON` (`/var/snap/coreaoke/common`) is writable by the snap
 daemon and persists across refreshes. This avoids each user maintaining a
 separate song library.
 
 ## Snap configuration interface
 
-The snap supports runtime configuration via `snap set coraoke key=value`.
+The snap supports runtime configuration via `snap set coreaoke key=value`.
 The wrapper script (`snap/local/wrapper`) reads each key with `snapctl get`
-and passes it as a CLI argument to coraoke. The configure hook
+and passes it as a CLI argument to coreaoke. The configure hook
 (`snap/hooks/configure`) validates values when they are set.
 
 Supported keys:
@@ -278,7 +278,7 @@ Supported keys:
 - **port** -- TCP listen port. Must be numeric, 1-65535. Passed as `--port`.
 - **admin-password** -- Admin interface password. Passed as `--admin-password`.
 - **download-path** -- Song download directory. Defaults to
-  `$SNAP_COMMON/coraoke-songs` if not set. Passed as `--download-path`.
+  `$SNAP_COMMON/coreaoke-songs` if not set. Passed as `--download-path`.
 - **log-level** -- Logging level (DEBUG, INFO, WARNING, ERROR). Passed as
   `--log-level`.
 - **headless** -- Boolean. If `true`, adds `--headless` flag. Defaults to
@@ -289,20 +289,20 @@ Supported keys:
 Example usage:
 
 ```
-sudo snap set coraoke port=8080
-sudo snap set coraoke streaming-format=mp4
-sudo snap set coraoke headless=true
+sudo snap set coreaoke port=8080
+sudo snap set coreaoke streaming-format=mp4
+sudo snap set coreaoke headless=true
 ```
 
 ## Install hook creates $SNAP_COMMON subdirectories
 
-`$SNAP_COMMON` (`/var/snap/coraoke/common`) is owned by root. When coraoke
+`$SNAP_COMMON` (`/var/snap/coreaoke/common`) is owned by root. When coreaoke
 runs as a normal user, it cannot create subdirectories there. Attempting to
-download songs to `$SNAP_COMMON/coraoke-songs` fails with "Permission denied"
+download songs to `$SNAP_COMMON/coreaoke-songs` fails with "Permission denied"
 if the directory does not already exist.
 
 The fix is `snap/hooks/install`, which runs as root during `snap install`. It
-creates `$SNAP_COMMON/coraoke-songs` with mode 0777 so any user can write to
+creates `$SNAP_COMMON/coreaoke-songs` with mode 0777 so any user can write to
 it. The configure hook (`snap/hooks/configure`) also creates the directory if
 missing, covering the case where the install hook did not run or the directory
 was removed.
@@ -312,28 +312,28 @@ same pattern: create it in the install hook with world-writable permissions.
 
 ## Autostart and daemon mode
 
-The snap includes a second app entry, `coraoke-server`, configured as a
+The snap includes a second app entry, `coreaoke-server`, configured as a
 `daemon: simple` service with `restart-condition: on-failure`. It uses the same
-wrapper script and plugs as the interactive `coraoke` app but runs under
+wrapper script and plugs as the interactive `coreaoke` app but runs under
 systemd.
 
-**Autostart configuration key.** `snap set coraoke autostart=true` enables
+**Autostart configuration key.** `snap set coreaoke autostart=true` enables
 the daemon via `snapctl start --enable`; setting it to `false` disables and
 stops it via `snapctl stop --disable`. The configure hook validates the value
 and rejects anything other than `true` or `false`.
 
 **File logging.** When the wrapper detects daemon mode (`SNAP_INSTANCE_NAME`
 and `JOURNAL_STREAM` both set), it redirects stdout and stderr to
-`$SNAP_COMMON/coraoke.log`. Before starting, it checks the log file size and
+`$SNAP_COMMON/coreaoke.log`. Before starting, it checks the log file size and
 rotates it (moving to `.log.1`) if it exceeds 10 MB. The install hook creates
-`$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/coraoke.log` (0644).
+`$SNAP_COMMON/logs` (0755) and seeds `$SNAP_COMMON/coreaoke.log` (0644).
 
 ## Daemon install-mode: disable
 
-The `coraoke-server` daemon in `snap/snapcraft.yaml` previously started
+The `coreaoke-server` daemon in `snap/snapcraft.yaml` previously started
 automatically on `snap install`. This is wrong for a karaoke app -- the user
-should explicitly opt in with `snap set coraoke autostart=true`. Added
-`install-mode: disable` to the `coraoke-server` app stanza so the daemon is
+should explicitly opt in with `snap set coreaoke autostart=true`. Added
+`install-mode: disable` to the `coreaoke-server` app stanza so the daemon is
 installed but not started or enabled until the user sets `autostart=true`,
 which the configure hook handles via `snapctl start --enable`.
 
@@ -342,14 +342,14 @@ which the configure hook handles via `snapctl start --enable`.
 The gevent `WSGIServer` raises an `OSError` traceback when the listen port is
 already in use. Added a socket-based pre-flight check in `main()` before
 `server.start()`. If the port is occupied, a clear error message is logged
-("Port NNNN is already in use. Is coraoke already running?") and the process
+("Port NNNN is already in use. Is coreaoke already running?") and the process
 exits cleanly with `sys.exit(1)` instead of dumping a traceback.
 
-## Package rename (pikaraoke -> coraoke)
+## Package rename (pikaraoke -> coreaoke)
 
-The Python package directory was renamed from `pikaraoke/` to `coraoke/`. All
+The Python package directory was renamed from `pikaraoke/` to `coreaoke/`. All
 internal imports (`from pikaraoke...` / `import pikaraoke`) were updated to
-`from coraoke...` / `import coraoke`. The following non-Python files were
+`from coreaoke...` / `import coreaoke`. The following non-Python files were
 also updated to reference the new package path:
 
 - `pyproject.toml` -- entry point, hatch packages list, coverage omit paths
@@ -362,9 +362,9 @@ Files NOT renamed: Docker user/home paths, upstream install scripts, snap
 wrapper environment variables, user-visible product name strings, and static
 asset paths inside the package.
 
-## bulma.min.css replaced with coraoke.css
+## bulma.min.css replaced with coreaoke.css
 
-`bulma.min.css` was replaced with `coraoke/static/coraoke.css`, a custom
+`bulma.min.css` was replaced with `coreaoke/static/coreaoke.css`, a custom
 stylesheet built on the UI spec color system (Section 2) with the Ubuntu
 variable font stack. All Bulma class names used in templates are re-implemented
 with spec-compliant values. No border-radius on structural elements.
@@ -375,10 +375,10 @@ will be removed once the replacement is fully validated across all pages.
 The `!important` override blocks in `custom.css` that existed to beat the Bulma
 cascade have been removed since they are no longer needed.
 
-## Link and navbar color specificity (coraoke.css)
+## Link and navbar color specificity (coreaoke.css)
 
 Added `!important` to the base `a` and `a:hover` color rules in
-`coraoke/static/coraoke.css` so they win over `bulma-dark.css` in the
+`coreaoke/static/coreaoke.css` so they win over `bulma-dark.css` in the
 cascade. Also added `!important` to `.navbar-item`, `.navbar-item:hover`, and
 `.navbar-item.is-active` color rules, and `background-color: transparent !important` on `.navbar-item:hover` to prevent bulma-dark from painting a
 visible hover background on navbar links.
@@ -387,7 +387,7 @@ visible hover background on navbar links.
 
 Deleted `build_scripts/` (Docker build helpers, CI smoke tests, install scripts)
 and `docs/` (GitHub Pages config and legacy README). These are upstream
-artifacts that do not apply to the coraoke snap packaging. `.github/` is
+artifacts that do not apply to the coreaoke snap packaging. `.github/` is
 retained.
 
 ## Snap proxy configuration key
@@ -398,42 +398,42 @@ key with `snapctl get proxy` and appends the argument when set. The configure
 hook comment block and `snapcraft.yaml` description keys section are updated
 to document the new key.
 
-Usage: `snap set coraoke proxy=http://proxy.example.com:3128`
+Usage: `snap set coreaoke proxy=http://proxy.example.com:3128`
 
 ## fontello.css load order and spec-link class
 
 Links throughout the app rendered as browser-default blue instead of `#69c`
-because `fontello/css/fontello.css` loaded after `coraoke.css` in
+because `fontello/css/fontello.css` loaded after `coreaoke.css` in
 `base.html`, resetting link colors in the cascade.
 
 **Fix:**
 
-1. Moved the `fontello.css` `<link>` in `coraoke/templates/base.html` to load
-   **before** `coraoke.css` so the custom `a` color rules win.
+1. Moved the `fontello.css` `<link>` in `coreaoke/templates/base.html` to load
+   **before** `coreaoke.css` so the custom `a` color rules win.
 
-2. Added `.spec-link` and `.spec-link:hover` rules in `coraoke.css`
+2. Added `.spec-link` and `.spec-link:hover` rules in `coreaoke.css`
    (`color: #69c !important` / `color: #70bbc2 !important`) as a targeted
    class for links that must always use the dark-background link color.
 
 3. Applied `class="spec-link"` to the "Sort by Date", "Sort by Alphabetical",
-   and "Edit all songs" links in `coraoke/templates/files.html`.
+   and "Edit all songs" links in `coreaoke/templates/files.html`.
 
 The base `a` and `a:hover` rules already had `!important` and were correctly
 at the top level with no parent selector -- no changes needed there.
 
 ## White link colors for dark background
 
-The base `a` color in `coraoke.css` was `#69c` (a blue inherited from the
+The base `a` color in `coreaoke.css` was `#69c` (a blue inherited from the
 Vanilla Framework dark-background link token). On a `#262626` dark background,
 blue links look out of place and are harder to read than white text.
 
 **Changes:**
 
-1. **`coraoke/static/coraoke.css`** -- Changed `a { color: #69c }` to
+1. **`coreaoke/static/coreaoke.css`** -- Changed `a { color: #69c }` to
    `color: #ffffff` and `a:hover` from `#70bbc2` to `#e95420` (Ubuntu Orange).
    Updated `.spec-link` and `.spec-link:hover` to match.
 
-2. **`coraoke/templates/files.html`** -- Added `#alpha-bar a` rule with
+2. **`coreaoke/templates/files.html`** -- Added `#alpha-bar a` rule with
    `color: rgba(255,255,255,0.7)` for a subtly dimmed default state,
    `#alpha-bar a:hover` with `color: #ffffff`, and kept the existing
    `#alpha-bar a.alpha-active` rule at `color: #e95420` with `font-weight: 700`.
@@ -447,12 +447,12 @@ heading.
 
 ## Italic replaced with Ubuntu Thin (weight 100)
 
-All italic usage in `coraoke/static/coraoke.css` was replaced with Ubuntu Thin
+All italic usage in `coreaoke/static/coreaoke.css` was replaced with Ubuntu Thin
 (font-weight 100, font-style normal). This gives emphasized text a visually
 distinct lighter weight instead of a slanted style, which fits better with the
 Ubuntu variable font design.
 
-**Changes in `coraoke.css`:**
+**Changes in `coreaoke.css`:**
 
 1. Added `em, i { font-style: normal; font-weight: 100; }` to the reset/base
    section so all native italic elements render as thin weight instead.
@@ -472,7 +472,7 @@ Ubuntu variable font design.
 
 ## Browse page (files.html) link color fixes
 
-Audited `coraoke/templates/files.html` (the `/browse` route) for elements
+Audited `coreaoke/templates/files.html` (the `/browse` route) for elements
 rendering blue instead of spec-compliant colors. Four issues found and fixed:
 
 1. **`#alpha-bar` had `border-radius: 4px`** -- Removed. No border-radius on
@@ -485,7 +485,7 @@ rendering blue instead of spec-compliant colors. Four issues found and fixed:
    when active.
 
 3. **`.add-song-link.has-text-success` rendered as `#69c` (blue)** -- The
-   global `a { color: #69c !important }` rule in `coraoke.css` overrode the
+   global `a { color: #69c !important }` rule in `coreaoke.css` overrode the
    `.has-text-success` class, making the green "add to queue" icons appear
    blue. Added a higher-specificity rule
    `a.add-song-link.has-text-success { color: #0e8420 !important }` in the
@@ -504,7 +504,7 @@ directories (those starting with `.`). The config directory was
 `$SNAP_USER_DATA/.pikaraoke`, which is a hidden directory inside the user's snap
 data area. Changed to `$SNAP_USER_DATA/config` in two places:
 
-1. **`coraoke/lib/get_platform.py` -- `get_data_directory()`** -- The snap
+1. **`coreaoke/lib/get_platform.py` -- `get_data_directory()`** -- The snap
    branch now joins `base_path` with `"config"` instead of `".pikaraoke"`.
 
 2. **`snap/local/wrapper`** -- The `PIKARAOKE_CONFIG_DIR` export now points to
@@ -515,30 +515,30 @@ inside the directory are unchanged.
 
 ## Thin font weight bumped from 100 to 200
 
-The `em, i` reset rule and `.is-italic` class in `coraoke/static/coraoke.css`
+The `em, i` reset rule and `.is-italic` class in `coreaoke/static/coreaoke.css`
 used `font-weight: 100`, which rendered nearly invisible at small sizes on some
 displays. Changed both rules to `font-weight: 200` (extra-light) for better
 legibility while preserving the lighter-than-body visual distinction.
 
-## Rename pikaraoke.db and remaining pikaraoke internal names to coraoke
+## Rename pikaraoke.db and remaining pikaraoke internal names to coreaoke
 
-Renamed the SQLite database filename from `pikaraoke.db` to `coraoke.db` in
-`coraoke/lib/karaoke_database.py`. Also renamed all remaining internal
-references to "pikaraoke" in Python code to "coraoke":
+Renamed the SQLite database filename from `pikaraoke.db` to `coreaoke.db` in
+`coreaoke/lib/karaoke_database.py`. Also renamed all remaining internal
+references to "pikaraoke" in Python code to "coreaoke":
 
-- **Database**: `pikaraoke.db` to `coraoke.db` in `karaoke_database.py`
-- **Data directories**: `~/.pikaraoke` to `~/.coraoke` (Linux/macOS),
-  `%APPDATA%/pikaraoke` to `%APPDATA%/coraoke` (Windows) in `get_platform.py`
+- **Database**: `pikaraoke.db` to `coreaoke.db` in `karaoke_database.py`
+- **Data directories**: `~/.pikaraoke` to `~/.coreaoke` (Linux/macOS),
+  `%APPDATA%/pikaraoke` to `%APPDATA%/coreaoke` (Windows) in `get_platform.py`
 - **Download directories**: default paths changed from `pikaraoke-songs` to
-  `coraoke-songs` in `get_platform.py`; legacy path checks kept as-is for
+  `coreaoke-songs` in `get_platform.py`; legacy path checks kept as-is for
   migration from upstream pikaraoke installs
 - **Default download path**: `/usr/lib/pikaraoke/songs` to
-  `/usr/lib/coraoke/songs` in `karaoke.py`
-- **System user**: `"Pikaraoke"` to `"Coraoke"` in `queue_manager.py` and
+  `/usr/lib/coreaoke/songs` in `karaoke.py`
+- **System user**: `"Pikaraoke"` to `"Coreaoke"` in `queue_manager.py` and
   `download_manager.py`
-- **Function name**: `parse_pikaraoke_args` to `parse_coraoke_args` in
+- **Function name**: `parse_pikaraoke_args` to `parse_coreaoke_args` in
   `args.py` and `app.py`
-- **Template variable**: `pikaraoke_version` to `coraoke_version` in
+- **Template variable**: `pikaraoke_version` to `coreaoke_version` in
   `routes/info.py` and `templates/info.html`
 - **User-facing strings**: updated exit message and log messages in
   `routes/admin.py`, `routes/now_playing.py`, `karaoke.py`, and
@@ -554,57 +554,57 @@ Removed files and directories not needed for a snap-only Linux project:
 - **release-please-config.json** -- Google release-please automation config,
   not relevant for snap releases.
 - **code_quality/** -- Pre-commit config directory, removed entirely.
-- **coraoke/static/bulma.min.css** -- Bulma CSS framework, replaced by
-  coraoke.css. Dead weight.
-- **coraoke/static/bulma-dark.css** -- Unlinked from base.html, dead weight.
+- **coreaoke/static/bulma.min.css** -- Bulma CSS framework, replaced by
+  coreaoke.css. Dead weight.
+- **coreaoke/static/bulma-dark.css** -- Unlinked from base.html, dead weight.
   Removed the `<link>` tag from `base.html` as well.
 
 Removed all Raspberry Pi specific code and references:
 
-- **coraoke/lib/raspi_wifi_config.py** -- Deleted entirely. RaspiWiFi AP mode
+- **coreaoke/lib/raspi_wifi_config.py** -- Deleted entirely. RaspiWiFi AP mode
   configuration utility, not applicable to snap.
-- **coraoke/lib/omxclient.py** -- Deleted entirely. omxplayer is RPi legacy;
+- **coreaoke/lib/omxclient.py** -- Deleted entirely. omxplayer is RPi legacy;
   all playback is browser-based.
-- **coraoke/lib/get_platform.py** -- Removed `is_raspberry_pi()` function and
+- **coreaoke/lib/get_platform.py** -- Removed `is_raspberry_pi()` function and
   all code paths that called it (RPi branch in `get_platform()`, RPi default
   download path fallback in `get_default_dl_dir()`).
-- **coraoke/karaoke.py** -- Removed `is_raspberry_pi` attribute and the RPi
+- **coreaoke/karaoke.py** -- Removed `is_raspberry_pi` attribute and the RPi
   IP-retry loop in `get_url()`.
-- **coraoke/routes/admin.py** -- Removed `/expand_fs` route entirely and the
+- **coreaoke/routes/admin.py** -- Removed `/expand_fs` route entirely and the
   raspi-config branch from `delayed_halt()`.
-- **coraoke/lib/current_app.py** -- Removed raspi-config branch from
+- **coreaoke/lib/current_app.py** -- Removed raspi-config branch from
   `delayed_halt()`.
-- **coraoke/lib/browser.py** -- Removed RPi-specific browser profile skip and
+- **coreaoke/lib/browser.py** -- Removed RPi-specific browser profile skip and
   `--disable-dev-shm-usage` flag.
-- **coraoke/routes/splash.py** -- Removed RaspiWiFi import and AP-mode text
+- **coreaoke/routes/splash.py** -- Removed RaspiWiFi import and AP-mode text
   detection block.
-- **coraoke/routes/info.py** -- Removed `is_pi` template variable.
-- **coraoke/templates/info.html** -- Removed "Expand Raspberry Pi filesystem"
+- **coreaoke/routes/info.py** -- Removed `is_pi` template variable.
+- **coreaoke/templates/info.html** -- Removed "Expand Raspberry Pi filesystem"
   section and `is_pi` conditional. Shutdown section now checks `is_linux` only.
-- **coraoke/templates/splash.html** -- Removed `hostap_info` references.
+- **coreaoke/templates/splash.html** -- Removed `hostap_info` references.
 - **tests/unit/test_get_platform.py** -- Removed `TestIsRaspberryPi` class and
   all `is_raspberry_pi` patches from remaining tests.
 
-## Snap name and string audit (obiraoke -> coraoke)
+## Snap name and string audit (obiraoke -> coreaoke)
 
-Verified that all snap packaging files and Python source use the coraoke name
+Verified that all snap packaging files and Python source use the coreaoke name
 consistently. No obiraoke references remain in:
 
-- **snap/snapcraft.yaml** -- `name: coraoke`, app stanzas `coraoke` and
-  `coraoke-server`, description text, and all `snap set coraoke` examples.
-- **snap/local/wrapper** -- `exec "$SNAP/bin/coraoke"`, environment variables
-  prefixed `CORAOKE_`, and `snapctl get` calls referencing coraoke.
+- **snap/snapcraft.yaml** -- `name: coreaoke`, app stanzas `coreaoke` and
+  `coreaoke-server`, description text, and all `snap set coreaoke` examples.
+- **snap/local/wrapper** -- `exec "$SNAP/bin/coreaoke"`, environment variables
+  prefixed `COREAOKE_`, and `snapctl get` calls referencing coreaoke.
 - **snap/hooks/configure** -- `snapctl start/stop` references use
-  `$SNAP_INSTANCE_NAME.coraoke-server`.
-- **snap/hooks/install** -- Directory paths use `coraoke-songs` and
-  `coraoke.log`.
-- **coraoke/*.py** -- No user-visible strings (logging, errors, warnings)
+  `$SNAP_INSTANCE_NAME.coreaoke-server`.
+- **snap/hooks/install** -- Directory paths use `coreaoke-songs` and
+  `coreaoke.log`.
+- **coreaoke/*.py** -- No user-visible strings (logging, errors, warnings)
   reference obiraoke.
 
 The `command: bin/wrapper` in both app stanzas is intentional. The wrapper
 handles PulseAudio setup, snap configuration key reading, daemon log rotation,
-and headless defaults before exec'ing `$SNAP/bin/coraoke`. Bypassing the
-wrapper by setting `command: bin/coraoke` directly would break snap
+and headless defaults before exec'ing `$SNAP/bin/coreaoke`. Bypassing the
+wrapper by setting `command: bin/coreaoke` directly would break snap
 configuration and audio.
 
 ## Extended snap set interface
@@ -657,19 +657,19 @@ Added a `preseed-url` snap configuration key that downloads and extracts a song
 tarball on first run. The wrapper script (`snap/local/wrapper`) reads the key
 with `snapctl get preseed-url` and, if set and `$SNAP_COMMON/.preseed-done` does
 not exist, downloads the tarball with `curl`, extracts it into
-`$SNAP_COMMON/coraoke-songs/`, and touches the sentinel file. Subsequent starts
+`$SNAP_COMMON/coreaoke-songs/`, and touches the sentinel file. Subsequent starts
 skip the download. To re-trigger preseed, delete `$SNAP_COMMON/.preseed-done`.
 
 The install hook sets `preseed-url=""` as a default. The configure hook comment
 block lists it as an accepted key. The `snapcraft.yaml` description documents
 it under a Preseed section.
 
-Usage: `snap set coraoke preseed-url=https://your.server/songs.tar.gz`
+Usage: `snap set coreaoke preseed-url=https://your.server/songs.tar.gz`
 
 ## Theme snap set key
 
 Added a `theme` snap configuration key that applies a named preset of branding
-assets. Setting `snap set coraoke theme=<name>` checks for
+assets. Setting `snap set coreaoke theme=<name>` checks for
 `$SNAP_COMMON/themes/<name>/` and, if it exists, sets `logo-path`,
 `bg-video-path`, and `bg-music-path` to the corresponding files in that
 directory.
@@ -677,9 +677,9 @@ directory.
 The install hook creates `$SNAP_COMMON/themes/default/` and copies the built-in
 assets into it:
 
-- `$SNAP/coraoke/static/images/logo.png` to `logo.png`
-- `$SNAP/coraoke/static/video/the_drive_by_visualdon.mp4` to `bg-video.mp4`
-- `$SNAP/coraoke/static/music/` contents to `bg-music/`
+- `$SNAP/coreaoke/static/images/logo.png` to `logo.png`
+- `$SNAP/coreaoke/static/video/the_drive_by_visualdon.mp4` to `bg-video.mp4`
+- `$SNAP/coreaoke/static/music/` contents to `bg-music/`
 
 Directories are set to 0755 and files to 0644. The install hook also sets
 `theme=default` so the branding paths are configured out of the box.
@@ -704,27 +704,27 @@ implementation details. Each file now has a comment block explaining why
 ## Install hook theme asset copy paths
 
 The `cp` commands in `snap/hooks/install` that copy built-in theme assets
-referenced `$SNAP/coraoke/static/...` but the Python package is installed at
-`$SNAP/lib/python3.12/site-packages/coraoke/`, not `$SNAP/coraoke/`. Fixed all
+referenced `$SNAP/coreaoke/static/...` but the Python package is installed at
+`$SNAP/lib/python3.12/site-packages/coreaoke/`, not `$SNAP/coreaoke/`. Fixed all
 three `cp` commands to use the correct path prefix:
-`$SNAP/lib/python3.12/site-packages/coraoke/static/...`. Also added
+`$SNAP/lib/python3.12/site-packages/coreaoke/static/...`. Also added
 `2>/dev/null || true` to the music glob copy so a missing or empty music
 directory does not cause the install hook to fail.
 
 ## Logo route graceful fallback
 
-The `/logo` route in `coraoke/routes/images.py` passed `k.logo_path` directly
+The `/logo` route in `coreaoke/routes/images.py` passed `k.logo_path` directly
 to `send_file` without checking whether the file exists. If the configured path
 pointed to a missing file (e.g. a theme asset not yet copied), Flask raised a
 `FileNotFoundError` and returned a 500 error.
 
 The route now checks `os.path.exists()` on the configured path. If the file is
 missing, it falls back to the built-in static logo at
-`coraoke/static/images/logo.png` and logs a warning.
+`coreaoke/static/images/logo.png` and logs a warning.
 
 ## Background video route graceful fallback
 
-The `/stream/bg_video` route in `coraoke/routes/stream.py` checked whether
+The `/stream/bg_video` route in `coreaoke/routes/stream.py` checked whether
 `k.bg_video_path` was not `None` but did not verify the file existed on disk.
 If the configured path pointed to a missing file, `send_file` raised a
 `FileNotFoundError` and returned a 500 error.
@@ -735,20 +735,20 @@ the path is set but the file does not exist, it logs a warning and returns a
 
 ## Sidebar navigation replaces horizontal navbar
 
-The horizontal navbar in `coraoke/templates/base.html` was replaced with a
+The horizontal navbar in `coreaoke/templates/base.html` was replaced with a
 collapsible pinned sidebar. The sidebar is 52px wide when collapsed (icons only)
 and 208px when expanded (icons + labels). Users can pin it open via a toggle
 button; the pinned state persists in `localStorage`. On hover the sidebar
 temporarily expands if not pinned.
 
 The old navbar CSS (`.navbar`, `.navbar-brand`, `.navbar-menu`, `.navbar-end`,
-`.navbar-item`, `.navbar-burger`) was removed from `coraoke/static/coraoke.css`
+`.navbar-item`, `.navbar-burger`) was removed from `coreaoke/static/coreaoke.css`
 and replaced with sidebar styles (`.sidebar`, `.sidebar-item`,
 `.sidebar-active`, etc.). The body element uses `display: flex; flex-direction: row`
 to accommodate the fixed sidebar alongside the main content area.
 
 The current-user display and notification divs were moved from the navbar into
-the main-content area. The splash screen (`coraoke/templates/splash.html`) was
+the main-content area. The splash screen (`coreaoke/templates/splash.html`) was
 not affected -- it has its own layout and extends `base.html` via `{% block body %}`.
 
 ## Full layout redesign: sidebar-as-control-panel + inline player
@@ -765,14 +765,14 @@ where the sidebar IS the control panel and the right side is a permanent player.
   logo/mascot, now-playing overlay, QR code. The user never navigates away
   from the player.
 
-**CSS changes (`coraoke/static/coraoke.css`):**
+**CSS changes (`coreaoke/static/coreaoke.css`):**
 
 - Removed `.main-content`, `.main-content-collapsed`, `.main-content-expanded`
   classes entirely.
 - `.sidebar-expanded` width changed from 208px to 224px.
 - Added `.sidebar::before` -- 4px Ubuntu Orange (#e95420) accent bar on left edge.
 - Added `.sidebar-logo` (32px, visible when expanded) and `.sidebar-title`
-  ("Coraoke" text, visible when expanded).
+  ("Coreaoke" text, visible when expanded).
 - Added `.sidebar-content` -- `display: none` when collapsed, `display: block`
   when expanded, with `flex: 1; overflow-y: auto; padding: 1rem`.
 - `.sidebar-label` changed from opacity transition to `display: none/inline`.
@@ -782,7 +782,7 @@ where the sidebar IS the control panel and the right side is a permanent player.
 - Added compact sidebar content styles: headings at 1rem, inputs at 0.8rem,
   tables at 0.75rem, cards/buttons scaled down for 224px width.
 
-**Template changes (`coraoke/templates/base.html`):**
+**Template changes (`coreaoke/templates/base.html`):**
 
 - Replaced `#main-content` div with `#sidebar-content` div inside the sidebar.
   `{% block content %}` now renders inside the sidebar.
@@ -791,10 +791,10 @@ where the sidebar IS the control panel and the right side is a permanent player.
 - Player panel uses socket.io `now_playing` events for live updates.
 - Sidebar toggle JS updated: expand/collapse now adjusts `player-panel` left
   offset instead of `main-content`.
-- Logo (from `static/images/logo.png`) and app name "Coraoke" added to sidebar
+- Logo (from `static/images/logo.png`) and app name "Coreaoke" added to sidebar
   header, visible when expanded.
 
-**Context processor (`coraoke/app.py`):**
+**Context processor (`coreaoke/app.py`):**
 
 - Added `inject_player_vars()` context processor providing `player_url`,
   `player_hide_url`, and `player_has_bg_video` to all templates so the player
@@ -863,7 +863,7 @@ fragile and failed when the class swap did not complete cleanly.
   `expand()` or `collapse()`.
 - Hover expand/collapse (when not pinned) calls the same functions.
 
-**Fix (coraoke.css):**
+**Fix (coreaoke.css):**
 
 - `.sidebar` default width set to `52px` (was relying on `.sidebar-collapsed`).
 - Removed `.sidebar-collapsed` rule entirely; only `.sidebar-expanded` overrides
@@ -907,7 +907,7 @@ button before seeing any sidebar content.
 `localStorage.getItem('sidebar-pinned') !== 'false'`. The sidebar now starts
 expanded unless the user has explicitly unpinned it.
 
-**Fix (coraoke.css):** Changed sidebar expanded width from a fixed 224px to
+**Fix (coreaoke.css):** Changed sidebar expanded width from a fixed 224px to
 `25vw` with `min-width: 200px` and `max-width: 320px`. The player panel left
 offset uses `clamp(200px, 25vw, 320px)` to stay in sync. Collapsed width
 remains 52px.
@@ -959,7 +959,7 @@ re-initializing selectize, socket.io handlers, and other page-specific JS.
 
 ## QR code route FileNotFoundError at startup
 
-The `/qrcode` route in `coraoke/routes/images.py` called `send_file()` on
+The `/qrcode` route in `coreaoke/routes/images.py` called `send_file()` on
 `k.qr_code_path` without checking whether the file exists. At startup the QR
 code has not been generated yet, causing a `FileNotFoundError`.
 
@@ -967,16 +967,16 @@ code has not been generated yet, causing a `FileNotFoundError`.
 `k.qr_code_path` is falsy or the file does not exist, return an empty 404
 instead of crashing.
 
-## Snap download path not reading CORAOKE_SONGS_DIR
+## Snap download path not reading COREAOKE_SONGS_DIR
 
-`get_default_dl_dir()` in `coraoke/lib/get_platform.py` constructed the snap
-download path from `SNAP_COMMON` but ignored the `CORAOKE_SONGS_DIR`
+`get_default_dl_dir()` in `coreaoke/lib/get_platform.py` constructed the snap
+download path from `SNAP_COMMON` but ignored the `COREAOKE_SONGS_DIR`
 environment variable that `snap/local/wrapper` explicitly exports. If
 `SNAP_COMMON` was unset or resolved incorrectly, yt-dlp would attempt to
-create `/var/snap/coraoke` (the fallback minus the `coraoke-songs` suffix)
+create `/var/snap/coreaoke` (the fallback minus the `coreaoke-songs` suffix)
 and fail with permission denied.
 
-**Fix:** `get_default_dl_dir()` now checks `CORAOKE_SONGS_DIR` first. If
+**Fix:** `get_default_dl_dir()` now checks `COREAOKE_SONGS_DIR` first. If
 the wrapper already set the canonical songs directory, that value is returned
 directly, bypassing the `SNAP_COMMON` construction entirely.
 
@@ -1016,7 +1016,7 @@ and buttons but did not set an explicit font-size for `p`, `.is-italic`, `em`,
 and `i` elements. These inherited a smaller size from parent rules, making the
 search help text unreadable at sidebar width.
 
-**Fix:** Added an explicit rule in `coraoke.css` setting `font-size: 0.85rem`
+**Fix:** Added an explicit rule in `coreaoke.css` setting `font-size: 0.85rem`
 for `.sidebar-content p`, `.sidebar-content .is-italic`, `.sidebar-content em`,
 and `.sidebar-content i`. This is readable at sidebar width without being too
 large.
@@ -1058,7 +1058,7 @@ and adds `overflow: hidden` and `padding: 0.5rem 0.75rem` for proper layout.
 
 ## Removed Shutdown section from info page
 
-The Shutdown section in `coraoke/templates/info.html` contained Quit Coraoke,
+The Shutdown section in `coreaoke/templates/info.html` contained Quit Coreaoke,
 Reboot System, and Shutdown System buttons along with a warning about proper
 shutdown. The entire section (heading, card, buttons, and warning text) was
 removed. The associated JavaScript click handlers for `#quit-link`,
@@ -1067,7 +1067,7 @@ have corresponding DOM elements.
 
 ## yt-dlp snap confinement log level downgraded to info
 
-The log message in `coraoke/lib/youtube_dl.py` `upgrade_youtubedl()` that fires
+The log message in `coreaoke/lib/youtube_dl.py` `upgrade_youtubedl()` that fires
 when yt-dlp self-upgrade is skipped inside snap confinement was changed from
 `logging.warning()` to `logging.info()`. This is expected behavior inside a
 snap, not a warning condition -- upgrades are handled by `snap refresh`.

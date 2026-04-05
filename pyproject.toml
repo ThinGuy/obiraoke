@@ -1,5 +1,5 @@
 [project]
-name = "coraoke"
+name = "coreaoke"
 version = "1.19.0"
 description = "Youtube-based Karaoke machine for Ubuntu and Linux"
 authors = [{name = "Vic Wong"}]
@@ -42,18 +42,18 @@ dev = [
 ]
 
 [project.scripts]
-coraoke = "coraoke.app:main"
+coreaoke = "coreaoke.app:main"
 
 [project.urls]
-Homepage = "https://github.com/ThinGuy/coraoke"
-Repository = "https://github.com/ThinGuy/coraoke"
+Homepage = "https://github.com/ThinGuy/coreaoke"
+Repository = "https://github.com/ThinGuy/coreaoke"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["coraoke"]
+packages = ["coreaoke"]
 
 # Poetry-specific configuration (reads from [project] above)
 [tool.poetry]
@@ -81,8 +81,8 @@ pythonPlatform = "Linux"
 
 [tool.coverage.run]
 omit = [
-    "coraoke/constants.py",
-    "coraoke/app.py",
-    "coraoke/lib/current_app.py",
-    "coraoke/lib/args.py",
+    "coreaoke/constants.py",
+    "coreaoke/app.py",
+    "coreaoke/lib/current_app.py",
+    "coreaoke/lib/args.py",
 ]

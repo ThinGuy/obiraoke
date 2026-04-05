@@ -9,10 +9,10 @@ from flask import Flask
 if not hasattr(werkzeug, "__version__"):
     werkzeug.__version__ = "3.0.0"
 
-from coraoke.lib.preference_manager import PreferenceManager
-from coraoke.routes.preferences import preferences_bp
+from coreaoke.lib.preference_manager import PreferenceManager
+from coreaoke.routes.preferences import preferences_bp
 
-ROUTE_PREFIX = "coraoke.routes.preferences"
+ROUTE_PREFIX = "coreaoke.routes.preferences"
 
 
 @pytest.fixture

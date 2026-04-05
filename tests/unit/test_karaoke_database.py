@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from coraoke.lib.karaoke_database import KaraokeDatabase
+from coreaoke.lib.karaoke_database import KaraokeDatabase
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def db(tmp_path):
 
 class TestInit:
     def test_creates_db_file(self, tmp_path):
-        db_path = str(tmp_path / "coraoke.db")
+        db_path = str(tmp_path / "coreaoke.db")
         db = KaraokeDatabase(db_path)
         db.close()
         assert os.path.exists(db_path)
