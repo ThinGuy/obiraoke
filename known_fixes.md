@@ -938,3 +938,21 @@ so the SPA system captured them before any sidebar-specific handler could act.
    the target page, extract the new `#sidebar-content` from the response, and
    replace the current sidebar content via `innerHTML`. The handler also calls
    `history.pushState()` and updates the `sidebar-active` class.
+
+## Selectize and inline scripts not initializing after sidebar AJAX navigation
+
+After sidebar AJAX navigation, page-specific JavaScript (selectize dropdowns,
+socket.io handlers, etc.) did not initialize because the browser does not
+execute `<script>` tags inserted via `innerHTML`.
+
+**Root cause:** `loadSidebarContent()` in `base.html` replaced
+`#sidebar-content` using `innerHTML`, which inserts script elements as inert
+HTML nodes. The browser only executes scripts added to the DOM via
+`document.createElement('script')` followed by a DOM insertion.
+
+**Fix (base.html):**
+After setting `sc.innerHTML = newContent.innerHTML`, added a loop that finds
+all `<script>` elements in the loaded content, clones each into a fresh
+`<script>` element (preserving attributes and textContent), and replaces the
+inert node with the new one. This forces the browser to evaluate each script,
+re-initializing selectize, socket.io handlers, and other page-specific JS.

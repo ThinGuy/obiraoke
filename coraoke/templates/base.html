@@ -210,7 +210,19 @@
                 var newContent = doc.getElementById('sidebar-content');
                 if (newContent) {
                   var sc = document.getElementById('sidebar-content');
-                  if (sc) sc.innerHTML = newContent.innerHTML;
+                  if (sc) {
+                    sc.innerHTML = newContent.innerHTML;
+                    // Re-execute inline scripts in the loaded content
+                    var scripts = sc.querySelectorAll('script');
+                    scripts.forEach(function(oldScript) {
+                      var newScript = document.createElement('script');
+                      Array.from(oldScript.attributes).forEach(function(attr) {
+                        newScript.setAttribute(attr.name, attr.value);
+                      });
+                      newScript.textContent = oldScript.textContent;
+                      oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+                  }
                 }
                 history.pushState({}, '', url);
                 document.querySelectorAll('.sidebar-item').forEach(function(el) {
