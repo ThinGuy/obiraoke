@@ -1056,6 +1056,34 @@ only toggled `display: inline`). The fix bumps font size to `0.7rem`, lightens
 the colour to `rgba(255,255,255,0.4)`, sets `display: block` as the base state,
 and adds `overflow: hidden` and `padding: 0.5rem 0.75rem` for proper layout.
 
+## Removed Shutdown section from info page
+
+The Shutdown section in `coraoke/templates/info.html` contained Quit Coraoke,
+Reboot System, and Shutdown System buttons along with a warning about proper
+shutdown. The entire section (heading, card, buttons, and warning text) was
+removed. The associated JavaScript click handlers for `#quit-link`,
+`#shutdown-link`, and `#restart-link` were also removed since they no longer
+have corresponding DOM elements.
+
+## yt-dlp snap confinement log level downgraded to info
+
+The log message in `coraoke/lib/youtube_dl.py` `upgrade_youtubedl()` that fires
+when yt-dlp self-upgrade is skipped inside snap confinement was changed from
+`logging.warning()` to `logging.info()`. This is expected behavior inside a
+snap, not a warning condition -- upgrades are handled by `snap refresh`.
+
+## Snap lint ignore rules for library warnings
+
+Added a `lint.ignore` section to `snap/snapcraft.yaml` to suppress two
+library warnings from `snapcraft pack`:
+
+- `usr/lib/x86_64-linux-gnu/liboss4-salsa.so.2.0.0`
+- `usr/lib/x86_64-linux-gnu/libasound.so.2.0.0`
+
+Both libraries are loaded at runtime via `dlopen` by ALSA plugins and are not
+detected by the static dependency linter. The lint ignore rules prevent false
+positive warnings without excluding the libraries from the snap.
+
 ## Sidebar content text too small
 
 Body text inside `.sidebar-content` (paragraphs, list items, table cells, and

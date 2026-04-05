@@ -61,22 +61,6 @@
 				});
 			}
 
-			$("#quit-link").click(function (e) {
-				e.preventDefault();
-				// {# MSG: Confirmation text whe the user selects quit. #}
-				if (window.confirm("{{ _('Are you sure you want to quit?') }}")) {
-					location.href = this.href;
-				}
-			});
-
-			$("#shutdown-link").click(function (e) {
-				e.preventDefault();
-				// {# MSG: Confirmation text whe the user starts to turn off the machine running Pikaraoke. #}
-				if (window.confirm("{{ _('Are you sure you want to shut down?') }}")) {
-					location.href = this.href;
-				}
-			});
-
 			$("#clear-preferences-link").click(function (e) {
 				e.preventDefault();
 				// {# MSG: Confirmation text whe the user clears preferences. #}
@@ -84,15 +68,6 @@
 					location.href = this.href;
 				}
 			});
-
-			$("#restart-link").click(function (e) {
-				e.preventDefault();
-				// {# MSG: Confirmation text whe the user starts to reboot the machine running Pikaraoke. #}
-				if (window.confirm("{{ _('Are you sure you want to reboot?') }}")) {
-					location.href = this.href;
-				}
-			});
-
 
 		// Collapsible card sections
 		$(".collapsible-header").click(function() {
@@ -513,35 +488,6 @@
 				</div>
 			</div>
 		{% endif %}
-
-		{# MSG: Title of the section on shutting down / turning off the machine running Pikaraoke. #}
-		<h1>{% trans %}Shutdown{% endtrans %}</h1>
-
-		<div class="card">
-			<div class="card-content">
-				<div class="content">
-					<p>
-						{# MSG: Explainitory text which explains why to use the shutdown link. #}
-						{% trans -%}
-							Don't just pull the plug! Always shut down your server properly to avoid data corruption.
-						{%- endtrans %}
-					</p>
-
-					<div class="buttons">
-						{# MSG: Text for button which turns off Coraoke for everyone using it at your house. #}
-						<a id="quit-link" class="button is-primary" href="{{ url_for('admin.quit') }}">{% trans %}Quit Coraoke{% endtrans %}</a>
-						{% if is_linux %}
-							{# MSG: Text for button which reboots the machine running Pikaraoke. #}
-							<a id="restart-link" class="button is-primary" href="{{ url_for('admin.reboot') }}">{% trans %}Reboot System{% endtrans %}</a>
-
-							{# MSG: Text for button which turn soff the machine running Pikaraoke. #}
-							<a id="shutdown-link" class="button is-primary" href="{{ url_for('admin.shutdown') }}">{% trans %}Shutdown System{% endtrans %}</a>
-						{% endif %}
-					</div>
-
-				</div>
-			</div>
-		</div>
 
 	{% endif %}
 

@@ -72,7 +72,7 @@ def upgrade_youtubedl() -> str:
         The new version string after upgrade.
     """
     if os.environ.get("SNAP"):
-        logging.warning(
+        logging.info(
             "yt-dlp self-upgrade is disabled in snap confinement. "
             "Upgrades are handled by snap refresh."
         )
