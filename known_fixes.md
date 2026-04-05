@@ -1127,4 +1127,16 @@ splash client is using. Invalid channel values fall back to `main`.
 Primary, success, and warning buttons now use #0e8420 (Vanilla Framework green)
 instead of #e95420. Danger button hover uses #c7162b-family values. Ubuntu
 Orange (#e95420) is retained as brand accent only: sidebar left-edge accent bar,
-sidebar active-item background tint and left border, and pin button pinned state.
+sidebar active-item left border. Orange is no longer used for active-item
+backgrounds or the sidebar toggle button.
+
+## Sidebar active-item and toggle button color corrections
+
+The `.sidebar-active` rule used `background: rgba(233, 84, 32, 0.15)` (orange
+tint) and a 3px orange left border. Per the UI spec (Section 4), the active item
+background must be `#313131` with only a `2px solid #e95420` left border. The
+orange background has been removed. The sidebar pin/toggle button previously
+turned orange (#e95420) when the sidebar was pinned; it now stays white
+(#ffffff) in all states, inheriting the dark sidebar background with no accent
+color. The sidebar title text was also corrected from "Coreaoke" to
+"Ubuntu Coreaoke" to match the UI spec branding requirement.

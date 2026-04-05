@@ -233,8 +233,8 @@ a:hover {
 
 .sidebar-active {
   color: #ffffff !important;
-  background: rgba(233, 84, 32, 0.15);
-  border-left: 3px solid #e95420;
+  background: #313131;
+  border-left: 2px solid #e95420;
 }
 
 .sidebar-item .icon {
