@@ -1,0 +1,78 @@
+{% extends 'base.html' %} {% block scripts %}
+<script>
+  $(document).ready(function () {
+    if (window.socket) {
+      window.socket.emit("credits_overlay");
+    }
+  });
+</script>
+{% endblock %} {% block header %}
+<h1 class="title is-5">Credits &amp; Acknowledgements</h1>
+{% endblock %} {% block content %}
+
+<div class="mb-4">
+  <h2 class="title is-6 mb-2">Standing on the shoulders of giants</h2>
+  <ul style="list-style: none; padding: 0;">
+    <li class="mb-2">
+      <a href="https://github.com/vicwomg/pikaraoke" class="spec-link" target="_blank"><strong>PiKaraoke</strong> by vicwomg</a>
+      <br /><span style="color: rgba(255,255,255,0.7);">The engine that makes all of this possible. All core karaoke functionality, YouTube integration, pitch shifting, and queue management is vicwomg's work. Buy him a coffee.</span>
+    </li>
+    <li class="mb-2">
+      <a href="https://github.com/yt-dlp/yt-dlp" class="spec-link" target="_blank"><strong>yt-dlp</strong></a>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; YouTube download engine</span>
+    </li>
+    <li class="mb-2">
+      <a href="https://ffmpeg.org" class="spec-link" target="_blank"><strong>FFmpeg</strong></a>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Audio/video processing with rubberband pitch shifting</span>
+    </li>
+    <li class="mb-2">
+      <a href="https://flask.palletsprojects.com" class="spec-link" target="_blank"><strong>Flask</strong></a>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Python web framework</span>
+    </li>
+    <li class="mb-2">
+      <a href="https://socket.io" class="spec-link" target="_blank"><strong>Socket.IO</strong></a>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Real-time player communication</span>
+    </li>
+    <li class="mb-2">
+      <strong>Selectize.js</strong>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Search UI</span>
+    </li>
+    <li class="mb-2">
+      <strong>HLS.js</strong>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; HTTP Live Streaming player</span>
+    </li>
+    <li class="mb-2">
+      <strong>Fontello</strong>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Icon font</span>
+    </li>
+    <li class="mb-2">
+      <strong>Ubuntu Variable Font</strong>
+      <span style="color: rgba(255,255,255,0.7);">&mdash; Typography</span>
+    </li>
+  </ul>
+</div>
+
+<div class="mb-4">
+  <h2 class="title is-6 mb-2">Ubuntu Coreaoke</h2>
+  <ul style="list-style: none; padding: 0;">
+    <li class="mb-2">
+      Snap packaging, UI redesign, branding, and Ubuntu Core integration by
+      <a href="https://github.com/ThinGuy" class="spec-link" target="_blank"><strong>ThinGuy</strong></a>
+    </li>
+    <li class="mb-2">
+      Built with <strong>Claude</strong> (Anthropic) &mdash; AI-assisted development
+    </li>
+  </ul>
+</div>
+
+<div class="mb-4">
+  <h2 class="title is-6 mb-2">Ubuntu Core</h2>
+  <ul style="list-style: none; padding: 0;">
+    <li class="mb-2">
+      <a href="https://ubuntu.com/core" class="spec-link" target="_blank"><strong>Ubuntu Core</strong></a> and
+      <strong>Snapd</strong> by Canonical
+    </li>
+  </ul>
+</div>
+
+{% endblock %}

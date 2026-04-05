@@ -1102,3 +1102,12 @@ in the spec palette. All `is-warning` component styles in `coreaoke.css` now use
 of amber. Inline `has-text-warning` overrides in `splash.html` and `info.html`
 were updated to match. The Search button (`is-warning`) and Add to queue button
 (`is-info`) in `search.html` were changed to `is-primary` (#e95420).
+
+## Credits page
+
+Added `/credits` route with a Credits & Acknowledgements page accessible from
+the sidebar nav. Lists upstream projects (PiKaraoke, yt-dlp, FFmpeg, Flask,
+Socket.IO, Selectize.js, HLS.js, Fontello, Ubuntu Variable Font), Ubuntu
+Coreaoke contributors, and Ubuntu Core. Visiting the page emits a
+`credits_overlay` socket event that displays a 5-second overlay on the player
+panel. Blueprint registered in `app.py` as an internal (non-API) route.

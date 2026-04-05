@@ -420,6 +420,20 @@
               }
             }
           });
+          window.socket.on('credits_overlay', function() {
+            var el = document.getElementById('credits-overlay');
+            if (!el) return;
+            el.style.display = 'flex';
+            setTimeout(function() {
+              el.style.transition = 'opacity 1s';
+              el.style.opacity = '0';
+              setTimeout(function() {
+                el.style.display = 'none';
+                el.style.opacity = '1';
+                el.style.transition = '';
+              }, 1000);
+            }, 5000);
+          });
         })();
 
         // handle auto-close flash notifications
@@ -505,6 +519,10 @@
         <i class="icon icon-info-circled-1"></i>
         <span class="sidebar-label">Info</span>
       </a>
+      <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Credits">
+        <i class="icon icon-music"></i>
+        <span class="sidebar-label">Credits</span>
+      </a>
     </nav>
     <div id="sidebar-content" class="sidebar-content">
       <a id="current-user" class="current-user is-hidden" href="#">
@@ -569,6 +587,11 @@
 
     <!-- Up next overlay -->
     <div id="player-up-next" class="player-up-next" style="display: none"></div>
+
+    <!-- Credits overlay -->
+    <div id="credits-overlay" style="display: none; position: absolute; z-index: 10; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center;">
+      <p style="color: #ffffff; font-size: 1.5rem; font-weight: 300; text-align: center; text-shadow: 2px 1px black;">Ubuntu Coreaoke &mdash; Built with &#10084;&#65039; on Ubuntu Core</p>
+    </div>
   </div>
   {% endif %}
 

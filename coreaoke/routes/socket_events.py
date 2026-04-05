@@ -71,6 +71,11 @@ def setup_socket_events(socketio):
             # Broadcast position to all other splash screens (slaves)
             socketio.emit("playback_position", position, include_self=False)
 
+    @socketio.on("credits_overlay")
+    def credits_overlay() -> None:
+        """Broadcast credits overlay message to all connected clients."""
+        socketio.emit("credits_overlay")
+
     @socketio.on("disconnect")
     def handle_disconnect() -> None:
         """Handle Socket.IO client disconnection and manage splash role handover."""
