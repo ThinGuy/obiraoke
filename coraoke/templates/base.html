@@ -202,6 +202,10 @@
         // Sidebar AJAX content loading
         (function() {
           function loadSidebarContent(url) {
+            if (url === '/search' || url.indexOf('?query=') !== -1) {
+              window.location.href = url;
+              return;
+            }
             fetch(url)
               .then(function(r) { return r.text(); })
               .then(function(html) {

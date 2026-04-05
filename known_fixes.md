@@ -995,3 +995,16 @@ with a more robust approach (200 ms delay for slower devices):
 - Wraps each init in try/catch with a `console.warn` fallback.
 - Unlocks plain `input[type="text"]` elements that may be left disabled/readonly
   after AJAX injection.
+
+## Search page bypass for sidebar AJAX navigation
+
+The `/search` page uses selectize with complex socket.io-dependent initialization
+that cannot survive AJAX injection into the sidebar. When `loadSidebarContent()`
+loaded `/search` via fetch/innerHTML, selectize bindings and socket.io event
+listeners failed to initialize properly because they depend on a full page load
+lifecycle.
+
+**Fix:** Added an early return in `loadSidebarContent()` that performs a normal
+`window.location.href` navigation instead of AJAX loading for:
+- The `/search` URL exactly.
+- Any URL containing `?query=` (search results pages that also rely on selectize).
