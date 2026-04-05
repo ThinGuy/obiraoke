@@ -1150,3 +1150,11 @@ explicit `:focus` and `:active` selectors alongside `:hover`, all setting
 `color: #ffffff` and `background: none`, so the hamburger icon renders white
 against the `#262626` sidebar background in every interactive state. No inline
 styles or classes in `base.html` applied orange to this element.
+
+## Alpha-bar active letter color -- change from orange to green
+
+The active letter in the alpha-bar on the browse page was rendering orange
+(#e95420). The inline style in `files.html` sets `.alpha-active` to orange with
+`!important`. Added an override rule `#alpha-bar a.alpha-active` in
+`coreaoke/static/coreaoke.css` that sets the color to #0e8420 (Vanilla
+Framework green) to match the active/selected state color from the UI spec.
