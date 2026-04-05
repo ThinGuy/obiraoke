@@ -122,130 +122,139 @@
       return Cookies.get("user");
     }
 
-    $(function () {
-      connectSocket();
+    (function($) {
+      if (!$ || !$.fn) return;
+      $(function () {
+        connectSocket();
 
-      $("#notification-close").click(function () {
-        $(".notification").hide();
-      });
-      $("#notification-alt").hide()
+        try {
+          $("#notification-close").click(function () {
+            $(".notification").hide();
+          });
+        } catch(e) {}
+        try { $("#notification-alt").hide(); } catch(e) {}
 
-      // Sidebar toggle logic
-      (function() {
-        var sidebar = document.getElementById('sidebar');
-        var playerPanel = document.getElementById('player-panel');
-        var pinBtn = document.getElementById('sidebar-pin');
-        var pinned = localStorage.getItem('sidebar-pinned') === 'true';
+        // Sidebar toggle logic
+        (function() {
+          var sidebar = document.getElementById('sidebar');
+          var playerPanel = document.getElementById('player-panel');
+          var pinBtn = document.getElementById('sidebar-pin');
+          var pinned = localStorage.getItem('sidebar-pinned') === 'true';
 
-        function updatePinColor() {
-          if (pinBtn) {
-            pinBtn.style.color = pinned ? '#e95420' : '#ffffff';
-          }
-        }
-
-        var sidebarContent = document.getElementById('sidebar-content');
-
-        function expand() {
-          if (!sidebar) return;
-          sidebar.classList.add('sidebar-expanded');
-          if (playerPanel) {
-            playerPanel.classList.add('player-panel-expanded');
-          }
-          if (sidebarContent) {
-            sidebarContent.style.display = 'block';
-          }
-        }
-
-        function collapse() {
-          if (!sidebar) return;
-          sidebar.classList.remove('sidebar-expanded');
-          if (playerPanel) {
-            playerPanel.classList.remove('player-panel-expanded');
-          }
-          if (sidebarContent) {
-            sidebarContent.style.display = 'none';
-          }
-        }
-
-        if (pinned) {
-          expand();
-        }
-        updatePinColor();
-
-        if (pinBtn) {
-          pinBtn.addEventListener('click', function() {
-            pinned = !pinned;
-            localStorage.setItem('sidebar-pinned', pinned ? 'true' : 'false');
-            if (pinned) {
-              expand();
-            } else {
-              collapse();
+          function updatePinColor() {
+            if (pinBtn) {
+              pinBtn.style.color = pinned ? '#e95420' : '#ffffff';
             }
-            updatePinColor();
-          });
-        }
-
-        if (sidebar) {
-          sidebar.addEventListener('mouseenter', function() {
-            if (!pinned) { expand(); }
-          });
-          sidebar.addEventListener('mouseleave', function() {
-            if (!pinned) { collapse(); }
-          });
-        }
-      })();
-
-      // Player panel: now-playing updates via socket.io
-      (function() {
-        function updatePlayerNowPlaying(np) {
-          var $np = $('#player-now-playing');
-          var $upNext = $('#player-up-next');
-          var $logo = $('#player-logo');
-
-          if (np.now_playing) {
-            $np.html(
-              '<p class="has-text-white" style="margin-bottom: 5px">' + np.now_playing + '</p>' +
-              '<div class="has-text-success"><i class="icon icon-mic-1"></i> ' + np.now_playing_user + '</div>'
-            ).show();
-            $logo.css('opacity', '0.3');
-          } else {
-            $np.hide();
-            $logo.css('opacity', '0.9');
           }
 
-          if (np.up_next) {
-            $upNext.html(
-              '<b class="has-text-white">Up next:</b> <span class="has-text-warning">' + np.up_next + '</span>' +
-              '<div class="has-text-success"><b class="has-text-white">Next singer:</b> <i class="icon icon-mic-1"></i> ' + np.next_user + '</div>'
-            ).show();
-          } else {
-            $upNext.hide();
+          var sidebarContent = document.getElementById('sidebar-content');
+
+          function expand() {
+            if (!sidebar) return;
+            sidebar.classList.add('sidebar-expanded');
+            if (playerPanel) {
+              playerPanel.classList.add('player-panel-expanded');
+            }
+            if (sidebarContent) {
+              sidebarContent.style.display = 'block';
+            }
           }
+
+          function collapse() {
+            if (!sidebar) return;
+            sidebar.classList.remove('sidebar-expanded');
+            if (playerPanel) {
+              playerPanel.classList.remove('player-panel-expanded');
+            }
+            if (sidebarContent) {
+              sidebarContent.style.display = 'none';
+            }
+          }
+
+          if (pinned) {
+            expand();
+          }
+          updatePinColor();
+
+          if (pinBtn) {
+            pinBtn.addEventListener('click', function() {
+              pinned = !pinned;
+              localStorage.setItem('sidebar-pinned', pinned ? 'true' : 'false');
+              if (pinned) {
+                expand();
+              } else {
+                collapse();
+              }
+              updatePinColor();
+            });
+          }
+
+          if (sidebar) {
+            sidebar.addEventListener('mouseenter', function() {
+              if (!pinned) { expand(); }
+            });
+            sidebar.addEventListener('mouseleave', function() {
+              if (!pinned) { collapse(); }
+            });
+          }
+        })();
+
+        // Player panel: now-playing updates via socket.io
+        (function() {
+          function updatePlayerNowPlaying(np) {
+            var $np = $('#player-now-playing');
+            var $upNext = $('#player-up-next');
+            var $logo = $('#player-logo');
+
+            if (np.now_playing) {
+              $np.html(
+                '<p class="has-text-white" style="margin-bottom: 5px">' + np.now_playing + '</p>' +
+                '<div class="has-text-success"><i class="icon icon-mic-1"></i> ' + np.now_playing_user + '</div>'
+              ).show();
+              $logo.css('opacity', '0.3');
+            } else {
+              $np.hide();
+              $logo.css('opacity', '0.9');
+            }
+
+            if (np.up_next) {
+              $upNext.html(
+                '<b class="has-text-white">Up next:</b> <span class="has-text-warning">' + np.up_next + '</span>' +
+                '<div class="has-text-success"><b class="has-text-white">Next singer:</b> <i class="icon icon-mic-1"></i> ' + np.next_user + '</div>'
+              ).show();
+            } else {
+              $upNext.hide();
+            }
+          }
+
+          // Fetch initial state
+          try {
+            $.get('{{ url_for("now_playing.now_playing") }}', function(data) {
+              updatePlayerNowPlaying(JSON.parse(data));
+            });
+          } catch(e) {}
+
+          // Listen for live updates
+          window.socket.on('now_playing', function(np) {
+            updatePlayerNowPlaying(np);
+          });
+        })();
+
+        // handle auto-close flash notifications
+        try { setTimeout(function() { $("#notification").fadeOut()}, 3000); } catch(e) {}
+
+        // handle current user display
+        var currentUser = Cookies.get("user");
+
+        if (currentUser) {
+          try {
+            $("#current-user span").text(currentUser);
+            $("#current-user").removeClass("is-hidden");
+          } catch(e) {}
         }
 
-        // Fetch initial state
-        $.get('{{ url_for("now_playing.now_playing") }}', function(data) {
-          updatePlayerNowPlaying(JSON.parse(data));
-        });
-
-        // Listen for live updates
-        window.socket.on('now_playing', function(np) {
-          updatePlayerNowPlaying(np);
-        });
-      })();
-
-      // handle auto-close flash notifications
-      setTimeout(function() { $("#notification").fadeOut()}, 3000);
-
-      // handle current user display
-      var currentUser = Cookies.get("user");
-
-      if (currentUser) {
-        $("#current-user span").text(currentUser)
-        $("#current-user").removeClass("is-hidden");
-      };
-
-    });
+      });
+    })(jQuery);
   </script>
   {% block scripts %}
   {% endblock %}

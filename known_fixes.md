@@ -876,3 +876,22 @@ fragile and failed when the class swap did not complete cleanly.
 **Fix (base.html HTML):**
 
 - Removed `sidebar-collapsed` from the initial `#sidebar` class attribute.
+
+## jQuery SPA navigation conflict (base.html)
+
+**Root cause:** When `spa-navigation.js` re-executes page scripts during SPA
+navigation, jQuery can lose its prototype methods. The inline `$(document).ready()`
+block in `base.html` then throws `$(...).hide is not a function` errors, which
+crash the rest of the page JS including the sidebar toggle.
+
+**Fix (base.html script block):**
+
+- Wrapped the entire `$(document).ready()` block in an IIFE that receives
+  `jQuery` as `$`: `(function($) { ... })(jQuery);`. This guarantees `$` always
+  refers to the real jQuery object regardless of SPA re-execution timing.
+- Added an early guard (`if (!$ || !$.fn) return;`) so the block exits silently
+  if jQuery is not fully loaded.
+- Wrapped `$("#notification-alt").hide()` and all other jQuery selector calls
+  outside the sidebar and player IIFEs in try/catch blocks so a failure in one
+  call does not prevent the rest of the ready block from executing.
+- The sidebar toggle IIFE (vanilla JS) was left unchanged.
