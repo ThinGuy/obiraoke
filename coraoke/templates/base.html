@@ -143,21 +143,27 @@
           }
         }
 
+        var sidebarContent = document.getElementById('sidebar-content');
+
         function expand() {
           if (!sidebar) return;
-          sidebar.classList.remove('sidebar-collapsed');
           sidebar.classList.add('sidebar-expanded');
           if (playerPanel) {
             playerPanel.classList.add('player-panel-expanded');
+          }
+          if (sidebarContent) {
+            sidebarContent.style.display = 'block';
           }
         }
 
         function collapse() {
           if (!sidebar) return;
           sidebar.classList.remove('sidebar-expanded');
-          sidebar.classList.add('sidebar-collapsed');
           if (playerPanel) {
             playerPanel.classList.remove('player-panel-expanded');
+          }
+          if (sidebarContent) {
+            sidebarContent.style.display = 'none';
           }
         }
 
@@ -279,7 +285,7 @@
 
   {% if not blank_page %}
   <!-- LEFT PANEL: Sidebar with nav + page content -->
-  <div id="sidebar" class="sidebar sidebar-collapsed">
+  <div id="sidebar" class="sidebar">
     <div class="sidebar-header">
       <img class="sidebar-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Coraoke" />
       <span class="sidebar-title">Coraoke</span>

@@ -125,13 +125,10 @@ a:hover {
   background: #262626;
   display: flex;
   flex-direction: column;
-  transition: width 0.2s ease;
+  width: 52px;
+  transition: width 0.25s ease;
   z-index: 100;
   overflow: hidden;
-}
-
-.sidebar-collapsed {
-  width: 52px;
 }
 
 .sidebar-expanded {
@@ -202,7 +199,7 @@ a:hover {
 }
 
 /* When collapsed, center the pin button */
-.sidebar-collapsed .sidebar-header {
+.sidebar:not(.sidebar-expanded) .sidebar-header {
   justify-content: center;
   padding: 0;
 }
@@ -293,8 +290,9 @@ a:hover {
   right: 0;
   bottom: 0;
   background: #000000;
-  transition: left 0.2s ease;
+  transition: left 0.25s ease;
   overflow: hidden;
+  z-index: 1;
 }
 
 .player-panel-expanded {

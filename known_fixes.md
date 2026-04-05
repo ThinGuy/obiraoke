@@ -839,3 +839,40 @@ where the sidebar IS the control panel and the right side is a permanent player.
   The `blank_page=True` variable previously passed from the splash route
   suppressed the sidebar in base.html, but extending base.html at all was
   incorrect for a fullscreen player page.
+
+## Sidebar toggle broken (pin button does not expand)
+
+**Root cause:** The sidebar JS used two competing classes (`sidebar-collapsed`
+and `sidebar-expanded`) for width control. On page load the HTML started with
+`sidebar-collapsed` on `#sidebar`, and `expand()` removed it while adding
+`sidebar-expanded` -- but `collapse()` re-added `sidebar-collapsed`, creating a
+class-toggle war. Additionally, `#sidebar-content` visibility relied entirely on
+the CSS rule `.sidebar-expanded .sidebar-content { display: block }`, which was
+fragile and failed when the class swap did not complete cleanly.
+
+**Fix (base.html JS):**
+
+- Removed all references to `sidebar-collapsed` class from JS.
+- `expand()` now: adds `sidebar-expanded` to `#sidebar`, adds
+  `player-panel-expanded` to `#player-panel`, and explicitly sets
+  `#sidebar-content` style to `display:block`.
+- `collapse()` now: removes `sidebar-expanded` from `#sidebar`, removes
+  `player-panel-expanded` from `#player-panel`, and explicitly sets
+  `#sidebar-content` style to `display:none`.
+- Pin button click toggles pinned state, saves to localStorage, and calls
+  `expand()` or `collapse()`.
+- Hover expand/collapse (when not pinned) calls the same functions.
+
+**Fix (coraoke.css):**
+
+- `.sidebar` default width set to `52px` (was relying on `.sidebar-collapsed`).
+- Removed `.sidebar-collapsed` rule entirely; only `.sidebar-expanded` overrides
+  to `224px`.
+- Transition changed to `0.25s ease` on both sidebar and player panel.
+- Added `z-index: 1` to `.player-panel`.
+- `.sidebar-collapsed .sidebar-header` selector updated to
+  `.sidebar:not(.sidebar-expanded) .sidebar-header`.
+
+**Fix (base.html HTML):**
+
+- Removed `sidebar-collapsed` from the initial `#sidebar` class attribute.
