@@ -275,10 +275,12 @@ a:hover {
 }
 
 .sidebar-version {
-  font-size: 0.625rem;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
   white-space: nowrap;
-  display: none;
+  overflow: hidden;
+  padding: 0.5rem 0.75rem;
+  display: block;
 }
 
 .sidebar-expanded .sidebar-version {
@@ -437,6 +439,19 @@ a:hover {
 
 .sidebar-content .is-size-5 {
   font-size: 0.875rem;
+}
+
+.sidebar-content,
+.sidebar-content p,
+.sidebar-content li,
+.sidebar-content td,
+.sidebar-content span {
+  font-size: 0.875rem;
+}
+
+.sidebar-content .is-size-7,
+.sidebar-content small {
+  font-size: 0.8rem !important;
 }
 
 .sidebar-content hr {

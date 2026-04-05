@@ -1046,3 +1046,20 @@ video element or HLS wiring to play the stream.
    the background video (idle) and the karaoke video (playing). Also wired up
    `pause`, `play`, `skip`, `volume`, `restart`, and `playback_position`
    socket events to the player panel video element.
+
+## Sidebar footer version string invisible
+
+The `.sidebar-version` rule used `font-size: 0.625rem` and
+`color: rgba(255,255,255,0.3)` with `display: none`, making the version string
+invisible even when the sidebar was expanded (the `sidebar-expanded` override
+only toggled `display: inline`). The fix bumps font size to `0.7rem`, lightens
+the colour to `rgba(255,255,255,0.4)`, sets `display: block` as the base state,
+and adds `overflow: hidden` and `padding: 0.5rem 0.75rem` for proper layout.
+
+## Sidebar content text too small
+
+Body text inside `.sidebar-content` (paragraphs, list items, table cells, and
+spans) rendered at various small sizes making the sidebar hard to read. A new
+grouped rule sets these elements to `0.875rem`. A companion rule bumps
+`.is-size-7` and `small` inside the sidebar to `0.8rem !important` so they
+remain legible.
