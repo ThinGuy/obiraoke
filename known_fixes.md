@@ -1121,3 +1121,10 @@ Added channel query parameter to `/splash` for digital signage use cases.
 and song count for venue entrance screens. The `register_splash` socket event
 now accepts a `{channel}` payload so the server can log which channel each
 splash client is using. Invalid channel values fall back to `main`.
+
+## Button color corrections
+
+Primary, success, and warning buttons now use #0e8420 (Vanilla Framework green)
+instead of #e95420. Danger button hover uses #c7162b-family values. Ubuntu
+Orange (#e95420) is retained as brand accent only: sidebar left-edge accent bar,
+sidebar active-item background tint and left border, and pin button pinned state.
