@@ -523,6 +523,10 @@
         <i class="icon icon-music"></i>
         <span class="sidebar-label">Credits</span>
       </a>
+      <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
+        <i class="icon icon-list-alt"></i>
+        <span class="sidebar-label">SBOM</span>
+      </a>
     </nav>
     <div id="sidebar-content" class="sidebar-content">
       <a id="current-user" class="current-user is-hidden" href="#">

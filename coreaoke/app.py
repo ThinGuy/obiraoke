@@ -45,6 +45,7 @@ from coreaoke.routes.queue import queue_bp
 from coreaoke.routes.search import search_bp
 from coreaoke.routes.socket_events import setup_socket_events
 from coreaoke.routes.credits import credits_bp
+from coreaoke.routes.sbom import sbom_bp
 from coreaoke.routes.signage import signage_bp
 from coreaoke.routes.splash import splash_bp
 from coreaoke.routes.stream import stream_bp
@@ -100,6 +101,7 @@ _internal_blueprints = [
     home_bp,
     info_bp,
     credits_bp,
+    sbom_bp,
     splash_bp,
     batch_song_renamer_bp,
 ]

@@ -1337,3 +1337,14 @@ who expected general preferences above it.
 
 Fix: changed the accordion heading text from "Server settings" to "Advanced
 settings" in info.html.
+
+## SBOM route
+
+`/sbom` serves a Software Bill of Materials for the coreaoke snap. The route
+uses `importlib.metadata.distributions()` to enumerate every installed Python
+package at runtime (name, version, SPDX license identifier) and combines it
+with a static list of bundled non-Python components (FFmpeg, yt-dlp, HLS.js,
+Selectize.js, Fontello, Ubuntu Variable Font). Passing `?format=json` returns
+the same data as JSON with `Content-Type: application/json`. The blueprint is
+registered in `app.py` as an internal (non-API) blueprint, and a sidebar nav
+item links to it below Credits.
