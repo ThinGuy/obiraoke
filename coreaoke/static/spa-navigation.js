@@ -264,7 +264,9 @@
             '/batch-song-renamer', // Edit all songs page
             '/files/edit', // Edit single song
             '/files/delete', // Delete song
-            '/queue/edit' // Queue edit actions (move up/down/top/bottom/delete)
+            '/queue/edit', // Queue edit actions (move up/down/top/bottom/delete)
+            '/docs', // Operator docs (full-page, not sidebar)
+            '/sbom' // Software bill of materials (full-page, not sidebar)
         ];
 
         // Check if the href matches any excluded path

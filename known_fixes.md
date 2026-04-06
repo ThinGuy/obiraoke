@@ -1398,3 +1398,26 @@ Added an operator-facing documentation page at the `/docs` route.
   renders the `docs.html` template.
 - `coreaoke/templates/docs.html` -- Template for the operator docs page.
 - `base.html` -- Added a "Docs" nav item in the sidebar linking to `/docs`.
+
+## Branding Icon Default Fallback
+
+The `_DEFAULT_ICON_URL` in `coreaoke/lib/branding.py` pointed to `/images/logo`
+which returned 404. The sidebar app-icon and splash logo-path are separate
+concerns -- the app-icon default should not use `/logo` (which reads the
+logo-path snap config). Changed the fallback to `/static/images/ob01.png` to
+serve the built-in OB-01 image directly as a static file.
+
+- `coreaoke/lib/branding.py` -- Changed `_DEFAULT_ICON_URL` from `/images/logo`
+  to `/static/images/ob01.png`.
+
+## Full-Page Navigation for /docs and /sbom
+
+Added `/docs` and `/sbom` to the bypass lists in both the sidebar AJAX loader
+(`base.html`) and the SPA navigation system (`spa-navigation.js`) so these
+routes load via `window.location.href` instead of AJAX, rendering full-width in
+the player area instead of being squeezed into the sidebar panel.
+
+- `coreaoke/templates/base.html` -- Added `/docs` and `/sbom` to the
+  `loadSidebarContent()` early-return check.
+- `coreaoke/static/spa-navigation.js` -- Added `/docs` and `/sbom` to the
+  `excludedPaths` array in `shouldExcludeLink()`.
