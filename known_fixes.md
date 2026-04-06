@@ -1287,3 +1287,25 @@ Fix: moved the script from `{% block scripts %}` into `{% block content %}`
 wrapper to an IIFE `(function() {...})()` so it executes immediately when
 re-created by `loadSidebarContent()`, since `DOMContentLoaded` has already
 fired by the time sidebar AJAX content is injected.
+
+## Credits page styling mismatch with UI spec
+
+The credits page used Bulma helper classes (`title is-5`, `title is-6`, `mb-4`,
+`spec-link`, `<strong>`) that did not match the obiraoke UI spec. Colors,
+font weights, and text sizes were inconsistent with the rest of the UI.
+
+Fix: restyled `credits.html` entirely with inline styles matching the UI spec:
+page title uses text-xl font-light #ffffff; section subheadings use text-sm
+uppercase tracking-widest rgba(255,255,255,0.5) with a 1px top border divider;
+project names use #ffffff font-medium; description text uses
+rgba(255,255,255,0.65) text-xs; links use #06c with underline on hover only.
+All text left-aligned, no border-radius on any element.
+
+## Credits overlay heart character not Ubuntu Orange
+
+The credits overlay tagline in `base.html` rendered the heart character
+(&#9829;) in the same white as surrounding text, making it visually
+indistinct.
+
+Fix: wrapped the heart `&#9829;` in a `<span style="color:#e95420">` so it
+renders in Ubuntu Orange while the surrounding text stays white.
