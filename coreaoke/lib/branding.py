@@ -3,7 +3,7 @@
 import os
 
 _DEFAULT_APP_NAME = "Ubuntu Coreaoke"
-_DEFAULT_ICON_URL = "/static/images/ob01.png"
+_DEFAULT_ICON_URL = "/static/images/logo.png"
 
 
 def get_branding() -> dict:
@@ -13,7 +13,7 @@ def get_branding() -> dict:
         app_name: Display name from COREAOKE_APP_NAME env var.
         app_icon_url: URL path to serve the icon. Points to /branding/icon
             when COREAOKE_APP_ICON is set and the file exists, otherwise
-            falls back to the built-in OB-01 image at /static/images/ob01.png.
+            falls back to the built-in OB-01 image at /static/images/logo.png.
     """
     app_name = os.environ.get("COREAOKE_APP_NAME") or _DEFAULT_APP_NAME
 
