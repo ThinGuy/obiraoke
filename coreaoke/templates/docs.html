@@ -1,6 +1,8 @@
 {% extends 'base.html' %} {% block header %}
 <h1 style="color: #ffffff; font-size: 1.25rem; font-weight: 300; text-align: left;">Operator Guide</h1>
 {% endblock %} {% block content %}
+<p style="font-size: 0.8rem; color: rgba(255,255,255,0.65);">See main panel.</p>
+{% endblock %} {% block main_content %}
 
 <style>
   .docs-section { margin-bottom: 1.5rem; }
@@ -8,8 +10,8 @@
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.65);
-    border-top: 1px solid rgba(255,255,255,0.15);
+    color: rgba(0,0,0,0.55);
+    border-top: 1px solid rgba(0,0,0,0.15);
     padding-top: 0.75rem;
     margin-top: 1rem;
     text-align: left;
@@ -17,12 +19,12 @@
   .docs-section h3 {
     font-size: 0.9rem;
     font-weight: 400;
-    color: #ffffff;
+    color: #000;
     margin: 0.75rem 0 0.25rem 0;
   }
   .docs-section p, .docs-section li {
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.85);
+    color: rgba(0,0,0,0.85);
     line-height: 1.5;
     margin: 0.25rem 0;
   }
@@ -32,8 +34,8 @@
   }
   .docs-cmd {
     display: block;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.1);
     border-radius: 4px;
     padding: 0.4rem 0.6rem;
     margin: 0.4rem 0;
@@ -48,7 +50,7 @@
     border-collapse: collapse;
     margin-top: 0.5rem;
   }
-  .docs-ref-table thead tr { background: #f7f7f7; }
+  .docs-ref-table thead tr { background: #e8e8e8; }
   .docs-ref-table th {
     padding: 0.5rem 0.75rem;
     text-align: left;
@@ -59,12 +61,13 @@
   .docs-ref-table td {
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
+    color: #000;
   }
   .docs-ref-table tbody tr {
     transition: background 0.15s;
   }
   .docs-ref-table tbody tr:hover {
-    background: #f7f7f7;
+    background: #e8e8e8;
   }
   .docs-ref-table tbody tr:hover td { color: #000; }
 </style>

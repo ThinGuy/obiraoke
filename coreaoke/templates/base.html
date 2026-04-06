@@ -566,6 +566,13 @@
 
   <!-- RIGHT PANEL: Player (always visible) -->
   <div id="player-panel" class="player-panel">
+    {% set _main_content %}{% block main_content %}{% endblock %}{% endset %}
+    {% if _main_content.strip() %}
+    <!-- Full-width page content (replaces splash/video) -->
+    <div style="background: #f7f7f7; padding: 1.5rem; overflow-y: auto; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5;">
+      {{ _main_content }}
+    </div>
+    {% else %}
     <!-- Background video -->
     {% if player_has_bg_video %}
     <video class="player-bg-video" autoplay muted loop playsinline webkit-playsinline
@@ -600,6 +607,7 @@
     <div id="credits-overlay" style="display: none; position: absolute; z-index: 10; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center;">
       <p style="color: #ffffff; font-size: 1.5rem; font-weight: 300; text-align: center; text-shadow: 2px 1px black;">Ubuntu Coreaoke &mdash; Built with <span style="color:#e95420">&#9829;</span> using Ubuntu and Snapcraft</p>
     </div>
+    {% endif %}
   </div>
   {% endif %}
 

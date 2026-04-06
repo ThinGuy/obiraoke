@@ -1421,3 +1421,23 @@ the player area instead of being squeezed into the sidebar panel.
   `loadSidebarContent()` early-return check.
 - `coreaoke/static/spa-navigation.js` -- Added `/docs` and `/sbom` to the
   `excludedPaths` array in `shouldExcludeLink()`.
+
+## Docs and SBOM full-width rendering
+
+The docs and SBOM pages extended `base.html` and rendered all their content
+inside `{% block content %}`, which lives in the sidebar panel. This squeezed
+dense reference tables and long prose into a narrow column.
+
+Fix: added a `{% block main_content %}` in `base.html` inside the player panel
+area. When this block has content, the splash/video elements are hidden and the
+block content renders full-width with a `#f7f7f7` background, `p-6` padding,
+`overflow-y-auto`, and full height. Both `docs.html` and `sbom.html` now place
+their content in `{% block main_content %}` and leave `{% block content %}` with
+a brief "See main panel" message. Text and table colors were updated from
+white-on-dark to dark-on-light to match the light background.
+
+- `coreaoke/templates/base.html` -- Added `{% block main_content %}` with
+  conditional rendering inside the player panel div.
+- `coreaoke/templates/docs.html` -- Moved content to `{% block main_content %}`,
+  updated colors for light background.
+- `coreaoke/templates/sbom.html` -- Same treatment as docs.html.

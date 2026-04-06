@@ -1,15 +1,17 @@
 {% extends 'base.html' %} {% block header %}
 <h1 style="color: #ffffff; font-size: 1.25rem; font-weight: 300; text-align: left;">Software Bill of Materials</h1>
 {% endblock %} {% block content %}
+<p style="font-size: 0.8rem; color: rgba(255,255,255,0.65);">See main panel.</p>
+{% endblock %} {% block main_content %}
 
 <div style="margin-bottom: 1rem;">
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.65); border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Python Packages</h2>
+    <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Python Packages</h2>
     <a href="/sbom?format=json" download="sbom.json" style="color: #06c; text-decoration: none; font-size: 0.75rem;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Download JSON</a>
   </div>
   <table style="width: 100%; border-collapse: collapse;">
     <thead>
-      <tr style="background: #f7f7f7;">
+      <tr style="background: #e8e8e8;">
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Name</th>
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Version</th>
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">License</th>
@@ -17,10 +19,10 @@
     </thead>
     <tbody>
       {% for pkg in python_packages %}
-      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#f7f7f7'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
-        <td style="padding: 0.75rem 1rem;">{{ pkg.name }}</td>
-        <td style="padding: 0.75rem 1rem;">{{ pkg.version }}</td>
-        <td style="padding: 0.75rem 1rem;">{{ pkg.license }}</td>
+      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#e8e8e8'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.name }}</td>
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.version }}</td>
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.license }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -28,10 +30,10 @@
 </div>
 
 <div style="margin-bottom: 1rem;">
-  <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.65); border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Bundled Components</h2>
+  <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Bundled Components</h2>
   <table style="width: 100%; border-collapse: collapse;">
     <thead>
-      <tr style="background: #f7f7f7;">
+      <tr style="background: #e8e8e8;">
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Name</th>
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Version</th>
         <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">License</th>
@@ -39,10 +41,10 @@
     </thead>
     <tbody>
       {% for comp in bundled_components %}
-      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#f7f7f7'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
-        <td style="padding: 0.75rem 1rem;">{{ comp.name }}</td>
-        <td style="padding: 0.75rem 1rem;">{{ comp.version }}</td>
-        <td style="padding: 0.75rem 1rem;">{{ comp.license }}</td>
+      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#e8e8e8'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.name }}</td>
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.version }}</td>
+        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.license }}</td>
       </tr>
       {% endfor %}
     </tbody>
