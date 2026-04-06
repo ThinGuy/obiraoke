@@ -1,0 +1,446 @@
+{% extends 'base.html' %} {% block header %}
+<h1 style="color: #ffffff; font-size: 1.25rem; font-weight: 300; text-align: left;">Operator Guide</h1>
+{% endblock %} {% block content %}
+
+<style>
+  .docs-section { margin-bottom: 1.5rem; }
+  .docs-section h2 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.65);
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 0.75rem;
+    margin-top: 1rem;
+    text-align: left;
+  }
+  .docs-section h3 {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 0.75rem 0 0.25rem 0;
+  }
+  .docs-section p, .docs-section li {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    margin: 0.25rem 0;
+  }
+  .docs-section ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+  }
+  .docs-cmd {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    margin: 0.4rem 0;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: #e95420;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .docs-ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+  .docs-ref-table thead tr { background: #f7f7f7; }
+  .docs-ref-table th {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .docs-ref-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  .docs-ref-table tbody tr {
+    transition: background 0.15s;
+  }
+  .docs-ref-table tbody tr:hover {
+    background: #f7f7f7;
+  }
+  .docs-ref-table tbody tr:hover td { color: #000; }
+</style>
+
+<!-- GETTING STARTED -->
+<div class="docs-section">
+  <h2>Getting Started</h2>
+
+  <h3>What is Ubuntu Coreaoke?</h3>
+  <p>Ubuntu Coreaoke is a karaoke system that turns any computer into a full karaoke machine. Singers use their phones to search for songs and add themselves to the queue, while you control everything from a simple web page. A TV or projector shows the lyrics and music videos.</p>
+
+  <h3>How to access it</h3>
+  <p>Open any web browser on a phone, tablet, or computer connected to the same network and go to the address shown on the TV screen. You can also scan the QR code displayed on screen. The default address looks like:</p>
+  <code class="docs-cmd">http://your-machine-ip:5555</code>
+
+  <h3>How to add songs</h3>
+  <ul>
+    <li><strong>YouTube search:</strong> Use the Search page to look up any song on YouTube. Pick the one you want, enter your name, and it gets downloaded and added to the queue.</li>
+    <li><strong>Local files:</strong> Use the Browse page to pick from songs that are already downloaded on the machine.</li>
+  </ul>
+</div>
+
+<!-- THE DISPLAY SCREEN -->
+<div class="docs-section">
+  <h2>The Display Screen</h2>
+
+  <h3>What the splash screen shows</h3>
+  <p>When no one is singing, the TV shows a splash screen with your logo, a background video, the web address and QR code so people can connect, and the name of the next singer. This is what your audience sees between songs.</p>
+
+  <h3>How to change the background video</h3>
+  <p>Replace the default background video with your own. Use any MP4 file -- a looping animation, your venue branding, whatever you like.</p>
+  <code class="docs-cmd">sudo snap set coreaoke bg-video-path=/path/to/video.mp4</code>
+
+  <h3>How to change the logo</h3>
+  <p>Put your own logo on the splash screen. A PNG image around 2048x1024 pixels works best.</p>
+  <code class="docs-cmd">sudo snap set coreaoke logo-path=/path/to/logo.png</code>
+
+  <h3>How to change the app name</h3>
+  <p>Replace "Coreaoke" with your own venue name wherever it appears in the interface.</p>
+  <code class="docs-cmd">sudo snap set coreaoke app-name="My Venue Karaoke"</code>
+
+  <h3>Background music</h3>
+  <p>Between songs, background music plays automatically from a folder of MP3 files. You can point it at your own music folder or turn it off entirely. The volume is separate from the main karaoke volume so you can keep it low.</p>
+
+  <h3>Clock on screen</h3>
+  <p>Show a digital clock on the splash screen so singers and staff can see the time without checking their phones.</p>
+  <code class="docs-cmd">sudo snap set coreaoke show-splash-clock=true</code>
+</div>
+
+<!-- DIGITAL SIGNAGE -->
+<div class="docs-section">
+  <h2>Digital Signage</h2>
+
+  <h3>What channels are</h3>
+  <p>Channels let you run different screens on different TVs, all from the same Coreaoke machine. Each channel has its own background video, logo, QR codes, and background music. Think of each channel as a separate "screen layout" you can point a TV at.</p>
+
+  <h3>Built-in channels</h3>
+  <ul>
+    <li><strong>main</strong> -- The default karaoke screen with lyrics, queue, and everything singers interact with.</li>
+    <li><strong>queue</strong> -- A display that shows the current queue so singers can see who is up next without using their phone.</li>
+    <li><strong>lobby</strong> -- A welcome screen for your entrance or lobby area with your logo and a QR code to join.</li>
+  </ul>
+
+  <h3>How to point a TV at a channel</h3>
+  <p>Open the channel URL in a browser on the TV you want to use. Just add the channel name to the splash URL:</p>
+  <code class="docs-cmd">http://hostname:5555/splash?channel=queue</code>
+
+  <h3>How to create a custom channel</h3>
+  <p>Create a new folder under the signage directory with the following structure:</p>
+  <code class="docs-cmd">my-channel/
+  channel.yaml
+  bg-video/
+  logo/
+  qr/
+  bg-sound/</code>
+  <p>The <strong>channel.yaml</strong> file controls the channel settings -- its name, layout, volume, and which elements to show. Place your files in the matching subfolders.</p>
+
+  <h3>What goes in each folder</h3>
+  <ul>
+    <li><strong>bg-video/</strong> -- MP4 files that loop as the background on that screen.</li>
+    <li><strong>logo/</strong> -- A PNG or JPG image displayed as the channel logo.</li>
+    <li><strong>qr/</strong> -- Text files containing URLs. Each .txt file becomes a QR code on screen. The filename (without .txt) is used as the label.</li>
+    <li><strong>bg-sound/</strong> -- MP3 files that play as background music on that channel.</li>
+  </ul>
+</div>
+
+<!-- MANAGING THE QUEUE -->
+<div class="docs-section">
+  <h2>Managing the Queue</h2>
+
+  <h3>How singers add songs</h3>
+  <p>Singers open the web address on their phone, search for a song, type in their name, and tap to add it. The song downloads from YouTube and joins the queue automatically.</p>
+
+  <h3>How the admin manages the queue</h3>
+  <p>As the admin (the person running the show), you can reorder songs by dragging them, remove individual songs, or clear the entire queue. These controls appear on the Queue page when you are logged in as admin.</p>
+
+  <h3>How to limit songs per person</h3>
+  <p>Prevent one person from hogging the queue by setting a maximum number of songs each singer can have queued at once.</p>
+  <code class="docs-cmd">sudo snap set coreaoke limit-user-songs-by=3</code>
+
+  <h3>Fair queue / round-robin mode</h3>
+  <p>When fair queue is turned on, the system automatically rotates through singers so everyone gets a turn before anyone goes twice. No one gets bumped to the bottom just because they signed up late.</p>
+
+  <h3>Admin password</h3>
+  <p>Set a password to lock down admin features like queue management, player controls, and song editing. Without a password, everyone who connects is treated as an admin.</p>
+  <code class="docs-cmd">sudo snap set coreaoke admin-password=secret</code>
+</div>
+
+<!-- AUDIO & VIDEO SETTINGS -->
+<div class="docs-section">
+  <h2>Audio &amp; Video Settings</h2>
+
+  <h3>Volume control</h3>
+  <p>Set the main playback volume for karaoke songs. This is a value between 0 (silent) and 1 (full volume).</p>
+  <code class="docs-cmd">sudo snap set coreaoke volume=0.85</code>
+
+  <h3>Background music volume</h3>
+  <p>Set the volume for background music that plays between songs, separate from the main karaoke volume. Keep it low so it does not overpower conversation.</p>
+  <code class="docs-cmd">sudo snap set coreaoke bg-music-volume=0.3</code>
+
+  <h3>Streaming format (HLS vs MP4)</h3>
+  <p><strong>HLS</strong> is the default and works best in most situations. It starts playing faster because it streams the song in small pieces. <strong>MP4</strong> sends the whole file at once, which can work better on older browsers or if you see playback glitches with HLS. Stick with HLS unless you have a reason to switch.</p>
+
+  <h3>Pitch shifting</h3>
+  <p>Singers can raise or lower the key of a song to better match their voice. The pitch controls appear on the Now Playing page. This adjusts the music in real time without changing the speed.</p>
+
+  <h3>Audio normalization</h3>
+  <p>Normalization evens out volume differences between songs so one track is not much louder or quieter than the next. This uses extra processing power, so on slower machines it may cause playback hiccups.</p>
+
+  <h3>AV sync adjustment</h3>
+  <p>If the audio and video are slightly out of sync -- lips moving before or after the words are heard -- you can nudge the timing. A negative value moves audio earlier; a positive value delays it. Most setups do not need this, but some TVs or HDMI setups introduce a small delay.</p>
+</div>
+
+<!-- SONG LIBRARY -->
+<div class="docs-section">
+  <h2>Song Library</h2>
+
+  <h3>Where songs are stored</h3>
+  <p>Downloaded songs are saved to a folder on the machine. By default this is inside the snap data directory. You can change it to any folder you have access to.</p>
+
+  <h3>How to use a USB drive for songs</h3>
+  <p>To store songs on a USB drive, first connect the removable-media interface so the snap can access external drives, then set the download path to your USB mount point:</p>
+  <code class="docs-cmd">sudo snap connect coreaoke:removable-media
+sudo snap set coreaoke download-path=/media/usb-drive/karaoke-songs</code>
+
+  <h3>How to pre-load songs</h3>
+  <p>If you want the machine to come pre-loaded with songs on first boot, provide a URL to a tar archive of song files. The system downloads and extracts them automatically.</p>
+  <code class="docs-cmd">sudo snap set coreaoke preseed-url=https://example.com/songs.tar.gz</code>
+
+  <h3>Supported formats</h3>
+  <ul>
+    <li><strong>MP4</strong> -- Standard video files with embedded audio. This is what YouTube downloads produce.</li>
+    <li><strong>CDG + MP3</strong> -- The classic karaoke disc format. A CDG file (graphics) paired with an MP3 file (audio) with matching filenames.</li>
+  </ul>
+</div>
+
+<!-- NETWORK & ACCESS -->
+<div class="docs-section">
+  <h2>Network &amp; Access</h2>
+
+  <h3>Default port and how to change it</h3>
+  <p>Coreaoke runs on port 5555 by default. If that conflicts with something else on your network, change it:</p>
+  <code class="docs-cmd">sudo snap set coreaoke port=8080</code>
+
+  <h3>Headless mode</h3>
+  <p>Headless mode runs the karaoke server without opening a browser window on the machine itself. Useful when the machine is tucked away and you are viewing everything on separate screens over the network.</p>
+
+  <h3>Autostart on boot</h3>
+  <p>Have Coreaoke start automatically every time the machine powers on, so you never have to remember to launch it.</p>
+  <code class="docs-cmd">sudo snap set coreaoke autostart=true</code>
+
+  <h3>HTTP proxy for YouTube</h3>
+  <p>If your venue network blocks YouTube or routes through a firewall, set an HTTP proxy so song downloads can get through:</p>
+  <code class="docs-cmd">sudo snap set coreaoke proxy=http://proxy.example.com:3128</code>
+</div>
+
+<!-- SOFTWARE BILL OF MATERIALS -->
+<div class="docs-section">
+  <h2>Software Bill of Materials</h2>
+
+  <p>A Software Bill of Materials (SBOM) is a complete list of every piece of software included in Coreaoke -- every library, tool, and component along with its version and license. Think of it like an ingredients list on a food label. It lets you verify that everything in the system is properly licensed and accounted for.</p>
+  <p>View the full list at <a href="/sbom" style="color: #06c;">/sbom</a>.</p>
+</div>
+
+<!-- ALL SETTINGS REFERENCE -->
+<div class="docs-section">
+  <h2>All Settings Reference</h2>
+
+  <p>Every setting below is changed with <code style="color: #e95420;">sudo snap set coreaoke key=value</code>.</p>
+
+  <table class="docs-ref-table">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>What it does</th>
+        <th>Default</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>port</td>
+        <td>Web server port number</td>
+        <td>5555</td>
+        <td>port=8080</td>
+      </tr>
+      <tr>
+        <td>volume</td>
+        <td>Main playback volume (0 to 1)</td>
+        <td>0.85</td>
+        <td>volume=0.7</td>
+      </tr>
+      <tr>
+        <td>bg-music-volume</td>
+        <td>Background music volume (0 to 1)</td>
+        <td>0.3</td>
+        <td>bg-music-volume=0.2</td>
+      </tr>
+      <tr>
+        <td>streaming-format</td>
+        <td>Video streaming method</td>
+        <td>hls</td>
+        <td>streaming-format=mp4</td>
+      </tr>
+      <tr>
+        <td>admin-password</td>
+        <td>Password to lock admin features</td>
+        <td>(none)</td>
+        <td>admin-password=secret</td>
+      </tr>
+      <tr>
+        <td>download-path</td>
+        <td>Where songs are saved</td>
+        <td>snap data dir</td>
+        <td>download-path=/media/usb/songs</td>
+      </tr>
+      <tr>
+        <td>logo-path</td>
+        <td>Custom splash screen logo image</td>
+        <td>(built-in logo)</td>
+        <td>logo-path=/path/to/logo.png</td>
+      </tr>
+      <tr>
+        <td>bg-video-path</td>
+        <td>Custom background video file</td>
+        <td>(built-in video)</td>
+        <td>bg-video-path=/path/to/video.mp4</td>
+      </tr>
+      <tr>
+        <td>bg-music-path</td>
+        <td>Folder of MP3s for background music</td>
+        <td>(built-in music)</td>
+        <td>bg-music-path=/path/to/music/</td>
+      </tr>
+      <tr>
+        <td>app-name</td>
+        <td>Custom name shown in the interface</td>
+        <td>Coreaoke</td>
+        <td>app-name="My Bar Karaoke"</td>
+      </tr>
+      <tr>
+        <td>app-icon</td>
+        <td>Custom icon for white-label branding</td>
+        <td>(built-in icon)</td>
+        <td>app-icon=/path/to/icon.png</td>
+      </tr>
+      <tr>
+        <td>theme</td>
+        <td>Named theme preset (sets logo, video, music)</td>
+        <td>(none)</td>
+        <td>theme=neon-nights</td>
+      </tr>
+      <tr>
+        <td>autostart</td>
+        <td>Start automatically on boot</td>
+        <td>false</td>
+        <td>autostart=true</td>
+      </tr>
+      <tr>
+        <td>headless</td>
+        <td>Run without a local browser window</td>
+        <td>true</td>
+        <td>headless=false</td>
+      </tr>
+      <tr>
+        <td>show-splash-clock</td>
+        <td>Show a clock on the splash screen</td>
+        <td>false</td>
+        <td>show-splash-clock=true</td>
+      </tr>
+      <tr>
+        <td>splash-delay</td>
+        <td>Seconds between songs on splash screen</td>
+        <td>2</td>
+        <td>splash-delay=5</td>
+      </tr>
+      <tr>
+        <td>screensaver-timeout</td>
+        <td>Seconds before screensaver starts (0 = off)</td>
+        <td>300</td>
+        <td>screensaver-timeout=600</td>
+      </tr>
+      <tr>
+        <td>hide-url</td>
+        <td>Hide the URL and QR code from splash</td>
+        <td>false</td>
+        <td>hide-url=true</td>
+      </tr>
+      <tr>
+        <td>normalize-audio</td>
+        <td>Even out volume differences between songs</td>
+        <td>false</td>
+        <td>normalize-audio=true</td>
+      </tr>
+      <tr>
+        <td>high-quality</td>
+        <td>Download higher quality video</td>
+        <td>false</td>
+        <td>high-quality=true</td>
+      </tr>
+      <tr>
+        <td>disable-bg-music</td>
+        <td>Turn off background music entirely</td>
+        <td>false</td>
+        <td>disable-bg-music=true</td>
+      </tr>
+      <tr>
+        <td>disable-bg-video</td>
+        <td>Turn off the background video</td>
+        <td>false</td>
+        <td>disable-bg-video=true</td>
+      </tr>
+      <tr>
+        <td>disable-score</td>
+        <td>Turn off the score screen after songs</td>
+        <td>false</td>
+        <td>disable-score=true</td>
+      </tr>
+      <tr>
+        <td>limit-user-songs-by</td>
+        <td>Max songs per person in queue (0 = no limit)</td>
+        <td>0</td>
+        <td>limit-user-songs-by=3</td>
+      </tr>
+      <tr>
+        <td>preseed-url</td>
+        <td>URL to a song archive for first-run setup</td>
+        <td>(none)</td>
+        <td>preseed-url=https://example.com/songs.tar.gz</td>
+      </tr>
+      <tr>
+        <td>proxy</td>
+        <td>HTTP proxy for YouTube downloads</td>
+        <td>(none)</td>
+        <td>proxy=http://proxy:3128</td>
+      </tr>
+      <tr>
+        <td>prefer-hostname</td>
+        <td>Use hostname instead of IP in displayed URL</td>
+        <td>false</td>
+        <td>prefer-hostname=true</td>
+      </tr>
+      <tr>
+        <td>log-level</td>
+        <td>Logging detail level</td>
+        <td>INFO</td>
+        <td>log-level=DEBUG</td>
+      </tr>
+      <tr>
+        <td>signage-root</td>
+        <td>Override the signage directory location</td>
+        <td>(snap data dir)</td>
+        <td>signage-root=/path/to/signage</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

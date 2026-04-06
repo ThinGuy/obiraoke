@@ -515,6 +515,10 @@
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
+      <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa {% if request.endpoint == 'docs.docs' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Docs">
+        <i class="icon icon-info"></i>
+        <span class="sidebar-label">Docs</span>
+      </a>
       <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
         <i class="icon icon-cog"></i>
         <span class="sidebar-label">Settings</span>
