@@ -72,3 +72,5 @@ snapctl set show-splash-clock=false
 snapctl set hide-url=false
 snapctl set theme=default
 snapctl set preseed-url=""
+snapctl set app-name="Ubuntu Coreaoke"
+snapctl set app-icon=""

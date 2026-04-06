@@ -1357,3 +1357,35 @@ item renamed to "About" with `icon-info-circled` (link still points to
 from fixed `320px` max to responsive `min-width: 200px; width: 25vw;
 max-width: 300px`. SBOM table set to `width: 100%` so it fills the sidebar
 content area. Credits page body replaced with a single link to the GitHub repo.
+
+## White-label branding via snap configuration
+
+Two snap configuration keys (`app-name`, `app-icon`) allow operators to
+rebrand the application without modifying source code.
+
+**Snap layer:**
+
+- `snap/hooks/install` sets defaults: `app-name="Ubuntu Coreaoke"`,
+  `app-icon=""`.
+- `snap/hooks/configure` accepts both keys without validation.
+- `snap/local/wrapper` exports `COREAOKE_APP_NAME` and `COREAOKE_APP_ICON`
+  environment variables from `snapctl get` before launching the application.
+
+**Backend:**
+
+- `coreaoke/lib/branding.py` -- `get_branding()` reads the two env vars and
+  returns `app_name` (string, default "Ubuntu Coreaoke") and `app_icon_url`
+  (URL path, `/branding/icon` when a custom file exists, otherwise `/logo`).
+- `coreaoke/routes/branding.py` -- Flask blueprint with `GET /branding/icon`.
+  Serves the custom icon file from `COREAOKE_APP_ICON` with correct MIME type,
+  falling back to the built-in `static/images/logo.png`.
+- `coreaoke/app.py` -- Registers the branding blueprint and injects
+  `app_name` and `app_icon_url` into all template contexts via a
+  `@app.context_processor`.
+
+**Templates:**
+
+- `base.html` -- Sidebar header uses `{{ app_name }}` for text and
+  `{{ app_icon_url }}` for the logo `src`.
+- `splash.html` -- Main channel and lobby channel logos use
+  `{{ app_icon_url }}` instead of the hardcoded `/logo` route.

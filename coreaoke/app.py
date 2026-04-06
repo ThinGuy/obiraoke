@@ -30,9 +30,11 @@ from coreaoke.lib.get_platform import (
 )
 from coreaoke.lib.song_manager import SongManager
 from coreaoke.lib.youtube_dl import upgrade_youtubedl
+from coreaoke.lib.branding import get_branding
 from coreaoke.routes.admin import admin_bp
 from coreaoke.routes.background_music import background_music_bp
 from coreaoke.routes.batch_song_renamer import batch_song_renamer_bp
+from coreaoke.routes.branding import branding_bp
 from coreaoke.routes.controller import controller_bp
 from coreaoke.routes.files import files_bp
 from coreaoke.routes.home import home_bp
@@ -104,6 +106,7 @@ _internal_blueprints = [
     sbom_bp,
     splash_bp,
     batch_song_renamer_bp,
+    branding_bp,
 ]
 
 for bp in _api_blueprints:
@@ -160,6 +163,12 @@ def inject_player_vars() -> dict:
             "player_hide_url": False,
             "player_has_bg_video": False,
         }
+
+
+@app.context_processor
+def inject_branding_vars() -> dict:
+    """Make white-label branding variables available in every template."""
+    return get_branding()
 
 
 def main() -> None:

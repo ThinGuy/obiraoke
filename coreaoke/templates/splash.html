@@ -105,7 +105,7 @@
     {% if signage and signage_logo_path %}
     <img class="logo" src="{{ url_for('signage.signage_asset', channel=signage_channel_dir, subdir='logo', filename=signage_logo_path.split('/')[-1]) }}" width="300px" alt="logo" />
     {% else %}
-    <img class="logo" src="{{ url_for('images.logo') }}" width="300px" alt="logo" />
+    <img class="logo" src="{{ app_icon_url }}" width="300px" alt="logo" />
     {% endif %}
   </div>
   <div id="lobby-singer" class="has-text-white stroke" style="display: none">
@@ -180,7 +180,7 @@
 
 <div id="logo-container">
   <div>
-    <img class="logo" src="{{ url_for('images.logo') }}" width="500px" alt="logo" />
+    <img class="logo" src="{{ app_icon_url }}" width="500px" alt="logo" />
   </div>
 </div>
 

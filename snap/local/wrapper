@@ -12,6 +12,17 @@ fi
 export COREAOKE_CONFIG_DIR="$SNAP_USER_DATA/config"
 export COREAOKE_SONGS_DIR="$SNAP_COMMON/coreaoke-songs"
 
+# White-label branding: export app-name and app-icon from snap config
+app_name="$(snapctl get app-name)" || true
+if [ -n "$app_name" ]; then
+    export COREAOKE_APP_NAME="$app_name"
+fi
+
+app_icon="$(snapctl get app-icon)" || true
+if [ -n "$app_icon" ]; then
+    export COREAOKE_APP_ICON="$app_icon"
+fi
+
 # When running as a daemon, redirect output to a log file.
 # JOURNAL_STREAM is set by systemd for service units.
 if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then
