@@ -1182,3 +1182,22 @@ absolutely-positioned overlay centered over the player panel. The overlay uses
 at `1.5rem`, a `2px solid #e95420` accent line, and zero border-radius on all
 elements. It displays for 5 seconds then fades out and removes itself from
 the DOM.
+
+## Credits overlay trigger -- server-side emit
+
+The credits overlay was not appearing on the player panel because visiting
+`/credits` loaded into the sidebar via AJAX, so the client-side
+`socket.emit("credits_overlay")` fired in the sidebar context, not the player
+window. Moved the emit to the server side: `coreaoke/routes/credits.py` now
+calls `k.socketio.emit("credits_overlay", namespace="/")` when the route is
+hit, so all connected splash clients receive the event regardless of how the
+page was loaded. Removed the client-side emit from `credits.html`.
+
+## Splash.js cache busting
+
+The tagline "Built with ... on Ubuntu Core" in `splash.js` was not updating
+without a shift+refresh because the browser served a cached copy of the script.
+Added a `?v={{ version }}` query string to the `splash.js` script tag in
+`coreaoke/templates/splash.html`, where `version` comes from
+`coreaoke.VERSION`. The splash route now passes `version` to the template
+context.

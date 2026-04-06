@@ -4,6 +4,7 @@ import flask_babel
 from flask import jsonify, render_template, request
 from flask_smorest import Blueprint
 
+from coreaoke import VERSION
 from coreaoke.karaoke import Karaoke
 from coreaoke.lib.current_app import get_karaoke_instance, get_site_name
 
@@ -87,4 +88,5 @@ def splash():
         bg_music_volume=k.bg_music_volume,
         has_bg_video=k.bg_video_path is not None,
         channel=channel,
+        version=VERSION,
     )
