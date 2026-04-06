@@ -687,6 +687,8 @@ const setupSocketEvents = () => {
           <div style="font-weight:300;font-size:1.5rem;margin-bottom:0.5rem;">${heading}</div>
           <div style="width:60%;margin:0.5rem auto;border-top:2px solid #e95420;"></div>
           <div style="font-size:1rem;">${linesHtml}</div>
+          <div style="width:60%;margin:0.5rem auto;border-top:2px solid #e95420;"></div>
+          <div style="font-size:0.9rem;font-weight:300;margin-top:0.5rem;">Built with \u2665 using Ubuntu and Snapcraft</div>
         </div>
       </div>
     `);

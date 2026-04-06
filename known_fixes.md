@@ -1201,3 +1201,11 @@ Added a `?v={{ version }}` query string to the `splash.js` script tag in
 `coreaoke/templates/splash.html`, where `version` comes from
 `coreaoke.VERSION`. The splash route now passes `version` to the template
 context.
+
+## Credits overlay tagline update
+
+Changed the credits overlay tagline in `coreaoke/static/js/splash.js` from the
+previous "Built with ... on Ubuntu Core" to "Built with \u2665 using Ubuntu and
+Snapcraft". The heart character is Unicode U+2665 (BLACK HEART SUIT), not an
+emoji. Added the tagline as a styled div below the credits lines in the
+`credits_overlay` socket handler.
