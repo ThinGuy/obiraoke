@@ -670,6 +670,29 @@ const setupSocketEvents = () => {
   socket.on("preferences_update", applyPreferenceUpdate);
   socket.on("preferences_reset", applyPreferencesReset);
   socket.on("score_phrases_update", (phrases) => { scoreReviews = phrases; });
+  socket.on("credits_overlay", (data) => {
+    // Remove any existing overlay
+    $("#credits-overlay").remove();
+    const heading = (data && data.heading) ? data.heading : "Credits";
+    const lines = (data && data.lines) ? data.lines : [];
+    let linesHtml = lines.map((l) => `<div style="margin:0.3rem 0;">${l}</div>`).join("");
+    const overlay = $(`
+      <div id="credits-overlay" style="
+        position:absolute;top:0;left:0;width:100%;height:100%;
+        display:flex;align-items:center;justify-content:center;
+        background:rgba(0,0,0,0.82);z-index:9999;
+        border-radius:0;
+      ">
+        <div style="text-align:center;color:#ffffff;border-radius:0;">
+          <div style="font-weight:300;font-size:1.5rem;margin-bottom:0.5rem;">${heading}</div>
+          <div style="width:60%;margin:0.5rem auto;border-top:2px solid #e95420;"></div>
+          <div style="font-size:1rem;">${linesHtml}</div>
+        </div>
+      </div>
+    `);
+    $("#video-container").length ? $("#video-container").append(overlay) : $("body").append(overlay);
+    setTimeout(() => { overlay.fadeOut(500, () => overlay.remove()); }, 5000);
+  });
 
   // Channel-specific event listeners
   if (channelName === "queue") {

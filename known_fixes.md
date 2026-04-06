@@ -1167,3 +1167,18 @@ inside the active link. The icon inherited orange from fontello CSS. Extended
 the rule to also target `#alpha-bar a.alpha-active i` and
 `#alpha-bar a.alpha-active .icon` with the same `color: #0e8420 !important`
 declaration, ensuring the icon inside the active alpha-bar link renders green.
+
+## Credits page -- remove AI attribution line
+
+Removed the "Built with Claude (Anthropic) -- AI-assisted development" list
+item from `coreaoke/templates/credits.html`. No other content was changed.
+
+## Credits overlay socket handler -- implement in splash.js
+
+The credits page emitted a `credits_overlay` socket event but no handler
+existed in `coreaoke/static/js/splash.js`. Added a handler that creates an
+absolutely-positioned overlay centered over the player panel. The overlay uses
+`background: rgba(0,0,0,0.82)`, white text (`#ffffff`), a light-weight heading
+at `1.5rem`, a `2px solid #e95420` accent line, and zero border-radius on all
+elements. It displays for 5 seconds then fades out and removes itself from
+the DOM.
