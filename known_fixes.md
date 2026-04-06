@@ -1309,3 +1309,31 @@ indistinct.
 
 Fix: wrapped the heart `&#9829;` in a `<span style="color:#e95420">` so it
 renders in Ubuntu Orange while the surrounding text stays white.
+
+## Credits section subheading text and opacity
+
+The credits page first section subheading read "Standing on the shoulders of
+giants" which was informal. All three section subheadings used
+rgba(255,255,255,0.5) opacity which was too faint against the dark background.
+
+Fix: renamed the first section subheading to "Open Source Community". Bumped
+all three section subheading colors from rgba(255,255,255,0.5) to
+rgba(255,255,255,0.65) for better readability.
+
+## Info nav label renamed to Settings
+
+The sidebar nav item and page title said "Info" / "Information" which did not
+reflect the page content (mostly preferences and server configuration).
+
+Fix: changed the sidebar label and title attribute in base.html from "Info" to
+"Settings". Changed the page heading in info.html from "Information" to
+"Settings". Changed the title passed from info.py from "Info" to "Settings".
+The /info URL route is unchanged.
+
+## Server settings accordion renamed to Advanced settings
+
+The "Server settings" accordion heading in info.html was misleading for users
+who expected general preferences above it.
+
+Fix: changed the accordion heading text from "Server settings" to "Advanced
+settings" in info.html.
