@@ -7,6 +7,7 @@ from flask_smorest import Blueprint
 from coreaoke import VERSION
 from coreaoke.karaoke import Karaoke
 from coreaoke.lib.current_app import get_karaoke_instance, get_site_name
+from coreaoke.lib.signage import load_channel
 
 VALID_CHANNELS = {"main", "queue", "lobby"}
 
@@ -71,8 +72,34 @@ def splash():
     k = get_karaoke_instance()
     site_name = get_site_name()
     channel = request.args.get("channel", "main")
-    if channel not in VALID_CHANNELS:
+
+    # Try loading a directory-based signage channel first
+    signage = load_channel(channel) if channel else None
+
+    # Fall back to built-in channels
+    if not signage and channel not in VALID_CHANNELS:
         channel = "main"
+
+    # Build signage template context
+    signage_ctx: dict = {}
+    if signage:
+        signage_dir = request.args.get("channel", "")
+        # Use signage layout to drive the built-in channel view
+        if signage.layout in VALID_CHANNELS:
+            channel = signage.layout
+        signage_ctx = {
+            "signage": signage,
+            "signage_name": signage.name,
+            "signage_bg_videos": signage.bg_videos,
+            "signage_bg_sounds": signage.bg_sounds,
+            "signage_logo_path": signage.logo_path,
+            "signage_qr_entries": [
+                {"label": e.label, "url": e.url} for e in signage.qr_entries
+            ],
+            "signage_config": signage.config,
+            "signage_channel_dir": signage_dir,
+        }
+
     return render_template(
         "splash.html",
         site_title=site_name,
@@ -89,4 +116,5 @@ def splash():
         has_bg_video=k.bg_video_path is not None,
         channel=channel,
         version=VERSION,
+        **signage_ctx,
     )

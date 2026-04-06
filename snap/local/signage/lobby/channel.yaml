@@ -1,0 +1,7 @@
+name: "Lobby Display"
+layout: lobby
+bg_video_interval: 30
+bg_sound_volume: 0.3
+show_qr: true
+show_logo: true
+show_clock: false

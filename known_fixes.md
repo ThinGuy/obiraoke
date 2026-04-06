@@ -1209,3 +1209,33 @@ previous "Built with ... on Ubuntu Core" to "Built with \u2665 using Ubuntu and
 Snapcraft". The heart character is Unicode U+2665 (BLACK HEART SUIT), not an
 emoji. Added the tagline as a styled div below the credits lines in the
 `credits_overlay` socket handler.
+
+## Directory-based digital signage channels
+
+Signage channels live under `$SNAP_COMMON/signage/` (snap) or
+`~/.local/share/coreaoke/signage/` (non-snap). Each subdirectory with a
+`channel.yaml` is a valid channel, loaded via `?channel=<dirname>` on
+`/splash`.
+
+Architecture:
+
+- `coreaoke/lib/signage.py` -- `SignageChannel` dataclass, `load_channel()`,
+  `list_channels()`, `get_signage_root()`. Pure data layer with no Flask
+  dependency.
+- `coreaoke/routes/signage.py` -- `GET /signage/qr?url=` (generates QR PNG),
+  `GET /signage/assets/<channel>/<subdir>/<filename>` (serves channel media
+  with path-traversal protection).
+- `coreaoke/routes/splash.py` -- tries `load_channel(channel)` first; falls
+  back to built-in main/queue/lobby if no signage dir exists. Passes
+  `SignageChannel` data to the template context.
+- `coreaoke/templates/splash.html` -- when signage config is present, renders
+  channel logo, QR codes from `qr/` directory, and wires up `CoreaokeConfig`
+  for JS-driven bg video cycling.
+- `coreaoke/static/js/splash.js` -- `setupSignageBgVideoCycling()` rotates
+  bg-video files on `bg_video_interval` timer; `setupSignageQrRotation()`
+  cycles QR entries every 15 seconds; `setupSignageBgSound()` plays bg-sound
+  files in order.
+- `snap/hooks/install` -- creates `$SNAP_COMMON/signage/` and seeds default
+  lobby/queue channel configs from `$SNAP/signage/`.
+- `snap/local/signage/{lobby,queue}/channel.yaml` -- seed configs with no
+  media files (admin adds their own).

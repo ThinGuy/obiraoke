@@ -58,6 +58,24 @@
       },
       scorePhrasesUrl: "{{ url_for('splash.get_score_phrases') }}",
       channel: "{{ channel }}",
+      {% if signage %}
+      signage: true,
+      signageChannelDir: "{{ signage_channel_dir }}",
+      bgVideos: {{ signage_bg_videos | tojson }},
+      bgSounds: {{ signage_bg_sounds | tojson }},
+      bgVideoInterval: {{ signage_config.bg_video_interval | default(30) }},
+      bgSoundVolume: {{ signage_config.bg_sound_volume | default(0.3) }},
+      showQr: {{ signage_config.show_qr | tojson }},
+      showLogo: {{ signage_config.show_logo | tojson }},
+      showClock: {{ signage_config.show_clock | tojson }},
+      qrEntries: {{ signage_qr_entries | tojson }},
+      {% else %}
+      signage: false,
+      bgVideos: [],
+      bgSounds: [],
+      bgVideoInterval: 0,
+      qrEntries: [],
+      {% endif %}
     };
   </script>
   <script src="{{ url_for('static', filename='js/splash.js') }}?v={{ version }}"></script>
@@ -83,8 +101,12 @@
 {% elif channel == "lobby" %}
 {# Lobby channel: venue entrance display #}
 <div id="lobby-channel" class="channel-view">
-  <div id="lobby-logo">
+  <div id="lobby-logo"{% if signage and not signage_config.show_logo %} style="display: none"{% endif %}>
+    {% if signage and signage_logo_path %}
+    <img class="logo" src="{{ url_for('signage.signage_asset', channel=signage_channel_dir, subdir='logo', filename=signage_logo_path.split('/')[-1]) }}" width="300px" alt="logo" />
+    {% else %}
     <img class="logo" src="{{ url_for('images.logo') }}" width="300px" alt="logo" />
+    {% endif %}
   </div>
   <div id="lobby-singer" class="has-text-white stroke" style="display: none">
     <div class="is-size-3 has-text-success">
@@ -99,6 +121,23 @@
   <div id="lobby-stats" class="has-text-white stroke is-size-5">
     <span id="lobby-song-count"></span>
   </div>
+  {% if signage and signage_qr_entries %}
+  <div id="lobby-signage-qr"{% if not signage_config.show_qr %} style="display: none"{% endif %}>
+    <div id="signage-qr-container">
+      {% for entry in signage_qr_entries %}
+      <div class="signage-qr-entry" {% if not loop.first %}style="display: none"{% endif %}>
+        <img
+          src="{{ url_for('signage.signage_qr', url=entry.url) }}"
+          width="200px"
+          style="image-rendering: pixelated"
+          alt="qrcode"
+        />
+        <div class="is-size-5 stroke has-text-white">{{ entry.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
   <div id="lobby-qr"{% if hide_url %} style="display: none"{% endif %}>
     <img
       src="{{ url_for('images.qrcode') }}"
@@ -108,6 +147,7 @@
     />
     <div class="is-size-5 stroke has-text-white">{{ url }}</div>
   </div>
+  {% endif %}
 </div>
 {% else %}
 {# Main channel: default karaoke player #}
@@ -273,6 +313,18 @@
   </div>
 </div>
 
+{% endif %}
+
+{% if signage and signage_bg_videos %}
+<div id="signage-bg-video-container" class="video-container" style="z-index: 0;">
+  <video id="signage-bg-video" disableRemotePlayback playsinline webkit-playsinline muted loop style="object-fit: cover">
+  </video>
+</div>
+{% endif %}
+
+{% if signage and signage_bg_sounds %}
+<audio id="signage-bg-sound" loop>
+</audio>
 {% endif %}
 
 <audio id="background-music"{% if channel != "main" %} style="display:none"{% endif %}>
@@ -476,6 +528,20 @@
     z-index: 6;
     padding: 5px 10px;
     max-width: 450px;
+  }
+  #lobby-signage-qr { margin-top: 20px; }
+  #signage-bg-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+  }
+  #signage-bg-video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 </style>
 

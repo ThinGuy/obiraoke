@@ -1,0 +1,7 @@
+name: "Queue Display"
+layout: queue
+bg_video_interval: 30
+bg_sound_volume: 0.3
+show_qr: false
+show_logo: false
+show_clock: false

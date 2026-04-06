@@ -47,6 +47,7 @@ description: |
     Note: delete $SNAP_COMMON/.preseed-done to re-trigger preseed on next start.
 
   Digital Signage:
+    signage-root          Override signage channel directory (default: $SNAP_COMMON/signage)
     Connect any browser to http://host:5555/splash?channel=queue for lobby displays
     Connect to http://host:5555/splash?channel=lobby for entrance screens
 
@@ -199,6 +200,13 @@ parts:
     organize:
       wrapper: bin/wrapper
       pulseaudio-setup: bin/pulseaudio-setup
+
+  signage-seeds:
+    plugin: dump
+    source: snap/local/signage
+    organize:
+      "lobby/channel.yaml": signage/lobby/channel.yaml
+      "queue/channel.yaml": signage/queue/channel.yaml
 
   deno:
     plugin: nil

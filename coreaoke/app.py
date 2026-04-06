@@ -45,6 +45,7 @@ from coreaoke.routes.queue import queue_bp
 from coreaoke.routes.search import search_bp
 from coreaoke.routes.socket_events import setup_socket_events
 from coreaoke.routes.credits import credits_bp
+from coreaoke.routes.signage import signage_bp
 from coreaoke.routes.splash import splash_bp
 from coreaoke.routes.stream import stream_bp
 
@@ -91,6 +92,7 @@ _api_blueprints = [
     nowplaying_bp,
     stream_bp,
     metadata_bp,
+    signage_bp,
 ]
 
 # Blueprints hidden from /apidocs (internal UI routes)

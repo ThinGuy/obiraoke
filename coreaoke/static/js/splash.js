@@ -773,6 +773,74 @@ const setupUIScaling = () => {
 
 // Document ready procedures
 
+// --- Signage: background video cycling ---
+const setupSignageBgVideoCycling = () => {
+  const videos = CoreaokeConfig.bgVideos || [];
+  if (videos.length === 0) return;
+  const channelDir = CoreaokeConfig.signageChannelDir || "";
+  const videoEl = document.getElementById("signage-bg-video");
+  if (!videoEl) return;
+
+  let currentIndex = 0;
+  const interval = (CoreaokeConfig.bgVideoInterval || 30) * 1000;
+
+  const playVideo = (index) => {
+    const src = `/signage/assets/${channelDir}/bg-video/${videos[index]}`;
+    videoEl.src = src;
+    videoEl.load();
+    videoEl.play().catch(() => {});
+  };
+
+  playVideo(0);
+
+  if (videos.length > 1 && interval > 0) {
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % videos.length;
+      playVideo(currentIndex);
+    }, interval);
+  }
+};
+
+// --- Signage: background sound ---
+const setupSignageBgSound = () => {
+  const sounds = CoreaokeConfig.bgSounds || [];
+  if (sounds.length === 0) return;
+  const channelDir = CoreaokeConfig.signageChannelDir || "";
+  const audioEl = document.getElementById("signage-bg-sound");
+  if (!audioEl) return;
+
+  let currentIndex = 0;
+  const vol = CoreaokeConfig.bgSoundVolume || 0.3;
+  audioEl.volume = vol;
+
+  const playSound = (index) => {
+    const src = `/signage/assets/${channelDir}/bg-sound/${sounds[index]}`;
+    audioEl.src = src;
+    audioEl.load();
+    audioEl.play().catch(() => {});
+  };
+
+  audioEl.addEventListener("ended", () => {
+    currentIndex = (currentIndex + 1) % sounds.length;
+    playSound(currentIndex);
+  });
+
+  playSound(0);
+};
+
+// --- Signage: QR rotation ---
+const setupSignageQrRotation = () => {
+  const entries = document.querySelectorAll(".signage-qr-entry");
+  if (entries.length <= 1) return;
+
+  let currentIndex = 0;
+  setInterval(() => {
+    entries[currentIndex].style.display = "none";
+    currentIndex = (currentIndex + 1) % entries.length;
+    entries[currentIndex].style.display = "";
+  }, 15000);
+};
+
 $(function () {
   // Setup various features and listeners
   setupUIScaling();
@@ -789,6 +857,14 @@ $(function () {
     handleQueueUpdate();
   } else if (channelName === "lobby") {
     $.get("/now_playing", (data) => handleLobbyNowPlaying(JSON.parse(data)));
+  }
+
+  // Signage-specific setup (works for any channel layout)
+  if (CoreaokeConfig.signage) {
+    setupSignageBgVideoCycling();
+    setupSignageBgSound();
+    setupSignageQrRotation();
+    if (CoreaokeConfig.showClock) startClock();
   }
 });
 

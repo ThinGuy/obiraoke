@@ -24,6 +24,7 @@ dependencies = [
   "yt-dlp[default]>=2026.03.03",
   "flask-socketio>=5.5.0",
   "gevent>=24.11.1",
+  "PyYAML>=6.0",
 ]
 
 [project.optional-dependencies]

@@ -31,6 +31,25 @@ chmod 0644 "$SNAP_COMMON/themes/default/logo.png"
 chmod 0644 "$SNAP_COMMON/themes/default/bg-video.mp4"
 find "$SNAP_COMMON/themes/default/bg-music" -type f -exec chmod 0644 {} +
 
+# Create the signage directory for digital signage channels.
+# Each subdirectory under signage/ with a channel.yaml is a channel.
+mkdir -p "$SNAP_COMMON/signage"
+chmod 0777 "$SNAP_COMMON/signage"
+
+# Seed default channel configs if not already present.
+if [ -d "$SNAP/signage" ]; then
+  for channel_dir in "$SNAP/signage"/*/; do
+    channel_name="$(basename "$channel_dir")"
+    target="$SNAP_COMMON/signage/$channel_name"
+    mkdir -p "$target"
+    chmod 0777 "$target"
+    if [ ! -f "$target/channel.yaml" ] && [ -f "$channel_dir/channel.yaml" ]; then
+      cp "$channel_dir/channel.yaml" "$target/channel.yaml"
+      chmod 0644 "$target/channel.yaml"
+    fi
+  done
+fi
+
 # Pre-populate snap configuration keys with default values so they are
 # immediately queryable after install. Keys with no sensible default
 # (admin-password, proxy, download-path) are left unset until the user
