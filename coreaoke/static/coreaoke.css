@@ -133,9 +133,9 @@ a:hover {
 }
 
 .sidebar-expanded {
-  width: 25vw;
   min-width: 200px;
-  max-width: 320px;
+  width: 25vw;
+  max-width: 300px;
 }
 
 /* Orange accent bar on the left edge */
@@ -304,8 +304,7 @@ a:hover {
 }
 
 .player-panel-expanded {
-  left: 25vw;
-  left: clamp(200px, 25vw, 320px);
+  left: clamp(200px, 25vw, 300px);
 }
 
 /* Player internal layout */
@@ -399,6 +398,7 @@ a:hover {
 
 .sidebar-content table,
 .sidebar-content .table {
+  width: 100%;
   font-size: 0.75rem;
 }
 

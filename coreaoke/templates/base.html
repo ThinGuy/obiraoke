@@ -516,12 +516,12 @@
         <span class="sidebar-label">Browse</span>
       </a>
       <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
-        <i class="icon icon-info-circled-1"></i>
+        <i class="icon icon-cog"></i>
         <span class="sidebar-label">Settings</span>
       </a>
-      <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Credits">
-        <i class="icon icon-music"></i>
-        <span class="sidebar-label">Credits</span>
+      <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="About">
+        <i class="icon icon-info-circled"></i>
+        <span class="sidebar-label">About</span>
       </a>
       <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
         <i class="icon icon-list-alt"></i>

@@ -1348,3 +1348,12 @@ Selectize.js, Fontello, Ubuntu Variable Font). Passing `?format=json` returns
 the same data as JSON with `Content-Type: application/json`. The blueprint is
 registered in `app.py` as an internal (non-API) blueprint, and a sidebar nav
 item links to it below Credits.
+
+## Nav icons and sidebar fixes
+
+Settings icon changed from `icon-info-circled-1` to `icon-cog`. Credits nav
+item renamed to "About" with `icon-info-circled` (link still points to
+`/credits`). SBOM icon set to `icon-list-alt`. Sidebar expanded width changed
+from fixed `320px` max to responsive `min-width: 200px; width: 25vw;
+max-width: 300px`. SBOM table set to `width: 100%` so it fills the sidebar
+content area. Credits page body replaced with a single link to the GitHub repo.
