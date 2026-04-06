@@ -1389,3 +1389,12 @@ rebrand the application without modifying source code.
   `{{ app_icon_url }}` for the logo `src`.
 - `splash.html` -- Main channel and lobby channel logos use
   `{{ app_icon_url }}` instead of the hardcoded `/logo` route.
+
+## Operator Documentation Page
+
+Added an operator-facing documentation page at the `/docs` route.
+
+- `coreaoke/routes/docs.py` -- New blueprint registering a `/docs` route that
+  renders the `docs.html` template.
+- `coreaoke/templates/docs.html` -- Template for the operator docs page.
+- `base.html` -- Added a "Docs" nav item in the sidebar linking to `/docs`.
