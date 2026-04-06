@@ -78,6 +78,11 @@ def setup_socket_events(socketio):
         """Broadcast credits overlay message to all connected clients."""
         socketio.emit("credits_overlay")
 
+    @socketio.on("credits_trigger")
+    def credits_trigger() -> None:
+        """Client-side trigger for credits overlay (sidebar AJAX workaround)."""
+        socketio.emit("credits_overlay")
+
     @socketio.on("disconnect")
     def handle_disconnect() -> None:
         """Handle Socket.IO client disconnection and manage splash role handover."""

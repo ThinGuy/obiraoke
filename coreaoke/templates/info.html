@@ -1,142 +1,4 @@
-{% extends 'base.html' %} {% block scripts %}
-	<script>
-		async function updatePhrases(phrases) {
-			let returnData = null
-
-			try {
-				for (const phraseRange in phrases) {
-					returnData = await $.get("{{ url_for('preferences.change_preferences') }}", {
-							pref: phraseRange,
-							val: phrases[phraseRange]
-					})
-
-					if (!returnData[0]) break
-				}
-
-				if (returnData[0]) showNotification(returnData[1], "is-success");
-				else showNotification(returnData[1], "is-danger");
-			} catch (_e) {
-				showNotification("{{ _('Something went wrong! Your preferences were not changed') }}", "is-danger");
-			}
-		}
-
-		$(function () {
-			$(".user-preference-input").change(function() {
-				let val = $(this).val();
-				let pref = $(this).attr("data-pref");
-				let startVal = $(this).attr("data-start-value");
-				let $this = $(this);
-
-				if (val == startVal) return;
-
-				let timeoutId = setTimeout(function() {
-					$this.attr("data-start-value", val);
-
-					if (pref == "bg_music_volume" || pref == "volume") {
-						val = val / 100;
-					}
-					changePreferences(pref, val);
-				}, 1000);
-
-				// If the user changes the value again before the daly expires, cancel the timeout
-				$(this).one("change", function() {
-					clearTimeout(timeoutId);
-				});
-			})
-			$(".user-preference-checkbox").click(function() {
-				let val = $(this).is(":checked") ? "True" : "False";
-				let pref = $(this).attr("data-pref");
-
-				changePreferences(pref, val);
-			})
-
-			function changePreferences(pref, val) {
-				$.get("{{ url_for('preferences.change_preferences') }}", {
-					"pref": pref,
-					"val": val
-				})
-				.done(function(data) {
-					if (data[0]) showNotification(data[1], "is-success");
-					else showNotification(data[1], "is-danger")
-				});
-			}
-
-			$("#clear-preferences-link").click(function (e) {
-				e.preventDefault();
-				// {# MSG: Confirmation text whe the user clears preferences. #}
-				if (window.confirm("{{ _('Are you sure you want to clear your preferences?') }}")) {
-					location.href = this.href;
-				}
-			});
-
-		// Collapsible card sections
-		$(".collapsible-header").click(function() {
-			$(this).toggleClass("is-collapsed");
-			$(this).next(".collapsible-content").slideToggle(200);
-		});
-
-			function serializePhrases(textareaValue) {
-				return textareaValue.split("\n").map(s => s.trim().replace(/[|]/g, "")).filter(s => s).join("|");
-			}
-
-			$("#save-phrases").click(function (e){
-				e.preventDefault();
-
-				let phrases = {
-					"low_score_phrases": serializePhrases($("#low-score-phrases").val()),
-					"mid_score_phrases": serializePhrases($("#mid-score-phrases").val()),
-					"high_score_phrases": serializePhrases($("#high-score-phrases").val())
-				}
-
-				updatePhrases(phrases)
-			})
-
-			// Fetch system stats asynchronously
-			$.getJSON("{{ url_for('info.get_system_stats') }}", function(data) {
-				if (data.error) {
-					console.error("Error fetching stats:", data.error);
-					return;
-				}
-				$("#system-cpu").text(data.cpu);
-				$("#system-disk").text(data.disk);
-				$("#system-memory").text(data.memory);
-			}).fail(function() {
-				console.error("Failed to fetch system stats");
-			});
-
-			// Song library stats
-			$.getJSON("{{ url_for('admin.library_stats') }}", function(data) {
-				if (!data.error) {
-					$("#library-song-count").text(data.song_count);
-				}
-			});
-
-			// Sync Now button
-			$("#sync-library-btn").click(function() {
-				var $btn = $(this);
-				$btn.addClass("is-loading").prop("disabled", true);
-				$.getJSON("{{ url_for('admin.sync_library') }}", function(data) {
-					if (data.status !== "already_syncing") return;
-					// stays disabled -- sync_finished will re-enable
-				}).fail(function() {
-					$btn.removeClass("is-loading").prop("disabled", false);
-				});
-			});
-
-			// SocketIO: manage Sync Now button state
-			window.socket.on("sync_started", function() {
-				$("#sync-library-btn").addClass("is-loading").prop("disabled", true);
-			});
-			window.socket.on("sync_finished", function() {
-				$("#sync-library-btn").removeClass("is-loading").prop("disabled", false);
-				$.getJSON("{{ url_for('admin.library_stats') }}", function(data) {
-					if (!data.error) $("#library-song-count").text(data.song_count);
-				});
-				showNotification("{{ _('Library sync complete') }}", "is-success");
-			});
-		});
-	</script>
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block header %}
 	<h1>
@@ -533,5 +395,135 @@
 		display: none;
 	}
 	</style>
+
+	<script>
+		async function updatePhrases(phrases) {
+			let returnData = null
+
+			try {
+				for (const phraseRange in phrases) {
+					returnData = await $.get("{{ url_for('preferences.change_preferences') }}", {
+							pref: phraseRange,
+							val: phrases[phraseRange]
+					})
+
+					if (!returnData[0]) break
+				}
+
+				if (returnData[0]) showNotification(returnData[1], "is-success");
+				else showNotification(returnData[1], "is-danger");
+			} catch (_e) {
+				showNotification("{{ _('Something went wrong! Your preferences were not changed') }}", "is-danger");
+			}
+		}
+
+		(function () {
+			$(".user-preference-input").change(function() {
+				let val = $(this).val();
+				let pref = $(this).attr("data-pref");
+				let startVal = $(this).attr("data-start-value");
+				let $this = $(this);
+
+				if (val == startVal) return;
+
+				let timeoutId = setTimeout(function() {
+					$this.attr("data-start-value", val);
+
+					if (pref == "bg_music_volume" || pref == "volume") {
+						val = val / 100;
+					}
+					changePreferences(pref, val);
+				}, 1000);
+
+				$(this).one("change", function() {
+					clearTimeout(timeoutId);
+				});
+			})
+			$(".user-preference-checkbox").click(function() {
+				let val = $(this).is(":checked") ? "True" : "False";
+				let pref = $(this).attr("data-pref");
+
+				changePreferences(pref, val);
+			})
+
+			function changePreferences(pref, val) {
+				$.get("{{ url_for('preferences.change_preferences') }}", {
+					"pref": pref,
+					"val": val
+				})
+				.done(function(data) {
+					if (data[0]) showNotification(data[1], "is-success");
+					else showNotification(data[1], "is-danger")
+				});
+			}
+
+			$("#clear-preferences-link").click(function (e) {
+				e.preventDefault();
+				if (window.confirm("{{ _('Are you sure you want to clear your preferences?') }}")) {
+					location.href = this.href;
+				}
+			});
+
+			$(".collapsible-header").click(function() {
+				$(this).toggleClass("is-collapsed");
+				$(this).next(".collapsible-content").slideToggle(200);
+			});
+
+			function serializePhrases(textareaValue) {
+				return textareaValue.split("\n").map(s => s.trim().replace(/[|]/g, "")).filter(s => s).join("|");
+			}
+
+			$("#save-phrases").click(function (e){
+				e.preventDefault();
+
+				let phrases = {
+					"low_score_phrases": serializePhrases($("#low-score-phrases").val()),
+					"mid_score_phrases": serializePhrases($("#mid-score-phrases").val()),
+					"high_score_phrases": serializePhrases($("#high-score-phrases").val())
+				}
+
+				updatePhrases(phrases)
+			})
+
+			$.getJSON("{{ url_for('info.get_system_stats') }}", function(data) {
+				if (data.error) {
+					console.error("Error fetching stats:", data.error);
+					return;
+				}
+				$("#system-cpu").text(data.cpu);
+				$("#system-disk").text(data.disk);
+				$("#system-memory").text(data.memory);
+			}).fail(function() {
+				console.error("Failed to fetch system stats");
+			});
+
+			$.getJSON("{{ url_for('admin.library_stats') }}", function(data) {
+				if (!data.error) {
+					$("#library-song-count").text(data.song_count);
+				}
+			});
+
+			$("#sync-library-btn").click(function() {
+				var $btn = $(this);
+				$btn.addClass("is-loading").prop("disabled", true);
+				$.getJSON("{{ url_for('admin.sync_library') }}", function(data) {
+					if (data.status !== "already_syncing") return;
+				}).fail(function() {
+					$btn.removeClass("is-loading").prop("disabled", false);
+				});
+			});
+
+			window.socket.on("sync_started", function() {
+				$("#sync-library-btn").addClass("is-loading").prop("disabled", true);
+			});
+			window.socket.on("sync_finished", function() {
+				$("#sync-library-btn").removeClass("is-loading").prop("disabled", false);
+				$.getJSON("{{ url_for('admin.library_stats') }}", function(data) {
+					if (!data.error) $("#library-song-count").text(data.song_count);
+				});
+				showNotification("{{ _('Library sync complete') }}", "is-success");
+			});
+		})();
+	</script>
 
 {% endblock %}

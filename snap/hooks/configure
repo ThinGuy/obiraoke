@@ -117,13 +117,20 @@ fi
 
 # Handle theme preset -- sets logo-path, bg-video-path, and bg-music-path
 # from a named theme directory under $SNAP_COMMON/themes/.
+# Only apply theme paths when the theme key itself was explicitly changed
+# in this invocation. Without this guard, any "snap set coreaoke key=value"
+# call would overwrite individually-set logo-path/bg-video-path/bg-music-path
+# because the configure hook fires for every snapctl set and theme already
+# has a stored value from a previous call.
 theme="$(snapctl get theme)" || true
-if [ -n "$theme" ]; then
+prev_theme="$(snapctl get internal.last-applied-theme)" || true
+if [ -n "$theme" ] && [ "$theme" != "$prev_theme" ]; then
     theme_dir="$SNAP_COMMON/themes/$theme"
     if [ -d "$theme_dir" ]; then
         snapctl set logo-path="$SNAP_COMMON/themes/$theme/logo.png"
         snapctl set bg-video-path="$SNAP_COMMON/themes/$theme/bg-video.mp4"
         snapctl set bg-music-path="$SNAP_COMMON/themes/$theme/bg-music"
+        snapctl set internal.last-applied-theme="$theme"
     else
         echo "error: theme directory '$theme_dir' does not exist" >&2
         exit 1

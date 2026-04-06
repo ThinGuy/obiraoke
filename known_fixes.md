@@ -1239,3 +1239,51 @@ Architecture:
   lobby/queue channel configs from `$SNAP/signage/`.
 - `snap/local/signage/{lobby,queue}/channel.yaml` -- seed configs with no
   media files (admin adds their own).
+
+## Snap configure hook: theme handler overwrites individual path keys
+
+The theme block in `snap/hooks/configure` unconditionally set `logo-path`,
+`bg-video-path`, and `bg-music-path` whenever the `theme` key had a stored
+value, even if the user was only setting an unrelated key (e.g.
+`snap set coreaoke logo-path=/custom/logo.png`). This meant any direct path
+override was immediately overwritten by the theme preset on the next
+`snap set` call.
+
+Fix: track the last applied theme in `internal.last-applied-theme`. The theme
+block now compares the current `theme` value against this stored value and only
+applies theme paths when the theme key itself has actually changed. Individual
+path keys persist when set directly.
+
+## Credits overlay tagline in base.html player panel
+
+The static `#credits-overlay` div in `base.html` still used emoji
+`&#10084;&#65039;` and the text "on Ubuntu Core". Changed to plain Unicode
+`&#9829;` (U+2665) and "using Ubuntu and Snapcraft" to match the splash.js
+overlay and project branding guidelines.
+
+## Credits overlay not firing on player panel via sidebar AJAX
+
+When `/credits` was loaded via sidebar AJAX, the server-side `socketio.emit()`
+in `credits.py` could fire before the player panel's socket listener was ready,
+causing the overlay to never appear.
+
+Fix: `credits.html` now emits a `credits_trigger` event client-side via
+`window.socket` after loading. A new server-side handler in `socket_events.py`
+receives `credits_trigger` and broadcasts `credits_overlay` to all clients.
+This ensures both the embedded player panel and the full-screen splash receive
+the overlay regardless of emit timing.
+
+## Info page controls inactive after sidebar AJAX load
+
+The info page's inline script was in `{% block scripts %}` (rendered in
+`<head>`), which is outside `#sidebar-content`. When `loadSidebarContent()`
+fetched the info page and replaced `#sidebar-content` innerHTML, it only
+re-executed scripts inside that container. The `<head>` script was never
+re-run, so event handlers for checkboxes, inputs, collapsible sections, and
+the sync button were never bound to the new DOM elements.
+
+Fix: moved the script from `{% block scripts %}` into `{% block content %}`
+(which renders inside `#sidebar-content`). Changed the `$(function() {...})`
+wrapper to an IIFE `(function() {...})()` so it executes immediately when
+re-created by `loadSidebarContent()`, since `DOMContentLoaded` has already
+fired by the time sidebar AJAX content is injected.

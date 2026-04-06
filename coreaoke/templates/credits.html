@@ -64,4 +64,16 @@
   </ul>
 </div>
 
+<script>
+// Emit credits_trigger client-side so the player panel and splash screen
+// can show the overlay reliably. The server-side emit in credits.py may
+// fire before the socket listeners are ready when this page is loaded
+// via sidebar AJAX.
+if (window.socket && window.socket.connected) {
+  window.socket.emit('credits_trigger');
+} else if (window.socket) {
+  window.socket.once('connect', function() { window.socket.emit('credits_trigger'); });
+}
+</script>
+
 {% endblock %}
