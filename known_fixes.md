@@ -1464,3 +1464,37 @@ rules exactly.
   line-height 1.6. Code blocks use bg-#262626 text-white font-mono text-sm p-3
   with no border-radius. Reference table matches SBOM table styling. Inline code
   also uses dark background with white text.
+
+## Goodies menu, nav fixes, and settings/credits to main panel
+
+Five changes in one session:
+
+1. **Goodies collapsible section** -- About, Docs, Settings, and SBOM nav items
+   moved into a collapsible "GOODIES" section in the sidebar. Header styled as
+   text-[10px] uppercase tracking-widest text-gray-500. Defaults to collapsed.
+   Chevron icon (icon-angle-down/up) indicates state.
+   - `coreaoke/templates/base.html`
+
+2. **Settings and credits to main panel** -- Settings (info.html) and credits
+   content moved from `{% block content %}` to `{% block main_content %}` so
+   they render full-width in the player area, same pattern as docs and sbom.
+   Vanilla Framework styling applied: section headings text-xs uppercase
+   tracking-widest text-gray-500, no border-radius on inputs, 1px solid
+   rgba(0,0,0,0.2) borders, focus outline #0f95a1. Sidebar shows "See main
+   panel." for both pages.
+   - `coreaoke/templates/info.html`
+   - `coreaoke/templates/credits.html`
+
+3. **Full-page nav bypass for /info and /credits** -- Added /info and /credits
+   to the bypass lists in both base.html loadSidebarContent() and
+   spa-navigation.js shouldExcludeLink() so these pages do full-page navigation
+   instead of sidebar AJAX loading.
+   - `coreaoke/templates/base.html`
+   - `coreaoke/static/spa-navigation.js`
+
+4. **Player restore on karaoke nav** -- When clicking Now Playing, Queue,
+   Search, or Browse while a full-page view (docs/sbom/settings/credits) is
+   showing in the main panel, the main panel restores to the player view.
+   Implemented via restorePlayerView() which hides the main_content panel,
+   shows the splash/video container, and calls window.focus().
+   - `coreaoke/templates/base.html`

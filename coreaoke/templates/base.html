@@ -139,6 +139,20 @@
         } catch(e) {}
         try { $("#notification-alt").hide(); } catch(e) {}
 
+        // Goodies section toggle
+        (function() {
+          var header = document.getElementById('goodies-header');
+          var items = document.getElementById('goodies-items');
+          var chevron = document.getElementById('goodies-chevron');
+          if (header && items && chevron) {
+            header.addEventListener('click', function() {
+              var open = items.style.display !== 'none';
+              items.style.display = open ? 'none' : 'block';
+              chevron.className = open ? 'icon icon-angle-down' : 'icon icon-angle-up';
+            });
+          }
+        })();
+
         // Sidebar toggle logic
         (function() {
           var sidebar = document.getElementById('sidebar');
@@ -206,8 +220,22 @@
 
         // Sidebar AJAX content loading
         (function() {
+          function restorePlayerView() {
+            var mainContent = document.querySelector('#player-panel > div[style*="z-index: 5"]');
+            if (mainContent) {
+              mainContent.style.display = 'none';
+            }
+            var video = document.getElementById('player-video');
+            var logo = document.getElementById('player-logo');
+            var bgVideo = document.querySelector('.player-bg-video');
+            if (logo) logo.style.display = '';
+            if (bgVideo) bgVideo.style.display = '';
+            if (video && video.getAttribute('src') !== '') video.style.display = '';
+            window.focus();
+          }
+
           function loadSidebarContent(url) {
-            if (url === '/search' || url === '/docs' || url === '/sbom' || url.indexOf('?query=') !== -1) {
+            if (url === '/search' || url === '/docs' || url === '/sbom' || url === '/info' || url === '/credits' || url.indexOf('?query=') !== -1) {
               window.location.href = url;
               return;
             }
@@ -265,11 +293,16 @@
               });
           }
 
+          var karaokeNavPaths = ['/', '/queue', '/search', '/browse'];
           document.querySelectorAll('[data-sidebar-link]').forEach(function(el) {
             el.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
-              loadSidebarContent(el.getAttribute('href'));
+              var href = el.getAttribute('href');
+              if (karaokeNavPaths.indexOf(href) !== -1) {
+                restorePlayerView();
+              }
+              loadSidebarContent(href);
             });
           });
         })();
@@ -515,22 +548,28 @@
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
-      <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa {% if request.endpoint == 'docs.docs' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Docs">
-        <i class="icon icon-info"></i>
-        <span class="sidebar-label">Docs</span>
-      </a>
-      <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
-        <i class="icon icon-cog"></i>
-        <span class="sidebar-label">Settings</span>
-      </a>
-      <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="About">
-        <i class="icon icon-info-circled"></i>
-        <span class="sidebar-label">About</span>
-      </a>
-      <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
-        <i class="icon icon-list-alt"></i>
-        <span class="sidebar-label">SBOM</span>
-      </a>
+      <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
+        <i id="goodies-chevron" class="icon icon-angle-down" style="font-size:12px"></i>
+        GOODIES
+      </div>
+      <div id="goodies-items" style="display:none">
+        <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="About">
+          <i class="icon icon-info-circled"></i>
+          <span class="sidebar-label">About</span>
+        </a>
+        <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa {% if request.endpoint == 'docs.docs' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Docs">
+          <i class="icon icon-info"></i>
+          <span class="sidebar-label">Docs</span>
+        </a>
+        <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
+          <i class="icon icon-cog"></i>
+          <span class="sidebar-label">Settings</span>
+        </a>
+        <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
+          <i class="icon icon-list-alt"></i>
+          <span class="sidebar-label">SBOM</span>
+        </a>
+      </div>
     </nav>
     <div id="sidebar-content" class="sidebar-content">
       <a id="current-user" class="current-user is-hidden" href="#">
