@@ -1441,3 +1441,26 @@ white-on-dark to dark-on-light to match the light background.
 - `coreaoke/templates/docs.html` -- Moved content to `{% block main_content %}`,
   updated colors for light background.
 - `coreaoke/templates/sbom.html` -- Same treatment as docs.html.
+
+## Docs and SBOM page styling aligned to Vanilla Framework
+
+The docs and SBOM pages had styling that did not match the Canonical Vanilla
+Framework spec. Both pages render on a #f7f7f7 background in the main panel,
+but tables used gray (#e8e8e8) header backgrounds, dark hover colors, and
+inconsistent typography. Code blocks in docs used a light background with
+orange text and border-radius.
+
+Fix: updated both templates to match coreaoke-ui-spec.md table and typography
+rules exactly.
+
+- `coreaoke/templates/sbom.html` -- Table headers now use bg-#f7f7f7, text-xs
+  uppercase tracking-wide text-gray-500, border-bottom 2px solid rgba(0,0,0,0.2).
+  Rows are white with hover bg-#f7f7f7. No alternating dark rows. Row borders
+  are 1px solid rgba(0,0,0,0.1) bottom only. Cell text is text-sm text-gray-800.
+- `coreaoke/templates/docs.html` -- Page title uses text-2xl font-light
+  text-gray-900. Section headings use text-xs uppercase tracking-widest
+  text-gray-500 with border-top 1px solid rgba(0,0,0,0.1). Subheadings use
+  text-base font-medium text-gray-900. Body text uses text-sm text-gray-700
+  line-height 1.6. Code blocks use bg-#262626 text-white font-mono text-sm p-3
+  with no border-radius. Reference table matches SBOM table styling. Inline code
+  also uses dark background with white text.

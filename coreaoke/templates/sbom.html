@@ -6,23 +6,23 @@
 
 <div style="margin-bottom: 1rem;">
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Python Packages</h2>
+    <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1.5rem; margin-top: 1rem; text-align: left;">Python Packages</h2>
     <a href="/sbom?format=json" download="sbom.json" style="color: #06c; text-decoration: none; font-size: 0.75rem;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Download JSON</a>
   </div>
   <table style="width: 100%; border-collapse: collapse;">
     <thead>
-      <tr style="background: #e8e8e8;">
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Name</th>
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Version</th>
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">License</th>
+      <tr style="background: #f7f7f7;">
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">Name</th>
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">Version</th>
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">License</th>
       </tr>
     </thead>
     <tbody>
       {% for pkg in python_packages %}
-      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#e8e8e8'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.name }}</td>
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.version }}</td>
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ pkg.license }}</td>
+      <tr style="background: #ffffff; transition: background 0.15s; border-bottom: 1px solid rgba(0,0,0,0.1);" onmouseover="this.style.background='#f7f7f7'" onmouseout="this.style.background='#ffffff'">
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ pkg.name }}</td>
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ pkg.version }}</td>
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ pkg.license }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -30,21 +30,21 @@
 </div>
 
 <div style="margin-bottom: 1rem;">
-  <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.15); padding-top: 0.75rem; margin-top: 1rem; text-align: left;">Bundled Components</h2>
+  <h2 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1.5rem; margin-top: 1rem; text-align: left;">Bundled Components</h2>
   <table style="width: 100%; border-collapse: collapse;">
     <thead>
-      <tr style="background: #e8e8e8;">
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Name</th>
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">Version</th>
-        <th style="padding: 0.75rem 1rem; text-align: left; color: #000;">License</th>
+      <tr style="background: #f7f7f7;">
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">Name</th>
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">Version</th>
+        <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 500; border-bottom: 2px solid rgba(0,0,0,0.2);">License</th>
       </tr>
     </thead>
     <tbody>
       {% for comp in bundled_components %}
-      <tr style="transition: background 0.15s;" onmouseover="this.style.background='#e8e8e8'; this.querySelectorAll('td').forEach(function(td){td.style.color='#000'})" onmouseout="this.style.background=''; this.querySelectorAll('td').forEach(function(td){td.style.color=''})">
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.name }}</td>
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.version }}</td>
-        <td style="padding: 0.75rem 1rem; color: #000;">{{ comp.license }}</td>
+      <tr style="background: #ffffff; transition: background 0.15s; border-bottom: 1px solid rgba(0,0,0,0.1);" onmouseover="this.style.background='#f7f7f7'" onmouseout="this.style.background='#ffffff'">
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ comp.name }}</td>
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ comp.version }}</td>
+        <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: #1f2937;">{{ comp.license }}</td>
       </tr>
       {% endfor %}
     </tbody>
