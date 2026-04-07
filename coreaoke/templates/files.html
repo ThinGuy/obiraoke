@@ -126,14 +126,14 @@
 <div style="font-size: 0.75rem; margin-bottom: 0.5rem;">
 	<span>
 		{% if sort_order == "Alphabetical" %} {# MSG: Label which displays that the songs are currently sorted by
-		alphabetical order. #} {% trans %}Alphabetical{% endtrans %} |
+		artist. #} {% trans %}By Artist{% endtrans %} |
 		<a class="spec-link" href="{{ url_for('files.browse') }}?sort=date">
 			{# MSG: Button which changes how the songs are sorted so they become sorted by date. #} {% trans %}By Date{% endtrans %}
 		</a>
 		{% endif %} {% if sort_order == "Date" %} {# MSG: Label which displays that the songs are currently sorted by
 		date. #} {% trans %}By Date{% endtrans %} |
 		<a class="spec-link" href="{{ url_for('files.browse') }}">
-			{# MSG: Button which changes how the songs are sorted so they become sorted by name. #} {% trans %}Alphabetical{% endtrans %}
+			{# MSG: Button which changes how the songs are sorted so they become sorted by artist. #} {% trans %}By Artist{% endtrans %}
 		</a>
 		{% endif %}
 	</span>

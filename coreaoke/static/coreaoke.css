@@ -524,6 +524,17 @@ a:hover {
   color: #0e8420 !important;
 }
 
+/* Song title truncation in browse sidebar */
+.sidebar-content .song-list a,
+.sidebar-content .file-list a,
+.sidebar-content td a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
 /* Current user badge in sidebar */
 .sidebar-content .current-user {
   position: static;

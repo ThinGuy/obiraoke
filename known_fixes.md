@@ -1811,3 +1811,39 @@ sidebar.
 **Files changed:**
 - `coreaoke/templates/files.html` -- restructured alpha-bar with toggle
   button and `#alpha-bar-letters` wrapper; added toggle click handler
+
+## Master disconnect grace period
+
+When the master splash screen disconnects (e.g. during sidebar SPA navigation),
+the server no longer ends the song immediately. A 5-second `threading.Timer`
+grace period allows a new master to register before `end_song` is called. If a
+new master connects within the window, the timer is cancelled and playback
+continues uninterrupted. The hidden iframe workaround in `base.html` has been
+removed since the server-side grace period makes it unnecessary.
+
+**Files changed:**
+- `coreaoke/routes/socket_events.py` -- added `pending_master_timeout` timer
+  in `handle_disconnect`; cancel logic in `register_splash`
+- `coreaoke/templates/base.html` -- removed hidden `<iframe>` persistent
+  splash master
+
+## Song title truncation in browse sidebar
+
+Long song titles in the sidebar browse list could wrap mid-word and push
+content below the fold. Added CSS rules to truncate overflowing text with an
+ellipsis for links inside `.song-list`, `.file-list`, and table cells within
+`.sidebar-content`.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- added truncation rules for sidebar song
+  links
+
+## Browse sort label
+
+The sort toggle on the browse page read "Alphabetical | By Date". Changed
+"Alphabetical" to "By Artist" since songs are sorted by artist name, not
+strict alphabetical order.
+
+**Files changed:**
+- `coreaoke/templates/files.html` -- text change only ("Alphabetical" to
+  "By Artist")

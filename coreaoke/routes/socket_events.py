@@ -1,6 +1,7 @@
 """Socket.IO event handlers for PiKaraoke."""
 
 import logging
+import threading
 
 from flask import request
 
@@ -9,7 +10,11 @@ from coreaoke.lib.current_app import get_karaoke_instance
 # Track connected splash screen clients and the elected master
 # Maps session ID to channel name
 splash_connections: dict[str, str] = {}
-master_splash_id = None
+master_splash_id: str | None = None
+
+# Grace period timer: delays end_song when master disconnects,
+# allowing a new master to register before the song is stopped.
+pending_master_timeout: threading.Timer | None = None
 
 
 def setup_socket_events(socketio):
@@ -46,13 +51,17 @@ def setup_socket_events(socketio):
     @socketio.on("register_splash")
     def register_splash(data: dict | None = None) -> None:
         """Handle splash screen registration and assign master/slave roles."""
-        global master_splash_id
+        global master_splash_id, pending_master_timeout
         sid = request.sid
         channel = (data or {}).get("channel", "main")
         splash_connections[sid] = channel
         logging.info(f"Splash screen registered: {sid} (channel={channel})")
 
         if master_splash_id is None:
+            if pending_master_timeout is not None:
+                pending_master_timeout.cancel()
+                pending_master_timeout = None
+                logging.info("Cancelled pending master timeout — new master arrived")
             master_splash_id = sid
             socketio.emit("splash_role", "master", room=sid)
             logging.info(f"Master splash screen assigned: {sid}")
@@ -88,7 +97,7 @@ def setup_socket_events(socketio):
     @socketio.on("disconnect")
     def handle_disconnect() -> None:
         """Handle Socket.IO client disconnection and manage splash role handover."""
-        global master_splash_id
+        global master_splash_id, pending_master_timeout
         sid = request.sid
         if sid in splash_connections:
             channel = splash_connections.pop(sid)
@@ -102,3 +111,17 @@ def setup_socket_events(socketio):
                     master_splash_id = new_master
                     socketio.emit("splash_role", "master", room=new_master)
                     logging.info(f"New master splash elected: {new_master}")
+                else:
+                    # No splash screens left — start grace period before ending song
+                    def _end_song_after_timeout() -> None:
+                        global pending_master_timeout
+                        pending_master_timeout = None
+                        if master_splash_id is None:
+                            logging.info("Grace period expired, no new master — ending song")
+                            k = get_karaoke_instance()
+                            k.playback_controller.end_song("splash screen closed")
+
+                    pending_master_timeout = threading.Timer(5.0, _end_song_after_timeout)
+                    pending_master_timeout.daemon = True
+                    pending_master_timeout.start()
+                    logging.info("Started 5s grace period for master reconnection")
