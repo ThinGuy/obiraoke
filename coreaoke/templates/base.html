@@ -139,16 +139,41 @@
         } catch(e) {}
         try { $("#notification-alt").hide(); } catch(e) {}
 
-        // Goodies section toggle
+        // Goodies section toggle with localStorage persistence
         (function() {
           var header = document.getElementById('goodies-header');
           var items = document.getElementById('goodies-items');
           var chevron = document.getElementById('goodies-chevron');
           if (header && items && chevron) {
+            var goodiesRoutes = ['/credits', '/info', '/docs', '/sbom'];
+            var onGoodiesPage = goodiesRoutes.indexOf(window.location.pathname) !== -1;
+
+            function expandGoodies() {
+              items.style.display = 'block';
+              chevron.className = 'icon icon-angle-up';
+            }
+
+            function collapseGoodies() {
+              items.style.display = 'none';
+              chevron.className = 'icon icon-angle-down';
+            }
+
+            if (onGoodiesPage) {
+              localStorage.setItem('goodies-expanded', 'true');
+              expandGoodies();
+            } else if (localStorage.getItem('goodies-expanded') === 'true') {
+              expandGoodies();
+            }
+
             header.addEventListener('click', function() {
               var open = items.style.display !== 'none';
-              items.style.display = open ? 'none' : 'block';
-              chevron.className = open ? 'icon icon-angle-down' : 'icon icon-angle-up';
+              if (open) {
+                collapseGoodies();
+                localStorage.setItem('goodies-expanded', 'false');
+              } else {
+                expandGoodies();
+                localStorage.setItem('goodies-expanded', 'true');
+              }
             });
             // Prevent child item clicks from bubbling to the goodies header toggle
             items.querySelectorAll('.sidebar-item').forEach(function(item) {

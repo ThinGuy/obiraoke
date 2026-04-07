@@ -1513,3 +1513,13 @@ Five changes in one session:
    goodies-items container so their clicks do not bubble to the Goodies header
    toggle.
    - `coreaoke/templates/base.html`
+
+7. **Goodies menu collapses after navigation** -- Clicking a Goodies item
+   (About, Docs, Settings, SBOM) navigates to a new URL, reloading the page
+   and resetting the collapsed default state. stopPropagation cannot fix this
+   because the issue is a full page reload. Fixed by persisting the
+   expanded/collapsed state in localStorage under the key `goodies-expanded`.
+   On page load, if the current URL matches a Goodies route the section is
+   forced open and the state is saved. Otherwise the saved state is restored.
+   Clicking the GOODIES header to toggle saves the new state to localStorage.
+   - `coreaoke/templates/base.html`
