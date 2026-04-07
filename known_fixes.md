@@ -1575,3 +1575,32 @@ Application plumbing:
 - `coreaoke/routes/docs.py`, `coreaoke/routes/sbom.py`,
   `coreaoke/routes/info.py`, `coreaoke/routes/credits.py` -- `abort(403)` when
   `get_lockdown()` returns `True`
+
+## Credits page GitHub link invisible
+
+The GitHub project link on the credits page was invisible because the global
+`a { color: #ffffff !important }` rule in `coreaoke.css` overrode the inline
+`style="color:#06c"`. On the light (#f7f7f7) main panel background, white text
+is invisible.
+
+Fix: added `!important` to the inline color style on the link
+(`color:#06c !important`) so it wins over the global rule. Added
+`onmouseover`/`onmouseout` handlers for underline on hover. The link text
+reads "github.com/ThinGuy/coreaoke" and points to
+`https://github.com/ThinGuy/coreaoke`.
+
+- `coreaoke/templates/credits.html`
+
+## SBOM page font and spacing inconsistent with Goodies pages
+
+The SBOM page was missing a page title inside the main panel and the Download
+JSON link font size did not match the spec (was text-xs, should be text-sm).
+
+Fix: added a page title "Software Bill of Materials" with text-2xl font-light
+text-gray-900, border-bottom 1px solid rgba(0,0,0,0.1), pb-4 mb-6. Changed the
+Download JSON link font size from 0.75rem to 0.875rem (text-sm) and added
+`!important` to its color to override the global white link rule. Section
+headings and table styling were already correct from the prior Vanilla Framework
+alignment pass.
+
+- `coreaoke/templates/sbom.html`
