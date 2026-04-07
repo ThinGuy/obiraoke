@@ -93,7 +93,7 @@
             if (name !== null && name.trim() !== "") {
                 Cookies.set("user", name, { expires: 3650, path: '/' });
                 // Update the displayed name without reloading
-                $("#current-user span").text(name);
+                $("#current-user .sidebar-label").text(name);
             }
             // Remove focus from the link to prevent CSS focus styling (black background)
             $(this).blur();

@@ -502,14 +502,12 @@
         try { setTimeout(function() { $("#notification").fadeOut()}, 3000); } catch(e) {}
 
         // handle current user display
-        var currentUser = Cookies.get("user");
+        var currentUser = Cookies.get("user") || "Singer";
 
-        if (currentUser) {
-          try {
-            $("#current-user span").text(currentUser);
-            $("#current-user").removeClass("is-hidden");
-          } catch(e) {}
-        }
+        try {
+          $("#current-user .sidebar-label").text(currentUser);
+          $("#current-user").removeClass("is-hidden");
+        } catch(e) {}
 
       });
     })(jQuery);
@@ -529,10 +527,6 @@
     left: 50%;
     margin-left: -250px;
     z-index: 200;
-  }
-  .current-user {
-    position: static;
-    padding: 0.5rem 0;
   }
   tr:nth-child(even) {
     background-color: #262626;
@@ -581,6 +575,11 @@
         <i class="icon icon-menu"></i>
         <span class="sidebar-label">Tweaks</span>
       </a>
+      <a id="current-user" class="sidebar-item current-user is-hidden" href="#" title="Change username">
+        <i class="icon icon-mic-1"></i>
+        <span class="sidebar-label"></span>
+      </a>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:0.25rem 1rem"></div>
       {% if not lockdown %}
       <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
         <i id="goodies-chevron" class="icon icon-angle-down" style="font-size:12px"></i>
@@ -603,11 +602,6 @@
       {% endif %}
     </nav>
     <div id="sidebar-content" class="sidebar-content">
-      <a id="current-user" class="current-user is-hidden" href="#">
-        <i class="icon icon-mic-1" title="Current user"></i>
-        <span></span>
-      </a>
-
       {% if get_flashed_messages() %}
       {% for category, message in get_flashed_messages(with_categories=true) %}
       <div id="notification" class="notification base-notification {{category}}">

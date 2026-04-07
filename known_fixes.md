@@ -1893,3 +1893,45 @@ dominating the sidebar.
   with dark-background equivalents, constrained QR code to 100px max-width
 - `coreaoke/static/coreaoke.css` -- added `.sidebar-content .connection-url`
   rule with color #69c
+
+## Sidebar layout, username, and background video fixes
+
+Four fixes applied to the sidebar navigation, Tweaks page, and splash screen.
+
+### 1. Remove duplicate Settings headings in Tweaks sidebar
+
+The Tweaks page (info.html) had both an h1 "Settings" in the header block and
+a standalone h1 "Settings" in the content block. Since the Tweaks nav item
+already identifies the section, both headings were removed.
+
+### 2. Username placement and default
+
+The username display was moved from inside `#sidebar-content` into the main
+`<nav>` section, positioned as the last nav item before the divider and Goodies
+section. It now uses the same `sidebar-item` styling as other nav items (icon +
+label). The default username when no cookie is set was changed from empty/Anon
+to "Singer". Clicking the username still opens the rename prompt.
+
+### 3. Background video currentTime persists across Search navigation
+
+Search causes a full page reload. The background video's `currentTime` is now
+saved to `sessionStorage` in the `beforeunload` handler and restored on
+`DOMContentLoaded`, so the video resumes from the same point after navigation.
+
+### 4. Goodies section positioning
+
+The Goodies collapsible section was moved to appear after the username nav item
+and its divider. The sidebar order from top to bottom is now: sidebar header,
+Now Playing, Queue, Search, Browse, Tweaks, Username (mic icon + name),
+divider, Goodies (collapsible: About, Docs, SBOM), sidebar content area.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- removed duplicate h1 and h2 Settings headings
+- `coreaoke/templates/base.html` -- moved username into nav as sidebar-item,
+  added divider, reordered Goodies after username, default username "Singer"
+- `coreaoke/static/js/splash.js` -- save/restore bgVideo.currentTime via
+  sessionStorage across page reloads
+- `coreaoke/static/coreaoke.css` -- updated `.current-user` selector from
+  `.sidebar-content` to `.sidebar-nav`
+- `coreaoke/static/spa-navigation.js` -- updated username text selector to
+  match new `.sidebar-label` class

@@ -502,6 +502,10 @@ const setupVideoPlayer = () => {
       if (isMaster && isMediaPlaying(video)) {
         endSong("splash screen closed");
       }
+      var bgVideo = getBackgroundVideoPlayer();
+      if (bgVideo && bgVideo.currentTime) {
+        sessionStorage.setItem('bgVideoTime', bgVideo.currentTime);
+      }
     },
     true
   );
@@ -844,6 +848,16 @@ const setupSignageQrRotation = () => {
 $(function () {
   // Setup various features and listeners
   setupUIScaling();
+
+  // Restore background video position after page reload (e.g. Search navigation)
+  var savedBgTime = sessionStorage.getItem('bgVideoTime');
+  if (savedBgTime) {
+    sessionStorage.removeItem('bgVideoTime');
+    var bgVideo = getBackgroundVideoPlayer();
+    if (bgVideo) {
+      bgVideo.currentTime = parseFloat(savedBgTime);
+    }
+  }
 
   if (channelName === "main") {
     if (CoreaokeConfig.showSplashClock) startClock();

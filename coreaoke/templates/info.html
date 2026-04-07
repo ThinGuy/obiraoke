@@ -1,12 +1,6 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1 style="color: #ffffff; font-size: 1.25rem; font-weight: 300; text-align: left;">
-		{% block title %}
-			{# MSG: Title of the settings page. #}
-			{% trans %}Settings{% endtrans %}
-		{% endblock %}
-	</h1>
 {% endblock %}
 
 {% block content %}
@@ -139,11 +133,6 @@
   padding-bottom: 0.5rem;
 }
 </style>
-
-<h1 style="font-size: 1.5rem; font-weight: 300; color: rgba(255,255,255,0.85);">
-  {# MSG: Title of the settings page. #}
-  {% trans %}Settings{% endtrans %}
-</h1>
 
 <!-- Connection Info -->
 <div class="settings-section">

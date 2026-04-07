@@ -539,11 +539,9 @@ a:hover {
   max-width: 100%;
 }
 
-/* Current user badge in sidebar */
-.sidebar-content .current-user {
-  position: static;
-  padding: 0;
-  margin-bottom: 0.5rem;
+/* Current user in sidebar nav */
+.sidebar-nav .current-user {
+  cursor: pointer;
 }
 
 /* ===== COMPONENTS — Cards ===== */
