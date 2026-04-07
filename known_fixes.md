@@ -1847,3 +1847,29 @@ strict alphabetical order.
 **Files changed:**
 - `coreaoke/templates/files.html` -- text change only ("Alphabetical" to
   "By Artist")
+
+## Move Tweaks (Settings) back to sidebar display
+
+The Tweaks (/info) page was previously configured to bypass sidebar AJAX
+loading and render as a full-page navigation in the main panel. This was
+incorrect -- Tweaks should load via AJAX into the sidebar like Queue and
+Browse. Removed /info from the full-page bypass list in `loadSidebarContent()`
+and from the `excludedPaths` array in `spa-navigation.js`. Moved all content
+in `info.html` from `{% block main_content %}` back to `{% block content %}`
+and removed the "See main panel." sidebar placeholder.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- removed `/info` from full-page navigation
+  bypass in `loadSidebarContent()`
+- `coreaoke/static/spa-navigation.js` -- removed `/info` from `excludedPaths`
+- `coreaoke/templates/info.html` -- moved content from `main_content` block to
+  `content` block, removed sidebar placeholder
+
+## Browse sort label correction
+
+The sort label on the browse page read "By Artist" which was inaccurate since
+the sort is by the full filename including artist prefix. Changed to
+"By Filename" for accuracy.
+
+**Files changed:**
+- `coreaoke/templates/files.html` -- changed "By Artist" to "By Filename"

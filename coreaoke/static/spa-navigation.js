@@ -267,7 +267,6 @@
             '/queue/edit', // Queue edit actions (move up/down/top/bottom/delete)
             '/docs', // Operator docs (full-page, not sidebar)
             '/sbom', // Software bill of materials (full-page, not sidebar)
-            '/info', // Settings (full-page, not sidebar)
             '/credits' // Credits (full-page, not sidebar)
         ];
 
