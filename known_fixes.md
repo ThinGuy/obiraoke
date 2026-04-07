@@ -1654,3 +1654,71 @@ dropdown was added to the Splash screen settings accordion on the Settings page.
 - `snap/hooks/configure`
 - `snap/hooks/install`
 - `snap/local/wrapper`
+
+## System Data moved from Settings to About page
+
+The System Data section (System Info, Snapd, Ubuntu, System Stats) was removed
+from the Settings page (`info.html`) and relocated to the top of the About /
+Credits page (`credits.html`). The credits route now imports
+`_gather_system_info()` from `coreaoke/routes/info.py` and passes the result
+into the credits template context alongside platform, OS version, FFmpeg,
+yt-dlp, and coreaoke version strings. The system-stats AJAX call was moved from
+info.html to credits.html.
+
+- `coreaoke/templates/info.html`
+- `coreaoke/templates/credits.html`
+- `coreaoke/routes/info.py`
+- `coreaoke/routes/credits.py`
+
+## System info snap confinement fixes
+
+`_gather_system_info()` in `coreaoke/routes/info.py` previously used subprocess
+calls to `dpkg`, `dpkg-query`, `snap list`, `lsb_release`, `pro status`, and
+`/usr/lib/update-notifier/apt-check`. Most of these fail under snap strict
+confinement because the binaries are on the host and inaccessible.
+
+Fixes applied:
+
+1. **snapd and ubuntu-pro-client versions** -- Read `/var/lib/dpkg/status`
+   directly and parse the relevant stanza for its Version field. This file is
+   readable under strict confinement. A new helper `_read_dpkg_version(package)`
+   handles the parsing.
+
+2. **OS release info** -- Already read `/etc/os-release` as a file via
+   `_parse_os_release()`. No subprocess (`lsb_release`) was needed. Confirmed
+   this path is accessible under confinement.
+
+3. **Pro attached status** -- Runs `pro status --format json` wrapped in
+   try/except with timeout=5. If it fails (binary not available in
+   confinement), `pro_attached` is set to None and the field is hidden in the
+   template.
+
+4. **Available updates** -- Replaced `/usr/lib/update-notifier/apt-check`
+   (host-side binary) with `apt-get -s upgrade` and counting lines starting
+   with "Inst ". If the command fails, set to None.
+
+5. **snapd snap version** -- Removed the `snap list snapd` call. The snapd
+   version from dpkg status is sufficient and works under confinement.
+
+- `coreaoke/routes/info.py`
+
+## CLI arguments: theme, lockdown, branding, and mascot-mode removal
+
+Replaced `--mascot-mode` with a set of branding and operational CLI arguments
+in `coreaoke/lib/args.py`:
+
+- `--logo-position` -- Sets `COREAOKE_LOGO_POSITION` env var. Choices:
+  center, top-left, top-right, bottom-left, bottom-right, top-center,
+  bottom-center. Default: center.
+- `--app-name` -- Sets `COREAOKE_APP_NAME` env var.
+- `--app-icon` -- Sets `COREAOKE_APP_ICON` env var.
+- `--lockdown` -- Sets `COREAOKE_LOCKDOWN=true` env var. Hides Goodies menu
+  and blocks admin pages.
+- `--theme` -- Resolves theme assets from `$SNAP_COMMON/themes/<name>/` and
+  applies logo-path, bg-video-path, bg-music-path if the corresponding files
+  exist in the theme directory (logo.png, bg-video.mp4, music/).
+
+The `--mascot-mode` argument was removed entirely; theming now handles all
+branding overrides.
+
+- `coreaoke/lib/args.py`

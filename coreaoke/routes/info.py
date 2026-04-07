@@ -24,66 +24,68 @@ _ = flask_babel.gettext
 info_bp = Blueprint("info", __name__)
 
 
-def _run_cmd(cmd: list[str]) -> str | None:
-    """Run a command and return stdout, or None on failure."""
+def _read_dpkg_version(package: str) -> str | None:
+    """Read a package version from /var/lib/dpkg/status.
+
+    Parses the dpkg status file directly instead of spawning dpkg or
+    dpkg-query, which may not be accessible under snap strict confinement.
+    """
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=5
-        )
-        return result.stdout.strip() or result.stderr.strip() or None
-    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        with open("/var/lib/dpkg/status") as f:
+            in_package = False
+            for line in f:
+                if line.startswith("Package: ") and line.strip() == f"Package: {package}":
+                    in_package = True
+                elif in_package and line.startswith("Package: "):
+                    in_package = False
+                elif in_package and line.startswith("Version: "):
+                    return line.split(":", 1)[1].strip()
+                elif in_package and line.strip() == "":
+                    in_package = False
+    except OSError:
+        pass
+    return None
+
+
+def _parse_os_release() -> dict | None:
+    """Parse /etc/os-release into a dict.
+
+    Reads the file directly rather than using lsb_release, which is not
+    available under snap strict confinement.
+    """
+    try:
+        with open("/etc/os-release") as f:
+            result = {}
+            for line in f:
+                line = line.strip()
+                if "=" in line:
+                    key, _, value = line.partition("=")
+                    result[key] = value.strip('"')
+            return result
+    except OSError:
         return None
 
 
 def _gather_system_info() -> dict:
-    """Gather extended system information for the info page."""
+    """Gather extended system information for the credits page.
+
+    All data is read from files on disk where possible to avoid subprocess
+    calls that fail under snap strict confinement.
+    """
     data: dict = {}
 
-    # snapd via dpkg
-    snapd_dpkg_line = _run_cmd(
-        ["dpkg-query", "-W", "-f", "${Status} ${Package} ${Version}\n", "snapd"]
-    )
-    if snapd_dpkg_line is None:
-        raw = _run_cmd(["dpkg", "-l", "snapd"])
-        if raw:
-            for line in raw.splitlines():
-                if line.startswith("ii"):
-                    snapd_dpkg_line = line
-                    break
-    if snapd_dpkg_line and snapd_dpkg_line.startswith("ii"):
-        parts = snapd_dpkg_line.split()
-        data["snapd_dpkg"] = {
-            "status": parts[0] if len(parts) > 0 else None,
-            "package": parts[1] if len(parts) > 1 else None,
-            "version": parts[2] if len(parts) > 2 else None,
-        }
-    elif snapd_dpkg_line and "install ok installed" in snapd_dpkg_line:
-        parts = snapd_dpkg_line.split()
+    # snapd version from dpkg status file (readable under confinement)
+    snapd_version = _read_dpkg_version("snapd")
+    if snapd_version:
         data["snapd_dpkg"] = {
             "status": "ii",
-            "package": parts[-2] if len(parts) >= 2 else "snapd",
-            "version": parts[-1] if len(parts) >= 1 else None,
+            "package": "snapd",
+            "version": snapd_version,
         }
     else:
         data["snapd_dpkg"] = None
 
-    # snapd via snap list
-    snapd_snap_raw = _run_cmd(["snap", "list", "snapd"])
-    if snapd_snap_raw:
-        lines = snapd_snap_raw.strip().splitlines()
-        last = lines[-1] if lines else ""
-        parts = last.split()
-        if parts and parts[0] == "snapd":
-            data["snapd_snap"] = {
-                "name": parts[0],
-                "version": parts[1] if len(parts) > 1 else None,
-            }
-        else:
-            data["snapd_snap"] = None
-    else:
-        data["snapd_snap"] = None
-
-    # Check if Ubuntu
+    # Check if Ubuntu via /etc/os-release
     os_release = _parse_os_release()
     is_ubuntu = False
     if os_release:
@@ -99,51 +101,35 @@ def _gather_system_info() -> dict:
             "VERSION_CODENAME": os_release.get("VERSION_CODENAME"),
         }
 
-        # Ubuntu Pro client version via dpkg
-        pro_raw = _run_cmd(["dpkg", "-l", "ubuntu-pro-client"])
-        pro_version = None
-        if pro_raw:
-            for line in pro_raw.splitlines():
-                if line.startswith("ii"):
-                    parts = line.split()
-                    pro_version = parts[2] if len(parts) > 2 else None
-                    break
-        data["pro_client_version"] = pro_version
+        # Ubuntu Pro client version from dpkg status file
+        data["pro_client_version"] = _read_dpkg_version("ubuntu-pro-client")
 
-        # Ubuntu Pro attached status
-        pro_status_raw = _run_cmd(["pro", "status", "--format", "json"])
-        if pro_status_raw:
-            try:
-                pro_json = json.loads(pro_status_raw)
-                attached = pro_json.get("attached", False)
-                data["pro_attached"] = "Attached" if attached else "Not Attached"
-            except (json.JSONDecodeError, KeyError):
-                data["pro_attached"] = None
-        else:
+        # Ubuntu Pro attached status via pro CLI (may not work in confinement)
+        try:
+            result = subprocess.run(
+                ["pro", "status", "--format", "json"],
+                capture_output=True, text=True, timeout=5,
+            )
+            pro_json = json.loads(result.stdout)
+            attached = pro_json.get("attached", False)
+            data["pro_attached"] = "Attached" if attached else "Not Attached"
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError,
+                json.JSONDecodeError, KeyError):
             data["pro_attached"] = None
 
-        # Available updates
-        updates_raw = _run_cmd(
-            ["/usr/lib/update-notifier/apt-check"]
-        )
-        if updates_raw:
-            # apt-check outputs to stderr: "total;security"
-            parts = updates_raw.split(";")
-            if len(parts) == 2:
-                try:
-                    total = int(parts[0])
-                    security = int(parts[1])
-                    data["available_updates"] = f"{total} updates ({security} security)"
-                except ValueError:
-                    data["available_updates"] = updates_raw
-            else:
-                data["available_updates"] = updates_raw
-        else:
-            # Try human-readable fallback
-            updates_hr = _run_cmd(
-                ["/usr/lib/update-notifier/apt-check", "--human-readable"]
+        # Available updates via apt-get dry-run (works in confinement)
+        try:
+            result = subprocess.run(
+                ["apt-get", "-s", "upgrade"],
+                capture_output=True, text=True, timeout=10,
             )
-            data["available_updates"] = updates_hr
+            inst_count = sum(
+                1 for line in result.stdout.splitlines()
+                if line.startswith("Inst ")
+            )
+            data["available_updates"] = f"{inst_count} updates" if inst_count else None
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+            data["available_updates"] = None
     else:
         data["os_release"] = None
         data["pro_client_version"] = None
@@ -151,21 +137,6 @@ def _gather_system_info() -> dict:
         data["available_updates"] = None
 
     return data
-
-
-def _parse_os_release() -> dict | None:
-    """Parse /etc/os-release into a dict."""
-    try:
-        with open("/etc/os-release") as f:
-            result = {}
-            for line in f:
-                line = line.strip()
-                if "=" in line:
-                    key, _, value = line.partition("=")
-                    result[key] = value.strip('"')
-            return result
-    except OSError:
-        return None
 
 
 @info_bp.route("/info")
@@ -178,10 +149,6 @@ def info():
     is_linux = get_platform() == "linux"
 
     preferred_language = k.preferences.get("preferred_language", "en")
-    # youtube-dl
-    youtubedl_version = k.youtubedl_version
-
-    system_info = _gather_system_info()
 
     return render_template(
         "info.html",
@@ -190,15 +157,6 @@ def info():
         url=url,
         admin=is_admin(),
         admin_password=admin_password,
-        platform=k.platform,
-        os_version=k.os_version,
-        ffmpeg_version=k.ffmpeg_version,
-        is_transpose_enabled=k.is_transpose_enabled,
-        youtubedl_version=youtubedl_version,
-        coreaoke_version=VERSION,
-        cpu=None,
-        memory=None,
-        disk=None,
         is_linux=is_linux,
         volume=int(k.volume * 100),
         bg_music_volume=int(k.bg_music_volume * 100),
@@ -227,7 +185,6 @@ def info():
             "mid": k.mid_score_phrases,
             "high": k.high_score_phrases,
         },
-        system_info=system_info,
     )
 
 

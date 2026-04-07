@@ -311,9 +311,39 @@ def parse_coreaoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--mascot-mode",
+        "--logo-position",
+        choices=[
+            "center", "top-left", "top-right",
+            "bottom-left", "bottom-right",
+            "top-center", "bottom-center",
+        ],
+        default="center",
+        help="Position of logo on splash screen (default: center)",
+        required=False,
+    )
+    parser.add_argument(
+        "--app-name",
+        help="Display name shown in sidebar and browser tab",
+        default=None,
+        required=False,
+    )
+    parser.add_argument(
+        "--app-icon",
+        help="Path to custom icon image for sidebar header",
+        default=None,
+        required=False,
+    )
+    parser.add_argument(
+        "--theme",
+        help="Theme preset name (sets logo, video, and music from $SNAP_COMMON/themes/<name>/)",
+        default=None,
+        required=False,
+    )
+    parser.add_argument(
+        "--lockdown",
         action="store_true",
-        help="Enable mascot mode, overriding the splash logo and background video.",
+        default=False,
+        help="Hide Goodies menu and block admin pages",
         required=False,
     )
 
@@ -331,11 +361,29 @@ def parse_coreaoke_args() -> argparse.Namespace:
     bg_music_path = arg_path_parse(args.bg_music_path)
     bg_video_path = arg_path_parse(args.bg_video_path)
 
-    if args.mascot_mode:
-        logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "images", "dolphly.png")
-        bg_video_path = os.path.join(
-            os.path.dirname(__file__), "..", "static", "video", "the_drive_by_visualdon.mp4"
-        )
+    # Wire CLI args to environment variables for branding/lockdown
+    if args.logo_position:
+        os.environ["COREAOKE_LOGO_POSITION"] = args.logo_position
+    if args.app_name:
+        os.environ["COREAOKE_APP_NAME"] = args.app_name
+    if args.app_icon:
+        os.environ["COREAOKE_APP_ICON"] = args.app_icon
+    if args.lockdown:
+        os.environ["COREAOKE_LOCKDOWN"] = "true"
+
+    # Theme support: resolve paths from $SNAP_COMMON/themes/<name>/
+    if args.theme:
+        snap_common = os.environ.get("SNAP_COMMON", "")
+        theme_dir = os.path.join(snap_common, "themes", args.theme)
+        theme_logo = os.path.join(theme_dir, "logo.png")
+        theme_video = os.path.join(theme_dir, "bg-video.mp4")
+        theme_music = os.path.join(theme_dir, "music")
+        if os.path.isfile(theme_logo):
+            logo_path = theme_logo
+        if os.path.isfile(theme_video):
+            bg_video_path = theme_video
+        if os.path.isdir(theme_music):
+            bg_music_path = theme_music
 
     if bg_video_path is not None and not os.path.isfile(bg_video_path):
         print(f"Background video not found: {bg_video_path}. Setting to None")
