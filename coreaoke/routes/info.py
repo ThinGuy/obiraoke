@@ -2,11 +2,12 @@
 
 import flask_babel
 import psutil
-from flask import jsonify, render_template
+from flask import abort, jsonify, render_template
 from flask_smorest import Blueprint
 
 from coreaoke import VERSION
 from coreaoke.constants import LANGUAGES
+from coreaoke.lib.branding import get_lockdown
 from coreaoke.lib.current_app import (
     get_admin_password,
     get_karaoke_instance,
@@ -24,6 +25,8 @@ info_bp = Blueprint("info", __name__)
 @info_bp.route("/info")
 def info():
     """System information and settings page."""
+    if get_lockdown():
+        abort(403)
     k = get_karaoke_instance()
     site_name = get_site_name()
     url = k.url

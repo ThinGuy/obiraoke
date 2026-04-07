@@ -24,7 +24,7 @@ chmod 0755 "$SNAP_COMMON/themes/default"
 chmod 0755 "$SNAP_COMMON/themes/default/bg-music"
 
 cp "$SNAP/lib/python3.12/site-packages/coreaoke/static/images/logo.png" "$SNAP_COMMON/themes/default/logo.png"
-cp "$SNAP/lib/python3.12/site-packages/coreaoke/static/video/the_drive_by_visualdon.mp4" "$SNAP_COMMON/themes/default/bg-video.mp4"
+cp "$SNAP/lib/python3.12/site-packages/coreaoke/static/video/bg-video.mp4" "$SNAP_COMMON/themes/default/bg-video.mp4"
 cp "$SNAP/lib/python3.12/site-packages/coreaoke/static/music/"* "$SNAP_COMMON/themes/default/bg-music/" 2>/dev/null || true
 
 chmod 0644 "$SNAP_COMMON/themes/default/logo.png"
@@ -74,3 +74,4 @@ snapctl set theme=default
 snapctl set preseed-url=""
 snapctl set app-name="Ubuntu Coreaoke"
 snapctl set app-icon=""
+snapctl set lockdown=false

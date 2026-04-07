@@ -137,6 +137,18 @@ if [ -n "$theme" ] && [ "$theme" != "$prev_theme" ]; then
     fi
 fi
 
+# Validate lockdown (must be 'true' or 'false')
+lockdown="$(snapctl get lockdown)" || true
+if [ -n "$lockdown" ]; then
+    case "$lockdown" in
+        true|false) ;;
+        *)
+            echo "error: lockdown must be 'true' or 'false', got '$lockdown'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
 # The following keys are accepted without validation:
 # admin-password       -- any string
 # download-path        -- any path string
@@ -158,3 +170,4 @@ fi
 # preseed-url          -- URL to a song tarball for first-run preseed
 # app-name             -- display name for white-label branding
 # app-icon             -- path to custom logo file for white-label branding
+# lockdown             -- boolean (true/false), hides Goodies menu and blocks routes

@@ -164,6 +164,30 @@ def get_data_directory() -> str:
     return path
 
 
+def get_bg_video_path() -> str | None:
+    """Resolve the background video path using a fallback chain.
+
+    1. $SNAP/lib/python3.12/site-packages/coreaoke/static/video/bg-video.mp4
+       (only inside snap confinement)
+    2. static/video/bg-video.mp4 relative to the coreaoke package
+       (outside snap)
+    3. None if neither exists
+    """
+    snap = os.environ.get("SNAP")
+    if snap:
+        snap_path = os.path.join(
+            snap, "lib", "python3.12", "site-packages", "coreaoke", "static", "video", "bg-video.mp4"
+        )
+        if os.path.isfile(snap_path):
+            return snap_path
+
+    local_path = os.path.join(os.path.dirname(__file__), "..", "static", "video", "bg-video.mp4")
+    if os.path.isfile(local_path):
+        return local_path
+
+    return None
+
+
 def is_running_in_docker():
     """Check if we're running in a container using existence of /.dockerenv."""
     return os.path.exists("/.dockerenv")

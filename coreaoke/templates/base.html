@@ -579,6 +579,7 @@
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
+      {% if not lockdown %}
       <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
         <i id="goodies-chevron" class="icon icon-angle-down" style="font-size:12px"></i>
         GOODIES
@@ -601,6 +602,7 @@
           <span class="sidebar-label">SBOM</span>
         </a>
       </div>
+      {% endif %}
     </nav>
     <div id="sidebar-content" class="sidebar-content">
       <a id="current-user" class="current-user is-hidden" href="#">

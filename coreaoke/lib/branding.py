@@ -27,3 +27,8 @@ def get_branding() -> dict:
         "app_name": app_name,
         "app_icon_url": app_icon_url,
     }
+
+
+def get_lockdown() -> bool:
+    """Return True when lockdown mode is enabled via COREAOKE_LOCKDOWN env var."""
+    return os.environ.get("COREAOKE_LOCKDOWN", "").lower() == "true"

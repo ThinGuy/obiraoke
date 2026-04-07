@@ -1535,3 +1535,43 @@ Five changes in one session:
    display between the two wrapper divs and calls `bgVideo.play()` inside
    `requestAnimationFrame()` to ensure the browser has painted before playback.
    - `coreaoke/templates/base.html`
+
+## Background video fallback chain
+
+The default background video path in `karaoke.py` pointed at `night_sea.mp4`,
+which no longer exists. Replaced the hard-coded default with a fallback chain
+resolved by `get_bg_video_path()` in `coreaoke/lib/get_platform.py`:
+
+1. Inside snap confinement (`$SNAP` set):
+   `$SNAP/lib/python3.12/site-packages/coreaoke/static/video/bg-video.mp4`
+2. Outside snap: `coreaoke/static/video/bg-video.mp4` relative to the package
+3. `None` if neither path exists
+
+The install hook (`snap/hooks/install`) was also copying the wrong source file
+(`the_drive_by_visualdon.mp4`) into the default theme directory. Corrected to
+copy `bg-video.mp4`.
+
+- `coreaoke/lib/get_platform.py`
+- `coreaoke/karaoke.py`
+- `snap/hooks/install`
+
+## Lockdown mode
+
+Added a `lockdown` snap configuration key (boolean, default `false`). When
+enabled (`snap set coreaoke lockdown=true`), the Goodies sidebar section and
+its routes (`/credits`, `/docs`, `/info`, `/sbom`) are hidden and return 403.
+
+Snap plumbing:
+- `snap/hooks/install` -- seeds `lockdown=false`
+- `snap/hooks/configure` -- validates the key is `true` or `false`
+- `snap/local/wrapper` -- exports `COREAOKE_LOCKDOWN` from `snapctl get lockdown`
+
+Application plumbing:
+- `coreaoke/lib/branding.py` -- `get_lockdown()` reads `COREAOKE_LOCKDOWN` env var
+- `coreaoke/app.py` -- injects `lockdown` into all template contexts via the
+  branding context processor
+- `coreaoke/templates/base.html` -- wraps the Goodies header and items in
+  `{% if not lockdown %}`
+- `coreaoke/routes/docs.py`, `coreaoke/routes/sbom.py`,
+  `coreaoke/routes/info.py`, `coreaoke/routes/credits.py` -- `abort(403)` when
+  `get_lockdown()` returns `True`

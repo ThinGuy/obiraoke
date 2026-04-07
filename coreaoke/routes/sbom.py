@@ -2,9 +2,10 @@
 
 import importlib.metadata
 
-from flask import jsonify, render_template, request
+from flask import abort, jsonify, render_template, request
 from flask_smorest import Blueprint
 
+from coreaoke.lib.branding import get_lockdown
 from coreaoke.lib.current_app import get_site_name
 
 sbom_bp = Blueprint("sbom", __name__)
@@ -34,6 +35,8 @@ def _get_python_packages() -> list[dict[str, str]]:
 @sbom_bp.route("/sbom")
 def sbom():
     """Render or return the Software Bill of Materials."""
+    if get_lockdown():
+        abort(403)
     python_packages = _get_python_packages()
 
     if request.args.get("format") == "json":

@@ -23,6 +23,11 @@ if [ -n "$app_icon" ]; then
     export COREAOKE_APP_ICON="$app_icon"
 fi
 
+lockdown="$(snapctl get lockdown)" || true
+if [ -n "$lockdown" ]; then
+    export COREAOKE_LOCKDOWN="$lockdown"
+fi
+
 # When running as a daemon, redirect output to a log file.
 # JOURNAL_STREAM is set by systemd for service units.
 if [ -n "$SNAP_INSTANCE_NAME" ] && [ -n "$JOURNAL_STREAM" ]; then

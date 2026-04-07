@@ -20,6 +20,7 @@ from coreaoke.lib.ffmpeg import (
     supports_hardware_h264_encoding,
 )
 from coreaoke.lib.get_platform import (
+    get_bg_video_path,
     get_data_directory,
     get_os_version,
     get_platform,
@@ -68,7 +69,6 @@ class Karaoke:
     loop_interval: int = 500  # in milliseconds
     default_logo_path: str = os.path.join(base_path, "static", "images", "logo.png")
     default_bg_music_path: str = os.path.join(base_path, "static", "music")
-    default_bg_video_path: str = os.path.join(base_path, "static", "video", "night_sea.mp4")
     screensaver_timeout: int
 
     normalize_audio: bool
@@ -186,7 +186,7 @@ class Karaoke:
         self.logo_path = self.default_logo_path if logo_path is None else logo_path
         self.prefer_hostname = prefer_hostname
         self.bg_music_path = self.default_bg_music_path if bg_music_path is None else bg_music_path
-        self.bg_video_path = self.default_bg_video_path if bg_video_path is None else bg_video_path
+        self.bg_video_path = bg_video_path if bg_video_path is not None else get_bg_video_path()
         self.streaming_format = streaming_format
         self.socketio = socketio
         self.url_override = url
