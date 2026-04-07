@@ -1722,3 +1722,27 @@ The `--mascot-mode` argument was removed entirely; theming now handles all
 branding overrides.
 
 - `coreaoke/lib/args.py`
+
+## Song restart on sidebar navigation (persistent splash master)
+
+**Problem:** Navigating the sidebar caused the currently playing song to
+restart. The player panel in `base.html` re-registered as a splash screen
+client on every page navigation. When it held the master role, reconnecting
+triggered a song restart on the newly elected master.
+
+**Root cause:** `connectSocket()` in `base.html` emitted `register_splash`
+on every socket connect. Sidebar AJAX navigation re-executed this code,
+causing the master role to bounce between connections.
+
+**Fix:** Removed `register_splash` from the main socket connect handler.
+Added a hidden `<iframe>` loading `/splash` just before `</body>` in
+`base.html`. This iframe connects once, becomes master, and never navigates
+away. The visible player panel still receives `now_playing`, `pause`, `play`,
+`skip`, `volume`, `restart`, and `playback_position` events via direct socket
+listeners -- these are not routed through the splash registration mechanism.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- removed `register_splash` emit from
+  `connectSocket()`, added persistent splash iframe
+- `coreaoke/routes/socket_events.py` -- no changes needed (master election
+  logic unchanged)
