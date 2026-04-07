@@ -29,6 +29,25 @@ def get_branding() -> dict:
     }
 
 
+_VALID_LOGO_POSITIONS = {
+    "top-left",
+    "top-right",
+    "bottom-left",
+    "bottom-right",
+    "center",
+    "top-center",
+    "bottom-center",
+}
+
+
+def get_logo_position() -> str:
+    """Return the logo position from COREAOKE_LOGO_POSITION env var."""
+    value = os.environ.get("COREAOKE_LOGO_POSITION", "center").strip().lower()
+    if value in _VALID_LOGO_POSITIONS:
+        return value
+    return "center"
+
+
 def get_lockdown() -> bool:
     """Return True when lockdown mode is enabled via COREAOKE_LOCKDOWN env var."""
     return os.environ.get("COREAOKE_LOCKDOWN", "").lower() == "true"

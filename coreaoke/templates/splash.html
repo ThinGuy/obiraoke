@@ -178,9 +178,9 @@
   </div>
 </div>
 
-<div id="logo-container">
+<div id="logo-container" data-logo-position="{{ logo_position }}">
   <div>
-    <img class="logo" src="{{ app_icon_url }}" width="500px" alt="logo" />
+    <img class="logo" src="{{ app_icon_url }}" width="500px" alt="logo" data-position="{{ logo_position }}" />
   </div>
 </div>
 
@@ -414,12 +414,16 @@
   #logo-container {
     position: absolute;
     z-index: 1;
-    display: flex;
     width: 100vw;
     height: 100vh;
-    align-items: center;
-    justify-content: center;
   }
+  #logo-container[data-logo-position="center"] { display:flex; align-items:center; justify-content:center; }
+  #logo-container[data-logo-position="top-left"] { display:flex; align-items:flex-start; justify-content:flex-start; padding:5%; }
+  #logo-container[data-logo-position="top-right"] { display:flex; align-items:flex-start; justify-content:flex-end; padding:5%; }
+  #logo-container[data-logo-position="bottom-left"] { display:flex; align-items:flex-end; justify-content:flex-start; padding:5%; }
+  #logo-container[data-logo-position="bottom-right"] { display:flex; align-items:flex-end; justify-content:flex-end; padding:5%; }
+  #logo-container[data-logo-position="top-center"] { display:flex; align-items:flex-start; justify-content:center; padding:5%; }
+  #logo-container[data-logo-position="bottom-center"] { display:flex; align-items:flex-end; justify-content:center; padding:5%; }
   #menu-background {
     bottom: 0;
     left: 0;

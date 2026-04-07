@@ -149,6 +149,18 @@ if [ -n "$lockdown" ]; then
     esac
 fi
 
+# Validate logo-position (must be one of seven allowed values)
+logo_position="$(snapctl get logo-position)" || true
+if [ -n "$logo_position" ]; then
+    case "$logo_position" in
+        top-left|top-right|bottom-left|bottom-right|center|top-center|bottom-center) ;;
+        *)
+            echo "error: logo-position must be one of: top-left, top-right, bottom-left, bottom-right, center, top-center, bottom-center; got '$logo_position'" >&2
+            exit 1
+            ;;
+    esac
+fi
+
 # The following keys are accepted without validation:
 # admin-password       -- any string
 # download-path        -- any path string

@@ -1629,3 +1629,28 @@ timeout=5 and are wrapped in try/except.
 - `coreaoke/templates/base.html`
 - `coreaoke/templates/info.html`
 - `coreaoke/routes/info.py`
+
+## Tweaks as direct nav item and logo position control
+
+Replaced the TWEAKS section header label in the sidebar with a direct nav item
+styled identically to Now Playing, Queue, Search, and Browse. Uses icon-menu
+(fontello) and links to /info. Always visible regardless of lockdown mode.
+
+Added a new snap configuration key `logo-position` with seven allowed values:
+top-left, top-right, bottom-left, bottom-right, center, top-center,
+bottom-center. Default is center (preserves current behavior). The value is
+validated in the snap configure hook, set in the install hook, exported as
+COREAOKE_LOGO_POSITION in the wrapper, read via `get_logo_position()` in
+branding.py, injected into all templates via the context processor, and applied
+as inline positioning styles on the player-logo element in base.html and as
+CSS-driven positioning on the logo-container in splash.html. A Logo position
+dropdown was added to the Splash screen settings accordion on the Settings page.
+
+- `coreaoke/templates/base.html`
+- `coreaoke/templates/splash.html`
+- `coreaoke/templates/info.html`
+- `coreaoke/app.py`
+- `coreaoke/lib/branding.py`
+- `snap/hooks/configure`
+- `snap/hooks/install`
+- `snap/local/wrapper`

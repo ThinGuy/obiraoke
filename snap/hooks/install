@@ -75,3 +75,4 @@ snapctl set preseed-url=""
 snapctl set app-name="Ubuntu Coreaoke"
 snapctl set app-icon=""
 snapctl set lockdown=false
+snapctl set logo-position=center

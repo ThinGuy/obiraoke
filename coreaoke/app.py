@@ -30,7 +30,7 @@ from coreaoke.lib.get_platform import (
 )
 from coreaoke.lib.song_manager import SongManager
 from coreaoke.lib.youtube_dl import upgrade_youtubedl
-from coreaoke.lib.branding import get_branding, get_lockdown
+from coreaoke.lib.branding import get_branding, get_lockdown, get_logo_position
 from coreaoke.routes.admin import admin_bp
 from coreaoke.routes.background_music import background_music_bp
 from coreaoke.routes.batch_song_renamer import batch_song_renamer_bp
@@ -172,6 +172,7 @@ def inject_branding_vars() -> dict:
     """Make white-label branding variables available in every template."""
     branding = get_branding()
     branding["lockdown"] = get_lockdown()
+    branding["logo_position"] = get_logo_position()
     return branding
 
 

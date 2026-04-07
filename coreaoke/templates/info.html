@@ -242,6 +242,18 @@
       <input id="pref-splash-delay" class="user-preference-input" type="number" min="0" max="99" data-pref="splash_delay" data-start-value="{{ splash_delay }}" value="{{ splash_delay }}" />
       <label for="pref-splash-delay">{% trans %}The delay in seconds before starting the next song{% endtrans %}</label>
     </div>
+    <div class="settings-pref">
+      <select id="pref-logo-position" class="user-preference-input" data-pref="logo_position" data-start-value="{{ logo_position }}">
+        <option value="top-left"{% if logo_position == 'top-left' %} selected{% endif %}>Top Left</option>
+        <option value="top-center"{% if logo_position == 'top-center' %} selected{% endif %}>Top Center</option>
+        <option value="top-right"{% if logo_position == 'top-right' %} selected{% endif %}>Top Right</option>
+        <option value="center"{% if logo_position == 'center' %} selected{% endif %}>Center</option>
+        <option value="bottom-left"{% if logo_position == 'bottom-left' %} selected{% endif %}>Bottom Left</option>
+        <option value="bottom-center"{% if logo_position == 'bottom-center' %} selected{% endif %}>Bottom Center</option>
+        <option value="bottom-right"{% if logo_position == 'bottom-right' %} selected{% endif %}>Bottom Right</option>
+      </select>
+      <label for="pref-logo-position">{% trans %}Logo position on the splash screen{% endtrans %}</label>
+    </div>
   </div>
 
   <div class="settings-collapsible-header" data-settings-toggle>

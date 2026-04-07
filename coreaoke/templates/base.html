@@ -579,12 +579,9 @@
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
-      <div class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem">
-        TWEAKS
-      </div>
-      <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
-        <i class="icon icon-cog"></i>
-        <span class="sidebar-label">Settings</span>
+      <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Tweaks">
+        <i class="icon icon-menu"></i>
+        <span class="sidebar-label">Tweaks</span>
       </a>
       {% if not lockdown %}
       <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
@@ -664,7 +661,7 @@
     </video>
 
     <!-- Logo / mascot -->
-    <img id="player-logo" class="player-logo" src="{{ url_for('images.logo') }}" alt="Coreaoke" />
+    <img id="player-logo" class="player-logo" src="{{ url_for('images.logo') }}" alt="Coreaoke" data-position="{{ logo_position }}" style="{% if logo_position == 'top-left' %}top:5%;left:5%;transform:none{% elif logo_position == 'top-right' %}top:5%;right:5%;left:auto;transform:none{% elif logo_position == 'bottom-left' %}bottom:5%;left:5%;top:auto;transform:none{% elif logo_position == 'bottom-right' %}bottom:5%;right:5%;left:auto;top:auto;transform:none{% elif logo_position == 'top-center' %}top:5%;left:50%;transform:translateX(-50%){% elif logo_position == 'bottom-center' %}bottom:5%;left:50%;top:auto;transform:translateX(-50%){% else %}top:50%;left:50%;transform:translate(-50%,-50%){% endif %}" />
 
     <!-- Now playing overlay -->
     <div id="player-now-playing" class="player-now-playing" style="display: none"></div>
