@@ -1614,3 +1614,18 @@ enable it, and how to disable it. Also added `lockdown=false` to the All
 Settings Reference table.
 
 - `coreaoke/templates/docs.html`
+
+## Tweaks menu and enhanced system info
+
+Added a TWEAKS section to the sidebar nav above Goodies. The Settings link
+(/info) was moved from Goodies into Tweaks so it is always visible regardless
+of lockdown mode. The /info route no longer checks lockdown.
+
+Extended the System Data section on the Settings page with snapd package and
+snap versions, and Ubuntu-specific fields (OS, version, Ubuntu Pro client,
+Pro status, available updates). All subprocess calls use list form with
+timeout=5 and are wrapped in try/except.
+
+- `coreaoke/templates/base.html`
+- `coreaoke/templates/info.html`
+- `coreaoke/routes/info.py`

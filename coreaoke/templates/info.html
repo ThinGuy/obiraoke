@@ -329,6 +329,38 @@
     <li><u>{% trans %}FFmpeg version:{% endtrans %}</u> {{ ffmpeg_version }} {% if not is_transpose_enabled %} (missing lib-rubberband, pitch shift is not supported) {% endif %}</li>
     <li><u>{% trans %}Coreaoke version:{% endtrans %}</u> {{ coreaoke_version }}</li>
   </ul>
+
+  <h3>Snapd</h3>
+  <ul style="list-style:disc;padding-left:1.25rem;font-size:0.875rem;color:#374151">
+    {% if system_info.snapd_dpkg %}
+    <li><u>snapd package version:</u> {{ system_info.snapd_dpkg.version }}</li>
+    {% else %}
+    <li><u>snapd package version:</u> not installed</li>
+    {% endif %}
+    {% if system_info.snapd_snap %}
+    <li><u>snapd snap version:</u> {{ system_info.snapd_snap.version }}</li>
+    {% else %}
+    <li><u>snapd snap version:</u> not available</li>
+    {% endif %}
+  </ul>
+
+  {% if system_info.is_ubuntu %}
+  <h3>Ubuntu</h3>
+  <ul style="list-style:disc;padding-left:1.25rem;font-size:0.875rem;color:#374151">
+    {% if system_info.os_release %}
+    <li><u>OS:</u> {{ system_info.os_release.PRETTY_NAME or 'Unknown' }}</li>
+    <li><u>Version:</u> {{ system_info.os_release.VERSION_ID or 'Unknown' }}{% if system_info.os_release.VERSION_CODENAME %} ({{ system_info.os_release.VERSION_CODENAME }}){% endif %}</li>
+    {% endif %}
+    <li><u>Ubuntu Pro client:</u> {{ system_info.pro_client_version or 'not installed' }}</li>
+    <li><u>Pro status:</u> {{ system_info.pro_attached or 'Unknown' }}</li>
+    {% if system_info.available_updates %}
+    <li><u>Available updates:</u> {{ system_info.available_updates }}</li>
+    {% else %}
+    <li><u>Available updates:</u> not available</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
   <h3>{% trans %}System stats{% endtrans %}</h3>
   <ul style="list-style:disc;padding-left:1.25rem;font-size:0.875rem;color:#374151">
     <li>{% trans %}CPU:{% endtrans %} <span id="system-cpu">{% trans %}Loading...{% endtrans %}</span></li>

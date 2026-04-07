@@ -145,7 +145,7 @@
           var items = document.getElementById('goodies-items');
           var chevron = document.getElementById('goodies-chevron');
           if (header && items && chevron) {
-            var goodiesRoutes = ['/credits', '/info', '/docs', '/sbom'];
+            var goodiesRoutes = ['/credits', '/docs', '/sbom'];
             var onGoodiesPage = goodiesRoutes.indexOf(window.location.pathname) !== -1;
 
             function expandGoodies() {
@@ -579,6 +579,13 @@
         <i class="icon icon-folder-open-empty"></i>
         <span class="sidebar-label">Browse</span>
       </a>
+      <div class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem">
+        TWEAKS
+      </div>
+      <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
+        <i class="icon icon-cog"></i>
+        <span class="sidebar-label">Settings</span>
+      </a>
       {% if not lockdown %}
       <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
         <i id="goodies-chevron" class="icon icon-angle-down" style="font-size:12px"></i>
@@ -592,10 +599,6 @@
         <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa {% if request.endpoint == 'docs.docs' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Docs">
           <i class="icon icon-info"></i>
           <span class="sidebar-label">Docs</span>
-        </a>
-        <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Settings">
-          <i class="icon icon-cog"></i>
-          <span class="sidebar-label">Settings</span>
         </a>
         <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
           <i class="icon icon-list-alt"></i>
