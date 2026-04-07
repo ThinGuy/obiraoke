@@ -1746,3 +1746,27 @@ listeners -- these are not routed through the splash registration mechanism.
   `connectSocket()`, added persistent splash iframe
 - `coreaoke/routes/socket_events.py` -- no changes needed (master election
   logic unchanged)
+
+## Song ending on sidebar navigation
+
+The `beforeunload` handler in `coreaoke/static/js/splash.js` called
+`endSong("splash screen closed")` whenever any splash page unloaded,
+regardless of master/slave role. When sidebar navigation caused the player
+panel to reload, the slave splash screen's unload event fired and ended the
+current song on the server.
+
+Two guards were added:
+
+1. **Client-side (splash.js):** The `beforeunload` handler now checks
+   `isMaster` before calling `endSong`. Slave splash screens no longer
+   trigger song termination on unload.
+
+2. **Server-side (socket_events.py):** The `end_song` event handler now
+   verifies `request.sid == master_splash_id` before processing. Non-master
+   clients are silently ignored.
+
+**Files changed:**
+- `coreaoke/static/js/splash.js` -- added `isMaster` guard to `beforeunload`
+  handler
+- `coreaoke/routes/socket_events.py` -- added `master_splash_id` guard to
+  `end_song` handler

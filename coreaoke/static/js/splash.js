@@ -499,7 +499,7 @@ const setupVideoPlayer = () => {
   window.addEventListener(
     'beforeunload',
     function (event) {
-      if (isMediaPlaying(video)) {
+      if (isMaster && isMediaPlaying(video)) {
         endSong("splash screen closed");
       }
     },

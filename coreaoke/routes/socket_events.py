@@ -26,6 +26,8 @@ def setup_socket_events(socketio):
         Args:
             reason: Reason for ending the song (e.g., 'complete', 'error').
         """
+        if request.sid != master_splash_id:
+            return
         k = get_karaoke_instance()
         k.playback_controller.end_song(reason)
 
