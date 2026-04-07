@@ -150,6 +150,12 @@
               items.style.display = open ? 'none' : 'block';
               chevron.className = open ? 'icon icon-angle-down' : 'icon icon-angle-up';
             });
+            // Prevent child item clicks from bubbling to the goodies header toggle
+            items.querySelectorAll('.sidebar-item').forEach(function(item) {
+              item.addEventListener('click', function(e) {
+                e.stopPropagation();
+              });
+            });
           }
         })();
 
@@ -229,7 +235,12 @@
             var logo = document.getElementById('player-logo');
             var bgVideo = document.querySelector('.player-bg-video');
             if (logo) logo.style.display = '';
-            if (bgVideo) bgVideo.style.display = '';
+            if (bgVideo) {
+              bgVideo.style.display = '';
+              bgVideo.style.visibility = 'visible';
+              bgVideo.style.opacity = '1';
+              bgVideo.play();
+            }
             if (video && video.getAttribute('src') !== '') video.style.display = '';
             window.focus();
           }

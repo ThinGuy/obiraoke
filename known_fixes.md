@@ -1498,3 +1498,18 @@ Five changes in one session:
    Implemented via restorePlayerView() which hides the main_content panel,
    shows the splash/video container, and calls window.focus().
    - `coreaoke/templates/base.html`
+
+5. **Black screen after restorePlayerView()** -- The background video element
+   stopped when the player panel was hidden behind a full-page view. After
+   restoring the splash/video container, the background video was not restarted.
+   Fixed by calling .play() on the background video element and explicitly
+   restoring its visibility and opacity in restorePlayerView().
+   - `coreaoke/templates/base.html`
+
+6. **Goodies menu collapses on child item click** -- Clicking a child nav item
+   (About, Docs, Settings, SBOM) inside the Goodies section caused the toggle
+   to fire because clicks bubbled up to the Goodies header. Fixed by adding
+   e.stopPropagation() to click handlers on all child nav items inside the
+   goodies-items container so their clicks do not bubble to the Goodies header
+   toggle.
+   - `coreaoke/templates/base.html`
