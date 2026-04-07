@@ -1935,3 +1935,17 @@ divider, Goodies (collapsible: About, Docs, SBOM), sidebar content area.
   `.sidebar-content` to `.sidebar-nav`
 - `coreaoke/static/spa-navigation.js` -- updated username text selector to
   match new `.sidebar-label` class
+
+### 5. Sidebar content position fix
+
+The `#sidebar-content` div was rendering after the Goodies collapsible section,
+pushing page-specific content (queue, browse, tweaks) to the bottom of the
+sidebar. Moved `#sidebar-content` to appear between the username nav item and
+the Goodies section. The sidebar order from top to bottom is now: sidebar
+header, nav items (Now Playing, Queue, Search, Browse, Tweaks), username
+(mic icon + name), sidebar content area, divider, Goodies (collapsible:
+About, Docs, SBOM).
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- moved `#sidebar-content` div from after
+  `</nav>` to between username nav item and Goodies collapsible section

@@ -579,6 +579,28 @@
         <i class="icon icon-mic-1"></i>
         <span class="sidebar-label"></span>
       </a>
+      <div id="sidebar-content" class="sidebar-content">
+        {% if get_flashed_messages() %}
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div id="notification" class="notification base-notification {{category}}">
+          <button id="notification-close" class="delete"></button>
+          <div class="flash">{{ message }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Alternate notification for js-fired notifications using showNotification -->
+        <div id="notification-alt" class="notification base-notification" style="display: none">
+          <button id="notification-close" class="delete"></button>
+          <div class="flash"></div>
+        </div>
+
+        <header class="title">
+          {% block header %}{% endblock %}
+        </header>
+        {% block content %}
+        {% endblock %}
+      </div>
       <div style="border-top:1px solid rgba(255,255,255,0.1);margin:0.25rem 1rem"></div>
       {% if not lockdown %}
       <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
@@ -601,28 +623,6 @@
       </div>
       {% endif %}
     </nav>
-    <div id="sidebar-content" class="sidebar-content">
-      {% if get_flashed_messages() %}
-      {% for category, message in get_flashed_messages(with_categories=true) %}
-      <div id="notification" class="notification base-notification {{category}}">
-        <button id="notification-close" class="delete"></button>
-        <div class="flash">{{ message }}</div>
-      </div>
-      {% endfor %}
-      {% endif %}
-
-      <!-- Alternate notification for js-fired notifications using showNotification -->
-      <div id="notification-alt" class="notification base-notification" style="display: none">
-        <button id="notification-close" class="delete"></button>
-        <div class="flash"></div>
-      </div>
-
-      <header class="title">
-        {% block header %}{% endblock %}
-      </header>
-      {% block content %}
-      {% endblock %}
-    </div>
     <div class="sidebar-footer">
       <span class="sidebar-label sidebar-version">coreaoke v{{ version }}</span>
     </div>
