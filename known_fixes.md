@@ -1949,3 +1949,17 @@ About, Docs, SBOM).
 **Files changed:**
 - `coreaoke/templates/base.html` -- moved `#sidebar-content` div from after
   `</nav>` to between username nav item and Goodies collapsible section
+
+## Username nav item position
+
+The username nav item (`#current-user`) was positioned after Tweaks near the
+bottom of the main nav items, making it easy to overlook. Moved it to be the
+first item in the sidebar nav, directly below the sidebar header and above
+Now Playing. The sidebar order from top to bottom is now: sidebar header
+(logo + hamburger), username (mic icon + name, clickable to rename), Now
+Playing, Queue, Search, Browse, Tweaks, sidebar content area, Goodies
+(collapsible: About, Docs, SBOM), version footer.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- moved `#current-user` anchor from after
+  Tweaks to the first item inside `<nav class="sidebar-nav">`

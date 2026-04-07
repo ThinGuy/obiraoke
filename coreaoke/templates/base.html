@@ -555,6 +555,10 @@
       </button>
     </div>
     <nav class="sidebar-nav">
+      <a id="current-user" class="sidebar-item current-user is-hidden" href="#" title="Change username">
+        <i class="icon icon-mic-1"></i>
+        <span class="sidebar-label"></span>
+      </a>
       <a href="{{ url_for('home.home') }}" class="sidebar-item no-spa {% if request.endpoint == 'home.home' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Now Playing">
         <i class="icon icon-home-1"></i>
         <span class="sidebar-label">Now Playing</span>
@@ -574,10 +578,6 @@
       <a href="{{ url_for('info.info') }}" class="sidebar-item no-spa {% if request.endpoint == 'info.info' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Tweaks">
         <i class="icon icon-menu"></i>
         <span class="sidebar-label">Tweaks</span>
-      </a>
-      <a id="current-user" class="sidebar-item current-user is-hidden" href="#" title="Change username">
-        <i class="icon icon-mic-1"></i>
-        <span class="sidebar-label"></span>
       </a>
       <div id="sidebar-content" class="sidebar-content">
         {% if get_flashed_messages() %}
