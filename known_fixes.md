@@ -1873,3 +1873,23 @@ the sort is by the full filename including artist prefix. Changed to
 
 **Files changed:**
 - `coreaoke/templates/files.html` -- changed "By Artist" to "By Filename"
+
+## Fix Tweaks sidebar text invisible and QR code too large
+
+The Tweaks (/info) page was moved back to sidebar display but retained
+light-background styles (dark text on white backgrounds) that were invisible
+against the dark sidebar (#262626). Updated all inline and scoped styles in
+info.html to use dark-background-appropriate colors: body text and labels use
+rgba(255,255,255,0.85), muted/secondary text uses rgba(255,255,255,0.55),
+section uppercase headers use rgba(255,255,255,0.45), input borders use
+rgba(255,255,255,0.2) with rgba(255,255,255,0.08) backgrounds and white text,
+and accordion dividers use rgba(255,255,255,0.1). The connection URL uses
+vf-link-dark (#69c) via a scoped CSS rule. The QR code image was also
+constrained to max-width: 100px with auto height to prevent it from
+dominating the sidebar.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- replaced all light-background color values
+  with dark-background equivalents, constrained QR code to 100px max-width
+- `coreaoke/static/coreaoke.css` -- added `.sidebar-content .connection-url`
+  rule with color #69c

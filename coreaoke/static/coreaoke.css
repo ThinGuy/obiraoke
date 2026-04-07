@@ -489,6 +489,10 @@ a:hover {
   width: 100%;
 }
 
+.sidebar-content .connection-url {
+  color: #69c;
+}
+
 /* Search results compact in sidebar */
 .sidebar-content ul.search_result_items li {
   flex-direction: column;
