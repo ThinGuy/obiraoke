@@ -1770,3 +1770,44 @@ Two guards were added:
   handler
 - `coreaoke/routes/socket_events.py` -- added `master_splash_id` guard to
   `end_song` handler
+
+## Background video restarts on sidebar navigation
+
+`restorePlayerView()` in `base.html` called `bgVideo.play()` without
+preserving `currentTime`. The video restarted from 0 every time a karaoke
+nav item was clicked. Fixed by saving `currentTime` before showing the
+splash wrapper and restoring it in the `requestAnimationFrame` callback.
+
+The `.player-panel` CSS class also had `transition: left 0.25s ease` which
+caused a visible zoom/slide effect when the sidebar expanded or collapsed.
+Removed the transition so the panel snaps instantly.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- save and restore `bgVideo.currentTime`
+  in `restorePlayerView()`
+- `coreaoke/static/coreaoke.css` -- removed `transition` from `.player-panel`
+
+## Browse song list pinned to bottom of sidebar
+
+The `#sidebar-content` flex child lacked `min-height: 0`, which prevented
+`overflow-y: auto` from constraining the content height. The song list
+rendered at full height and appeared at the bottom instead of scrolling
+within the available space. Adding `min-height: 0` to `.sidebar-content`
+allows the flex layout to properly clip and scroll the browse content.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- added `min-height: 0` to
+  `.sidebar-content`
+
+## Browse alpha-bar toggle icon
+
+The first icon in the alpha-bar (`icon-list-bullet`) linked to the browse
+page but duplicated the "All" letter filter. Replaced it with a toggle
+button (`icon-th-list`) that collapses and expands the A-Z letter list.
+When collapsed the icon changes to `icon-menu`; when expanded it reverts to
+`icon-th-list`. This gives more vertical room for song results in the
+sidebar.
+
+**Files changed:**
+- `coreaoke/templates/files.html` -- restructured alpha-bar with toggle
+  button and `#alpha-bar-letters` wrapper; added toggle click handler

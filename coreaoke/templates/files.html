@@ -13,6 +13,19 @@
 			});
 		}
 
+		$('#alpha-bar-toggle').click(function(e) {
+			e.preventDefault();
+			var letters = document.getElementById('alpha-bar-letters');
+			var icon = this.querySelector('i');
+			if (letters.style.display === 'none') {
+				letters.style.display = '';
+				icon.className = 'icon icon-th-list';
+			} else {
+				letters.style.display = 'none';
+				icon.className = 'icon icon-menu';
+			}
+		});
+
 		$("a.add-song-link").click(function (e) {
 			e.preventDefault();
 			setUserCookie();
@@ -132,12 +145,15 @@
 </div>
 
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
-	<a href="{{ url_for('files.browse') }}" title="Show all"{% if not letter %} class="alpha-active"{% endif %}><i class="icon icon-list-bullet"></i></a>
-	<a href="{{ url_for('files.browse') }}?letter=numeric"{% if letter == 'numeric' %} class="alpha-active"{% endif %}>#</a>
-	{% for l in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-	'u', 'v', 'w', 'x', 'y', 'z'] %}
-	<a href="{{ url_for('files.browse') }}?letter={{l}}"{% if letter == l %} class="alpha-active"{% endif %}>{{l.upper()}}</a>
-	{% endfor %}
+	<a href="#" id="alpha-bar-toggle" title="Toggle letter bar"><i class="icon icon-th-list"></i></a>
+	<div id="alpha-bar-letters">
+		<a href="{{ url_for('files.browse') }}"{% if not letter %} class="alpha-active"{% endif %}>All</a>
+		<a href="{{ url_for('files.browse') }}?letter=numeric"{% if letter == 'numeric' %} class="alpha-active"{% endif %}>#</a>
+		{% for l in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+		'u', 'v', 'w', 'x', 'y', 'z'] %}
+		<a href="{{ url_for('files.browse') }}?letter={{l}}"{% if letter == l %} class="alpha-active"{% endif %}>{{l.upper()}}</a>
+		{% endfor %}
+	</div>
 </div>
 
 {{ pagination.links }} {{ pagination.info }}

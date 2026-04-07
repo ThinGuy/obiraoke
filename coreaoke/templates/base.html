@@ -254,7 +254,9 @@
             if (splashWrapper) splashWrapper.style.display = 'block';
             var bgVideo = document.querySelector('.player-bg-video');
             if (bgVideo) {
+              var savedTime = bgVideo.currentTime;
               requestAnimationFrame(function() {
+                bgVideo.currentTime = savedTime;
                 bgVideo.play();
               });
             }

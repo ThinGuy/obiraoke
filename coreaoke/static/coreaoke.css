@@ -260,6 +260,7 @@ a:hover {
 .sidebar-content {
   display: none;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 1rem;
@@ -298,7 +299,6 @@ a:hover {
   right: 0;
   bottom: 0;
   background: #000000;
-  transition: left 0.25s ease;
   overflow: hidden;
   z-index: 1;
 }
