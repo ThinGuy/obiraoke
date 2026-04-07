@@ -250,6 +250,21 @@ sudo snap set coreaoke download-path=/media/usb-drive/karaoke-songs</code>
   <code class="docs-cmd">sudo snap set coreaoke proxy=http://proxy.example.com:3128</code>
 </div>
 
+<!-- LOCKDOWN MODE -->
+<div class="docs-section">
+  <h2>Lockdown Mode</h2>
+
+  <h3>What lockdown mode does</h3>
+  <p>Lockdown mode hides the Goodies menu (About, Docs, Settings, SBOM) from the sidebar and blocks direct URL access to those pages. Use it in venue deployments where singers should only see the karaoke interface.</p>
+
+  <h3>How to enable lockdown</h3>
+  <code class="docs-cmd">sudo snap set coreaoke lockdown=true && sudo snap restart coreaoke</code>
+  <p>The snap restart is required. Lockdown is read at startup and will not take effect until the service restarts.</p>
+
+  <h3>How to disable lockdown</h3>
+  <code class="docs-cmd">sudo snap set coreaoke lockdown=false && sudo snap restart coreaoke</code>
+</div>
+
 <!-- SOFTWARE BILL OF MATERIALS -->
 <div class="docs-section">
   <h2>Software Bill of Materials</h2>
@@ -447,6 +462,12 @@ sudo snap set coreaoke download-path=/media/usb-drive/karaoke-songs</code>
         <td>Override the signage directory location</td>
         <td>(snap data dir)</td>
         <td>signage-root=/path/to/signage</td>
+      </tr>
+      <tr>
+        <td>lockdown</td>
+        <td>Hide Goodies menu and block admin pages (true/false)</td>
+        <td>false</td>
+        <td>lockdown=true</td>
       </tr>
     </tbody>
   </table>

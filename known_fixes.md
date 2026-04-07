@@ -1604,3 +1604,13 @@ headings and table styling were already correct from the prior Vanilla Framework
 alignment pass.
 
 - `coreaoke/templates/sbom.html`
+
+## Lockdown Mode documentation added to Operator Guide
+
+Added a new "Lockdown Mode" section to the docs page between "Network & Access"
+and "Software Bill of Materials". The section documents what lockdown mode does
+(hides the Goodies menu and blocks direct URL access to admin pages), how to
+enable it, and how to disable it. Also added `lockdown=false` to the All
+Settings Reference table.
+
+- `coreaoke/templates/docs.html`
