@@ -252,23 +252,16 @@
         // Sidebar AJAX content loading
         (function() {
           function restorePlayerView() {
-            var mainContent = document.querySelector('#player-panel > div[style*="z-index: 5"]');
-            if (mainContent) {
-              mainContent.style.visibility = 'hidden';
-              mainContent.style.opacity = '0';
-            }
-            var video = document.getElementById('player-video');
-            var logo = document.getElementById('player-logo');
+            var mainContent = document.getElementById('player-main-content');
+            var splashWrapper = document.getElementById('player-splash-wrapper');
+            if (mainContent) mainContent.style.display = 'none';
+            if (splashWrapper) splashWrapper.style.display = 'block';
             var bgVideo = document.querySelector('.player-bg-video');
-            if (logo) logo.style.display = '';
             if (bgVideo) {
-              bgVideo.style.visibility = 'visible';
-              bgVideo.style.opacity = '1';
               requestAnimationFrame(function() {
                 bgVideo.play();
               });
             }
-            if (video && video.getAttribute('src') !== '') video.style.display = '';
             window.focus();
           }
 
@@ -644,12 +637,12 @@
   <!-- RIGHT PANEL: Player (always visible) -->
   <div id="player-panel" class="player-panel">
     {% set _main_content %}{% block main_content %}{% endblock %}{% endset %}
-    {% if _main_content.strip() %}
-    <!-- Full-width page content (replaces splash/video) -->
-    <div style="background: #f7f7f7; padding: 1.5rem; overflow-y: auto; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5;">
+    <!-- Full-width page content (Goodies pages) -->
+    <div id="player-main-content" style="background: #f7f7f7; padding: 1.5rem; overflow-y: auto; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5; display: {% if _main_content.strip() %}block{% else %}none{% endif %};">
       {{ _main_content }}
     </div>
-    {% else %}
+    <!-- Splash / video wrapper (karaoke view) -->
+    <div id="player-splash-wrapper" style="display: {% if _main_content.strip() %}none{% else %}block{% endif %};">
     <!-- Background video -->
     {% if player_has_bg_video %}
     <video class="player-bg-video" autoplay muted loop playsinline webkit-playsinline
@@ -684,7 +677,7 @@
     <div id="credits-overlay" style="display: none; position: absolute; z-index: 10; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center;">
       <p style="color: #ffffff; font-size: 1.5rem; font-weight: 300; text-align: center; text-shadow: 2px 1px black;">Ubuntu Coreaoke &mdash; Built with <span style="color:#e95420">&#9829;</span> using Ubuntu and Snapcraft</p>
     </div>
-    {% endif %}
+    </div>
   </div>
   {% endif %}
 

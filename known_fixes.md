@@ -1524,14 +1524,14 @@ Five changes in one session:
    Clicking the GOODIES header to toggle saves the new state to localStorage.
    - `coreaoke/templates/base.html`
 
-8. **Black screen when restorePlayerView() is called** -- Browsers block
-   `.play()` on elements that have not been rendered as visible. The original
-   `restorePlayerView()` used `display:none` / `display:block` toggling and
-   called `.play()` immediately after showing the element, but the browser had
-   not yet painted it as visible, so `.play()` failed silently and the
-   background video never started. Fixed by replacing `display` toggling with
-   `visibility:hidden; opacity:0` (hide) and `visibility:visible; opacity:1`
-   (show) so the element stays in the DOM and rendered at all times, then
-   deferring `.play()` inside `requestAnimationFrame()` to ensure the browser
-   has painted the element before playback begins.
+8. **Black screen when restorePlayerView() is called** -- The player panel
+   used a Jinja2 `{% if _main_content.strip() %}` conditional that rendered
+   EITHER the main_content div OR the splash/video elements, never both. When
+   a Goodies page was active, the video element was never in the DOM, so
+   `restorePlayerView()` could not find or play it. Fixed by always rendering
+   both the `#player-main-content` div and a `#player-splash-wrapper` div
+   inside `#player-panel`. Jinja2 sets the initial `display` style (block/none)
+   based on whether `_main_content` is present. `restorePlayerView()` toggles
+   display between the two wrapper divs and calls `bgVideo.play()` inside
+   `requestAnimationFrame()` to ensure the browser has painted before playback.
    - `coreaoke/templates/base.html`
