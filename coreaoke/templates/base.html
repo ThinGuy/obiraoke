@@ -254,17 +254,19 @@
           function restorePlayerView() {
             var mainContent = document.querySelector('#player-panel > div[style*="z-index: 5"]');
             if (mainContent) {
-              mainContent.style.display = 'none';
+              mainContent.style.visibility = 'hidden';
+              mainContent.style.opacity = '0';
             }
             var video = document.getElementById('player-video');
             var logo = document.getElementById('player-logo');
             var bgVideo = document.querySelector('.player-bg-video');
             if (logo) logo.style.display = '';
             if (bgVideo) {
-              bgVideo.style.display = '';
               bgVideo.style.visibility = 'visible';
               bgVideo.style.opacity = '1';
-              bgVideo.play();
+              requestAnimationFrame(function() {
+                bgVideo.play();
+              });
             }
             if (video && video.getAttribute('src') !== '') video.style.display = '';
             window.focus();

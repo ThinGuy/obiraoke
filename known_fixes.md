@@ -1523,3 +1523,15 @@ Five changes in one session:
    forced open and the state is saved. Otherwise the saved state is restored.
    Clicking the GOODIES header to toggle saves the new state to localStorage.
    - `coreaoke/templates/base.html`
+
+8. **Black screen when restorePlayerView() is called** -- Browsers block
+   `.play()` on elements that have not been rendered as visible. The original
+   `restorePlayerView()` used `display:none` / `display:block` toggling and
+   called `.play()` immediately after showing the element, but the browser had
+   not yet painted it as visible, so `.play()` failed silently and the
+   background video never started. Fixed by replacing `display` toggling with
+   `visibility:hidden; opacity:0` (hide) and `visibility:visible; opacity:1`
+   (show) so the element stays in the DOM and rendered at all times, then
+   deferring `.play()` inside `requestAnimationFrame()` to ensure the browser
+   has painted the element before playback begins.
+   - `coreaoke/templates/base.html`
