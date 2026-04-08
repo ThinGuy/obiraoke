@@ -173,6 +173,7 @@ def inject_branding_vars() -> dict:
     branding = get_branding()
     branding["lockdown"] = get_lockdown()
     branding["logo_position"] = get_logo_position()
+    branding["version"] = VERSION
     return branding
 
 
