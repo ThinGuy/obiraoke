@@ -314,6 +314,8 @@
                     }, 200);
                   }
                 }
+                var sidebarEl = document.getElementById('sidebar-content');
+                if (sidebarEl) sidebarEl.style.display = 'block';
                 history.pushState({}, '', url);
                 document.querySelectorAll('.sidebar-item').forEach(function(el) {
                   el.classList.remove('sidebar-active');
@@ -328,6 +330,19 @@
               e.preventDefault();
               e.stopPropagation();
               var href = el.getAttribute('href');
+              // Toggle collapse if clicking the already-active nav item
+              // (Search does full-page nav, so skip toggle for it)
+              if (el.classList.contains('sidebar-active')) {
+                var sc = document.getElementById('sidebar-content');
+                if (sc) {
+                  var isHidden = sc.style.display === 'none';
+                  sc.style.display = isHidden ? 'block' : 'none';
+                  if (!isHidden) {
+                    el.classList.remove('sidebar-active');
+                  }
+                }
+                return;
+              }
               if (karaokeNavPaths.indexOf(href) !== -1) {
                 restorePlayerView();
               }

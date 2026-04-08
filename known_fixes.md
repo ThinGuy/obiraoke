@@ -1963,3 +1963,24 @@ Playing, Queue, Search, Browse, Tweaks, sidebar content area, Goodies
 **Files changed:**
 - `coreaoke/templates/base.html` -- moved `#current-user` anchor from after
   Tweaks to the first item inside `<nav class="sidebar-nav">`
+
+## Sidebar nav toggle collapse
+
+Clicking an already-active sidebar nav item (Now Playing, Queue, Browse,
+Tweaks) now collapses `#sidebar-content` and removes the active state,
+effectively toggling it closed. Clicking a different nav item loads its
+content as normal and re-shows the sidebar content area. Search still does
+full-page navigation and is unaffected.
+
+The collapsed state leaves the sidebar nav items visible with
+`#sidebar-content` hidden via `display:none`.
+
+**Root cause:** The click handler always called `loadSidebarContent()`
+regardless of whether the item was already active, so there was no way
+to dismiss the sidebar content panel without switching to a different
+section.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- added active-item toggle check in
+  `[data-sidebar-link]` click handler; ensured `loadSidebarContent()`
+  re-shows `#sidebar-content` when loading new content
