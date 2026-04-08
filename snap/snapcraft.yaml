@@ -1,6 +1,6 @@
 name: coreaoke
 base: core24
-version: '1.19.0'
+version: '1.0.0'
 summary: OB-01's Karaoke Party
 description: |
   YouTube-based karaoke system for Ubuntu. Web interface for song search,
