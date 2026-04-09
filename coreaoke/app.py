@@ -146,7 +146,7 @@ def get_locale() -> str | None:
 
 babel.init_app(app, locale_selector=get_locale)
 socketio.init_app(app)
-setup_socket_events(socketio)
+setup_socket_events(socketio, app)
 
 
 @app.context_processor

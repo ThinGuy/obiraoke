@@ -2097,3 +2097,27 @@ alignment. Removed redundant `margin-right` from inputs.
 **Files changed:**
 - `coreaoke/templates/info.html` -- updated `.settings-pref` alignment,
   checkbox margin, and input margin rules
+
+## Circular import in socket_events.py
+
+`coreaoke/routes/socket_events.py` imported `app` from `coreaoke.app` at
+module level (`from coreaoke.app import app as flask_app`). Because
+`coreaoke/app.py` also imports from `socket_events`, this created a
+circular import that could surface as an `ImportError` or
+`AttributeError` depending on import order.
+
+**Root cause:** `_end_song_after_timeout()` runs in a background
+`threading.Timer` and needs a Flask application context. The module
+obtained the app object via a direct import from `coreaoke.app`, which
+introduced a circular dependency.
+
+**Fix:** Removed the circular import. `setup_socket_events()` now
+accepts the Flask `app` as a second parameter and stores it in a
+module-level `_app` variable. `_end_song_after_timeout()` uses `_app`
+instead of the previously imported `flask_app`. The call site in
+`coreaoke/app.py` was updated to pass `app` explicitly.
+
+**Files changed:**
+- `coreaoke/routes/socket_events.py` -- removed circular import, added
+  `app` parameter to `setup_socket_events()`, stored as `_app`
+- `coreaoke/app.py` -- passed `app` to `setup_socket_events(socketio, app)`
