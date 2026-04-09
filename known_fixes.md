@@ -2143,3 +2143,42 @@ used the class-level `width: 80px` which was wider than needed.
 
 **Files changed:**
 - `coreaoke/templates/info.html` -- inline styles on all 9 Advanced settings rows
+
+## Checkbox label color invisible in Tweaks sidebar
+
+**Root cause:** Labels inside `.sidebar-content` had no explicit text color,
+inheriting a dark color that was invisible against the dark sidebar background.
+
+**Fix:** Added CSS rule setting `.sidebar-content label` and
+`.sidebar-content .settings-pref label` to `color: rgba(255, 255, 255, 0.85)`
+with `font-size: 0.8rem` and `line-height: 1.4`.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- added label color rule
+
+## SBOM shows wrong version for coreaoke package
+
+**Root cause:** `_get_python_packages()` used `importlib.metadata` to read the
+installed package version, which reflects the build-time metadata rather than
+the runtime `VERSION` constant in `coreaoke/__init__.py`.
+
+**Fix:** When the package name is `coreaoke`, replace the metadata version with
+`VERSION` imported from `coreaoke`.
+
+**Files changed:**
+- `coreaoke/routes/sbom.py` -- import VERSION and override for coreaoke package
+
+## Search background video restarts on navigation
+
+**Root cause:** The `sessionStorage` save/restore for `bgVideo.currentTime` was
+in `splash.js`, which only runs on the splash page. Search causes a full page
+reload of the entire app including `base.html`, so the save never fired and the
+restore ran before the video element existed.
+
+**Fix:** Moved the `beforeunload` save and `DOMContentLoaded` restore into
+`base.html` where they execute on every page. Removed the duplicate logic from
+`splash.js` to prevent conflicts.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- added beforeunload save and DOMContentLoaded restore
+- `coreaoke/static/js/splash.js` -- removed sessionStorage save/restore

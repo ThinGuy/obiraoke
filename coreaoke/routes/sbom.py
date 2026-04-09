@@ -5,6 +5,7 @@ import importlib.metadata
 from flask import abort, jsonify, render_template, request
 from flask_smorest import Blueprint
 
+from coreaoke import VERSION
 from coreaoke.lib.branding import get_lockdown
 from coreaoke.lib.current_app import get_site_name
 
@@ -26,6 +27,8 @@ def _get_python_packages() -> list[dict[str, str]]:
     for dist in importlib.metadata.distributions():
         name = dist.metadata["Name"]
         version = dist.metadata["Version"]
+        if name.lower() == "coreaoke":
+            version = VERSION
         license_id = dist.metadata.get("License-Expression") or dist.metadata.get("License") or ""
         packages.append({"name": name, "version": version, "license": license_id})
     packages.sort(key=lambda p: p["name"].lower())

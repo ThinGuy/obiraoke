@@ -529,6 +529,28 @@
 
       });
     })(jQuery);
+
+    // Save background video position before page unload (e.g. Search navigation)
+    window.addEventListener('beforeunload', function() {
+      var bgVideo = document.querySelector('.player-bg-video');
+      if (bgVideo && !bgVideo.paused) {
+        sessionStorage.setItem('bgVideoTime', bgVideo.currentTime);
+      }
+    });
+
+    // Restore background video position after page reload
+    document.addEventListener('DOMContentLoaded', function() {
+      var savedTime = sessionStorage.getItem('bgVideoTime');
+      if (savedTime) {
+        sessionStorage.removeItem('bgVideoTime');
+        var bgVideo = document.querySelector('.player-bg-video');
+        if (bgVideo) {
+          bgVideo.addEventListener('loadedmetadata', function() {
+            bgVideo.currentTime = parseFloat(savedTime);
+          }, { once: true });
+        }
+      }
+    });
   </script>
   {% block scripts %}
   {% endblock %}
