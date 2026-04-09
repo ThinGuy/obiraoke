@@ -2182,3 +2182,20 @@ restore ran before the video element existed.
 **Files changed:**
 - `coreaoke/templates/base.html` -- added beforeunload save and DOMContentLoaded restore
 - `coreaoke/static/js/splash.js` -- removed sessionStorage save/restore
+
+## Invisible checkbox labels in Tweaks sidebar
+
+**Root cause:** The CSS rule in `coreaoke.css` for `.sidebar-content label`
+lacked `!important`, so it was overridden by more specific or later-loading
+styles, leaving label text invisible against the dark sidebar background.
+
+**Fix:** Two-pronged approach:
+1. Added `!important` to the `color` property in the `.sidebar-content label`
+   CSS rule to ensure it wins specificity battles.
+2. Added inline `style="color: rgba(255,255,255,0.85); font-size:0.8rem;
+   line-height:1.4;"` to every `<label>` element in `info.html` as a
+   belt-and-suspenders fallback.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- added !important to sidebar label color rule
+- `coreaoke/templates/info.html` -- added inline style to all label elements
