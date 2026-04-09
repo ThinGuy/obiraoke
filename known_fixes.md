@@ -2121,3 +2121,25 @@ instead of the previously imported `flask_app`. The call site in
 - `coreaoke/routes/socket_events.py` -- removed circular import, added
   `app` parameter to `setup_socket_events()`, stored as `_app`
 - `coreaoke/app.py` -- passed `app` to `setup_socket_events(socketio, app)`
+
+## Advanced settings checkbox and number input alignment
+
+Checkbox and number input rows in the Advanced settings accordion of
+`coreaoke/templates/info.html` were misaligned: checkboxes sat on the far left
+with labels indented too far right, and long labels wrapped awkwardly.
+
+**Root cause:** The `.settings-pref` class provided flex layout but lacked
+explicit `flex-shrink:0` on inputs to prevent compression, and checkboxes had
+no top-margin to align with the first line of multi-line labels. Number inputs
+used the class-level `width: 80px` which was wider than needed.
+
+**Fix:** Added inline styles to every row in the Advanced settings section:
+
+- Checkbox rows: wrapper gets `display:flex; align-items:flex-start; gap:0.5rem;
+  margin-bottom:0.75rem;`, checkbox gets `margin-top:3px; flex-shrink:0;`.
+- Number input rows: wrapper gets `display:flex; align-items:center; gap:0.5rem;
+  margin-bottom:0.75rem;`, input gets `width:60px; flex-shrink:0;`.
+- Labels have no fixed width or margin-left.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- inline styles on all 9 Advanced settings rows
