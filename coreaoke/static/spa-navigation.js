@@ -82,6 +82,7 @@
         // Bind with event delegation
         $(document).on('click', '#current-user', function(e) {
             e.preventDefault();
+            if (typeof Cookies === 'undefined') return;
             // Get the current name from the cookie dynamically
             let currentName = Cookies.get("user");
             var promptMsg = (window.i18n && window.i18n.promptChangeUsername)

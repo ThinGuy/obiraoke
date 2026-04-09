@@ -103,6 +103,7 @@
     }
 
     function setUserCookie(reload=false) {
+      if (typeof Cookies === 'undefined') return;
       var user = Cookies.get("user");
       if (!user) {
         let name = window.prompt(
@@ -120,6 +121,7 @@
     }
 
     function getUserCookie() {
+      if (typeof Cookies === 'undefined') return undefined;
       return Cookies.get("user");
     }
 
@@ -517,12 +519,13 @@
         try { setTimeout(function() { $("#notification").fadeOut()}, 3000); } catch(e) {}
 
         // handle current user display
-        var currentUser = Cookies.get("user") || "Singer";
-
-        try {
-          $("#current-user .sidebar-label").text(currentUser);
-          $("#current-user").removeClass("is-hidden");
-        } catch(e) {}
+        if (typeof Cookies !== 'undefined') {
+          var currentUser = Cookies.get("user") || "Singer";
+          try {
+            $("#current-user .sidebar-label").text(currentUser);
+            $("#current-user").removeClass("is-hidden");
+          } catch(e) {}
+        }
 
       });
     })(jQuery);
@@ -618,7 +621,7 @@
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.1);margin:0.25rem 1rem"></div>
       {% if not lockdown %}
-      <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
+      <div id="goodies-header" class="sidebar-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);padding:1rem 1rem 0.25rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem;user-select:none">
         <i id="goodies-chevron" class="icon icon-angle-down" style="font-size:12px"></i>
         GOODIES
       </div>

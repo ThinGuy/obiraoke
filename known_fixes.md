@@ -1984,3 +1984,116 @@ section.
 - `coreaoke/templates/base.html` -- added active-item toggle check in
   `[data-sidebar-link]` click handler; ensured `loadSidebarContent()`
   re-shows `#sidebar-content` when loading new content
+
+## Grace period threading error (Smoke test)
+
+The `_end_song_after_timeout()` callback in `socket_events.py` runs inside a
+`threading.Timer`, which executes outside the Flask application context.
+`get_karaoke_instance()` requires the app context to resolve `current_app`,
+so the callback crashed with a `RuntimeError`.
+
+**Root cause:** `threading.Timer` callbacks run in a new thread with no Flask
+context. Any code that touches `current_app` or the request context must
+explicitly push an app context.
+
+**Fix:** Imported `flask_app` from `coreaoke.app` and wrapped the callback
+body in `with flask_app.app_context():`.
+
+**Files changed:**
+- `coreaoke/routes/socket_events.py` -- added `flask_app` import and
+  `app_context()` wrapper in `_end_song_after_timeout()`
+
+## Song ends on splash URL visit (Smoke test)
+
+Visiting the splash screen URL briefly caused `endSong` to fire during
+`beforeunload` before the socket had confirmed the client's role. The
+`isMaster` variable was set to `true` or `false` on every `splash_role`
+event, and the `beforeunload` handler had no guard against firing during
+the initial page load race window.
+
+**Root cause:** Two issues: (1) `isMaster` was set on both `master` and
+`slave` role events, meaning a freshly loaded page could transiently be
+`true` before the role was confirmed; (2) the `beforeunload` handler fired
+immediately on navigation with no minimum-age check.
+
+**Fix:** (1) Only set `isMaster = true` when the role is `master`; never
+reset it to `false` on `slave`. (2) Track `splashLoadTime = Date.now()` and
+skip the `endSong` call in `beforeunload` if the page has been loaded for
+less than 2 seconds.
+
+**Files changed:**
+- `coreaoke/static/js/splash.js` -- added `splashLoadTime` tracking,
+  guarded `beforeunload` handler, changed `splash_role` handler to only
+  set `isMaster` on master role
+
+## Username click error on first load (Smoke test)
+
+Clicking the username in the sidebar on first page load threw a
+`ReferenceError` because the `Cookies` object (from js-cookie) was not
+yet available when the click handler executed.
+
+**Root cause:** The `#current-user` click handler in `spa-navigation.js`
+and the cookie access in `base.html` both called `Cookies.get()` without
+checking whether the library was loaded.
+
+**Fix:** Added `typeof Cookies !== 'undefined'` guards before all
+`Cookies.get()` and `Cookies.set()` calls in both files.
+
+**Files changed:**
+- `coreaoke/static/spa-navigation.js` -- added `Cookies` existence check
+  in `#current-user` click handler
+- `coreaoke/templates/base.html` -- added `Cookies` existence checks in
+  `setUserCookie()`, `getUserCookie()`, and current user display init
+
+## Goodies font readability (Smoke test)
+
+The GOODIES section header and its nav items (About, Docs, SBOM) were
+nearly invisible against the dark sidebar due to low-opacity text colors.
+
+**Root cause:** The GOODIES header used `color: #6b7280` (gray-500) and
+the nav items inherited the default `rgba(255,255,255,0.6)` sidebar item
+color, both too dim on `#262626` background.
+
+**Fix:** Changed the GOODIES header to `rgba(255,255,255,0.55)` and added
+CSS rules for `#goodies-items .sidebar-item` at `rgba(255,255,255,0.75)`
+with hover at `rgba(255,255,255,1.0)`.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- updated `#goodies-header` inline color
+- `coreaoke/static/coreaoke.css` -- added `#goodies-items .sidebar-item`
+  color and hover rules
+
+## Tweaks sidebar scrollbar (Smoke test)
+
+The Tweaks (info) page content overflowed the sidebar height with no way
+to scroll, making lower settings inaccessible.
+
+**Root cause:** `.sidebar-nav` had `flex-shrink: 0` which prevented it
+from participating in the flex layout's overflow calculation.
+`#sidebar-content` had the correct `overflow-y: auto` and `flex: 1` but
+its parent nav blocked the flex chain.
+
+**Fix:** Changed `.sidebar-nav` from `flex-shrink: 0` to `flex: 1;
+min-height: 0; overflow: hidden;` so it participates in the flex layout
+and allows `#sidebar-content` to scroll.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- changed `.sidebar-nav` flex properties
+
+## Advanced settings checkbox alignment (Smoke test)
+
+Checkboxes in the Advanced settings accordion were vertically centered
+against their labels, causing visual misalignment when labels wrapped to
+multiple lines.
+
+**Root cause:** `.settings-pref` used `align-items: center` which
+vertically centered the checkbox against multi-line label text. Spacing
+was handled by `margin-right` instead of `gap`.
+
+**Fix:** Changed `.settings-pref` to `align-items: flex-start` with
+`gap: 0.5rem`. Added `margin-top: 0.15rem` to checkboxes for baseline
+alignment. Removed redundant `margin-right` from inputs.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- updated `.settings-pref` alignment,
+  checkbox margin, and input margin rules

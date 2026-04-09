@@ -5,6 +5,7 @@ import threading
 
 from flask import request
 
+from coreaoke.app import app as flask_app
 from coreaoke.lib.current_app import get_karaoke_instance
 
 # Track connected splash screen clients and the elected master
@@ -115,11 +116,12 @@ def setup_socket_events(socketio):
                     # No splash screens left — start grace period before ending song
                     def _end_song_after_timeout() -> None:
                         global pending_master_timeout
-                        pending_master_timeout = None
-                        if master_splash_id is None:
-                            logging.info("Grace period expired, no new master — ending song")
-                            k = get_karaoke_instance()
-                            k.playback_controller.end_song("splash screen closed")
+                        with flask_app.app_context():
+                            pending_master_timeout = None
+                            if master_splash_id is None:
+                                logging.info("Grace period expired, no new master — ending song")
+                                k = get_karaoke_instance()
+                                k.playback_controller.end_song("splash screen closed")
 
                     pending_master_timeout = threading.Timer(5.0, _end_song_after_timeout)
                     pending_master_timeout.daemon = True

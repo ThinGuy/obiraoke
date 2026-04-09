@@ -215,7 +215,9 @@ a:hover {
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .sidebar-item {
@@ -542,6 +544,15 @@ a:hover {
 /* Current user in sidebar nav */
 .sidebar-nav .current-user {
   cursor: pointer;
+}
+
+/* Goodies nav items readability */
+#goodies-items .sidebar-item {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+#goodies-items .sidebar-item:hover {
+  color: rgba(255, 255, 255, 1.0) !important;
 }
 
 /* ===== COMPONENTS — Cards ===== */

@@ -23,6 +23,7 @@ let scoreReviews = {
   high: ["Great job!"],
 };
 let isMaster = false;
+let splashLoadTime = Date.now();
 let uiScale = null;
 let clockIntervalId = null;
 const channelName = CoreaokeConfig.channel || "main";
@@ -499,7 +500,7 @@ const setupVideoPlayer = () => {
   window.addEventListener(
     'beforeunload',
     function (event) {
-      if (isMaster && isMediaPlaying(video)) {
+      if (isMaster && isMediaPlaying(video) && (Date.now() - splashLoadTime > 2000)) {
         endSong("splash screen closed");
       }
       var bgVideo = getBackgroundVideoPlayer();
@@ -602,7 +603,9 @@ const setupSocketEvents = () => {
     socket.emit("register_splash", {channel: channelName});
   });
   socket.on('splash_role', (role) => {
-    isMaster = (role === "master");
+    if (role === "master") {
+      isMaster = true;
+    }
     console.log("Splash role assigned:", role, isMaster ? "(Master active)" : "(Slave active - read-only)");
   });
   socket.on('connect_error', (error) => {
