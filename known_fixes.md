@@ -2097,3 +2097,27 @@ alignment. Removed redundant `margin-right` from inputs.
 **Files changed:**
 - `coreaoke/templates/info.html` -- updated `.settings-pref` alignment,
   checkbox margin, and input margin rules
+
+## Circular import in socket_events.py
+
+`coreaoke/routes/socket_events.py` imported `app` directly from
+`coreaoke.app` to obtain a Flask app context for the `threading.Timer`
+callback in `_end_song_after_timeout()`. This created a circular import
+because `coreaoke/app.py` imports `setup_socket_events` from
+`socket_events.py`.
+
+**Root cause:** Direct import of the `app` object from `coreaoke.app`
+at module level created an import cycle: `app.py` -> `socket_events.py`
+-> `app.py`.
+
+**Fix:** Removed `from coreaoke.app import app as flask_app`. Instead,
+store the `socketio` instance (already passed as a parameter to
+`setup_socket_events()`) in a module-level `_socketio` variable. Access
+the Flask app at callback time via `_socketio.sockio_mw.flask_app`,
+which is the reference Flask-SocketIO's middleware stores after
+`socketio.init_app(app)` is called.
+
+**Files changed:**
+- `coreaoke/routes/socket_events.py` -- removed circular import, added
+  module-level `_socketio` reference, updated `_end_song_after_timeout()`
+  to use `_socketio.sockio_mw.flask_app` for app context

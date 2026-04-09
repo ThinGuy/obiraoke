@@ -5,8 +5,10 @@ import threading
 
 from flask import request
 
-from coreaoke.app import app as flask_app
 from coreaoke.lib.current_app import get_karaoke_instance
+
+# Module-level reference to the SocketIO instance, set by setup_socket_events().
+_socketio = None
 
 # Track connected splash screen clients and the elected master
 # Maps session ID to channel name
@@ -24,6 +26,8 @@ def setup_socket_events(socketio):
     Args:
         socketio: The SocketIO instance.
     """
+    global _socketio
+    _socketio = socketio
 
     @socketio.on("end_song")
     def end_song(reason: str) -> None:
@@ -116,7 +120,8 @@ def setup_socket_events(socketio):
                     # No splash screens left — start grace period before ending song
                     def _end_song_after_timeout() -> None:
                         global pending_master_timeout
-                        with flask_app.app_context():
+                        app = _socketio.sockio_mw.flask_app
+                        with app.app_context():
                             pending_master_timeout = None
                             if master_splash_id is None:
                                 logging.info("Grace period expired, no new master — ending song")
