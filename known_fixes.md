@@ -2234,3 +2234,56 @@ label typography and row layout:
 - `coreaoke/templates/info.html` -- removed inline styles from settings-pref
   divs, labels, and number inputs; updated .settings-pref and
   .settings-pref label rules in the `<style>` block
+
+## Checkbox label order in Tweaks settings
+
+**Root cause:** Checkbox rows in `info.html` rendered the `<input>` before the
+`<label>`, so the checkbox sat on the left with the text trailing off to the
+right. With `.settings-pref` set to a plain left-aligned flex row, the
+checkboxes lined up in a column along the left edge while the labels ran into
+the right-hand wall of the sidebar. The UX called for the label text to read
+left-aligned and the checkbox to sit on the right of its own row.
+
+**Fix:** Swap the DOM order so every checkbox row reads `<label>` then
+`<input type="checkbox">`, and switch `.settings-pref` to
+`justify-content: space-between` so the label pins to the left and the
+checkbox pins to the right. Number and select rows are unchanged and keep
+their input-first order.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- swapped label/input order on all 11
+  checkbox rows (Splash screen section and Advanced settings section) and
+  added `justify-content: space-between` to `.settings-pref` in the `<style>`
+  block
+
+## Sidebar content pushed Goodies off screen
+
+**Root cause:** `.sidebar-nav` used `flex: 1; overflow: hidden` and
+`.sidebar-content` used `flex: 1; overflow-y: auto`, which meant
+`#sidebar-content` always claimed the remaining height of the nav area
+regardless of whether it was visible or how tall its content was. When the
+Tweaks page loaded its settings into `#sidebar-content`, the Goodies footer
+(About / Docs / SBOM) was pushed below the viewport and hidden behind the
+fixed sidebar footer. When Tweaks was collapsed the empty content area still
+held onto the same slack space, so Goodies still never appeared.
+
+**Fix:** Stop making `#sidebar-content` a flex child that grows. Let it size
+to its content and move the scrolling responsibility up one level onto
+`.sidebar-nav` so the whole nav column (menu items, content area, divider,
+Goodies header, Goodies items) scrolls as a single unit inside the fixed
+sidebar chrome:
+
+1. `.sidebar-nav` -- `overflow: hidden` becomes `overflow-y: auto`; keep
+   `flex: 1; min-height: 0` so it still fills between header and footer.
+2. `.sidebar-content` -- remove `flex: 1` and `min-height: 0`; change
+   `overflow-y: auto` to `overflow-y: visible` so it takes only the space its
+   children need. The `.sidebar-expanded .sidebar-content { display: block }`
+   rule is unchanged.
+
+With these changes the Goodies section is always visible at the bottom of
+the nav column when nothing is scrolled, and the entire sidebar-nav scrolls
+as one unit when its combined content overflows the viewport.
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- updated `.sidebar-nav` and
+  `.sidebar-content` rules

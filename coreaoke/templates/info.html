@@ -32,6 +32,7 @@
 .settings-pref {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 8px;
 }
@@ -190,32 +191,32 @@
   </div>
   <div class="settings-collapsible-body">
     <div class="settings-pref">
-      <input id="pref-bg-video" class="user-preference-checkbox" type="checkbox" data-pref="disable_bg_video" {% if disable_bg_video == True %}checked{% endif %} />
       <label for="pref-bg-video">{% trans %}Disable background video{% endtrans %}</label>
+      <input id="pref-bg-video" class="user-preference-checkbox" type="checkbox" data-pref="disable_bg_video" {% if disable_bg_video == True %}checked{% endif %} />
     </div>
     <div class="settings-pref">
-      <input id="pref-bg-music" class="user-preference-checkbox" type="checkbox" data-pref="disable_bg_music" {% if disable_bg_music == True %}checked{% endif %} />
       <label for="pref-bg-music">{% trans %}Disable background music{% endtrans %}</label>
+      <input id="pref-bg-music" class="user-preference-checkbox" type="checkbox" data-pref="disable_bg_music" {% if disable_bg_music == True %}checked{% endif %} />
     </div>
     <div class="settings-pref">
-      <input id="pref-score" type="checkbox" class="user-preference-checkbox" data-pref="disable_score" {% if disable_score == True %}checked{% endif %}>
       <label for="pref-score">{% trans %}Disable the score screen after each song{% endtrans %}</label>
+      <input id="pref-score" type="checkbox" class="user-preference-checkbox" data-pref="disable_score" {% if disable_score == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-notifications" type="checkbox" class="user-preference-checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
       <label for="pref-notifications">{% trans %}Hide notifications{% endtrans %}</label>
+      <input id="pref-notifications" type="checkbox" class="user-preference-checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-splash-clock" type="checkbox" class="user-preference-checkbox" data-pref="show_splash_clock" {% if show_splash_clock == True %}checked{% endif %}>
       <label for="pref-splash-clock">{% trans %}Show splash clock{% endtrans %}</label>
+      <input id="pref-splash-clock" type="checkbox" class="user-preference-checkbox" data-pref="show_splash_clock" {% if show_splash_clock == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-qr-code" type="checkbox" class="user-preference-checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
       <label for="pref-qr-code">{% trans %}Hide the URL and QR code{% endtrans %}</label>
+      <input id="pref-qr-code" type="checkbox" class="user-preference-checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-overlay" type="checkbox" class="user-preference-checkbox" data-pref="hide_overlay" {% if hide_overlay == True %}checked{% endif %}>
       <label for="pref-overlay">{% trans %}Hide all overlays, including now playing, up next, and QR code{% endtrans %}</label>
+      <input id="pref-overlay" type="checkbox" class="user-preference-checkbox" data-pref="hide_overlay" {% if hide_overlay == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
       <input id="pref-volume" class="user-preference-input" type="number" min="0" max="100" step="5" data-pref="volume" data-start-value="{{ volume }}" value="{{ volume }}" />
@@ -280,20 +281,20 @@
   </div>
   <div class="settings-collapsible-body">
     <div class="settings-pref">
-      <input id="pref-normalize" type="checkbox" class="user-preference-checkbox" data-pref="normalize_audio" {% if normalize_audio == True %}checked{% endif %}>
       <label for="pref-normalize">{% trans %}Normalize audio volume{% endtrans %}</label>
+      <input id="pref-normalize" type="checkbox" class="user-preference-checkbox" data-pref="normalize_audio" {% if normalize_audio == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-high-quality" type="checkbox" class="user-preference-checkbox" data-pref="high_quality" {% if high_quality == True %}checked{% endif %}>
       <label for="pref-high-quality">{% trans %}Download high quality videos{% endtrans %}</label>
+      <input id="pref-high-quality" type="checkbox" class="user-preference-checkbox" data-pref="high_quality" {% if high_quality == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-complete_transcode_before_play" type="checkbox" class="user-preference-checkbox" data-pref="complete_transcode_before_play" {% if complete_transcode_before_play == True %}checked{% endif %}>
       <label for="pref-complete_transcode_before_play">{% trans %}Transcode video completely before playing (better browser compatibility, slower starts). Buffer size will be ignored.*{% endtrans %}</label>
+      <input id="pref-complete_transcode_before_play" type="checkbox" class="user-preference-checkbox" data-pref="complete_transcode_before_play" {% if complete_transcode_before_play == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
-      <input id="pref-cdg-scaling" type="checkbox" class="user-preference-checkbox" data-pref="cdg_pixel_scaling" {% if cdg_pixel_scaling == True %}checked{% endif %}>
       <label for="pref-cdg-scaling">{% trans %}Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU usage){% endtrans %}</label>
+      <input id="pref-cdg-scaling" type="checkbox" class="user-preference-checkbox" data-pref="cdg_pixel_scaling" {% if cdg_pixel_scaling == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
       <input id="pref-avsync" class="user-preference-input" type="number" step="0.1" min="-10" max="10" data-pref="avsync" data-start-value="{{ avsync }}" value="{{ avsync }}" />
@@ -304,8 +305,8 @@
       <label for="pref-limit-user-songs-by">{% trans %}Limit of songs an individual user can add to the queue (0 = unlimited){% endtrans %}</label>
     </div>
     <div class="settings-pref">
-      <input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
       <label for="pref-fair-queue">{% trans %}Enable fair queue (round-robin mode ensures users take turns){% endtrans %}</label>
+      <input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
     </div>
     <div class="settings-pref">
       <input id="pref-buffer-size" class="user-preference-input" type="number" min="0" max="9999" data-pref="buffer_size" data-start-value="{{ buffer_size }}" value="{{ buffer_size }}" />
