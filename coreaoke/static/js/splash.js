@@ -7,7 +7,7 @@ let showMenu = false;
 let menuButtonVisible = false;
 let autoplayConfirmed = false;
 let volume = 0.85;
-const playbackStartTimeout = 10000;
+const playbackStartTimeout = 30000;
 const bgMediaResumeDelay = 2000;
 let isScoreShown = false;
 const hasBgVideo = CoreaokeConfig.hasBgVideo;
@@ -23,7 +23,6 @@ let scoreReviews = {
   high: ["Great job!"],
 };
 let isMaster = false;
-let splashLoadTime = Date.now();
 let uiScale = null;
 let clockIntervalId = null;
 const channelName = CoreaokeConfig.channel || "main";
@@ -492,20 +491,23 @@ const setupVideoPlayer = () => {
 
   video.addEventListener("ended", () => { endSong("complete", true); });
   video.addEventListener("timeupdate", (e) => { $("#current").text(formatTime(video.currentTime)); });
+
+  // Debounce source errors: transient glitches (HLS segment retries,
+  // buffering) should not end the song. Only end if the video has not
+  // recovered after 3 seconds.
+  let sourceErrorTimer = null;
   $("#video source")[0].addEventListener("error", (e) => {
-    if (isMediaPlaying(video)) {
-      endSong("error while playing");
-    }
-  });
-  window.addEventListener(
-    'beforeunload',
-    function (event) {
-      if (isMaster && isMediaPlaying(video) && (Date.now() - splashLoadTime > 2000)) {
-        endSong("splash screen closed");
+    if (sourceErrorTimer) return;
+    sourceErrorTimer = setTimeout(() => {
+      sourceErrorTimer = null;
+      if (!isMediaPlaying(video)) {
+        endSong("error while playing");
       }
-    },
-    true
-  );
+    }, 3000);
+  });
+  // Note: beforeunload does NOT emit end_song. The server-side 5s grace
+  // period in socket_events.py handles master disconnection, allowing a
+  // reloaded master to reclaim the role without ending the song.
 }
 
 const setupBackgroundMusicPlayer = () => {

@@ -2322,3 +2322,69 @@ is out of sync with the server-side playback clock until the next time
   handle `sync_state` in the player-panel IIFE
 - `coreaoke/routes/socket_events.py` -- add `request_sync` handler that
   emits `sync_state` to the requesting client
+
+## Splash master reload ended the song immediately
+
+**Root cause:** Four separate wiring issues in the splash screen socket
+layer caused the karaoke video to end unexpectedly on any page reload,
+transient HLS glitch, or slow startup:
+
+1. **beforeunload sent `end_song` synchronously.** The master splash's
+   `beforeunload` handler in `splash.js` fired an `end_song` socket emit
+   before the socket actually disconnected. That bypassed the server-side
+   5-second grace period in `socket_events.py` entirely, so any master
+   page reload ended the song immediately instead of letting the reloaded
+   master reclaim the role within the grace window.
+
+2. **10-second playback-start timeout was too aggressive.** After loading
+   a new stream, `splash.js` scheduled a timeout that called
+   `endSong("failed to start")` if playback had not begun within 10
+   seconds. HLS segment download, buffering, background-tab throttling,
+   and slow hosts routinely need more than 10 seconds to first-frame,
+   so the song would abort before ever playing.
+
+3. **Source error handler had no debounce.** The `<source>` element's
+   `error` listener called `endSong("error while playing")` on the first
+   error, with no tolerance for transient glitches. HLS playback
+   legitimately emits source errors during segment retries and buffer
+   recovery; the karaoke video would end the instant any such blip fired.
+
+4. **`sync_state` payload included a dead `transpose` field.** The
+   previous sprint added `transpose: pc.now_playing_transpose` to the
+   `sync_state` emit in `request_sync`, but the client handler in
+   `base.html` only reads `playing`, `src`, and `position`. The field
+   was never wired through, so it was shipping unused data on every
+   reconnect.
+
+**Fix:**
+
+1. Remove the `endSong` call from `beforeunload` entirely. The server
+   `handle_disconnect` hook already starts a 5-second
+   `pending_master_timeout` when the master disconnects, and cancels it
+   if a new master registers in time. The client should do nothing on
+   unload and let the server grace period run. The dead
+   `splashLoadTime` timestamp (only used by the removed guard) is
+   deleted as well.
+
+2. Increase `playbackStartTimeout` from 10000 to 30000 ms. 30 seconds
+   covers realistic HLS startup, buffering, and throttled-tab
+   scenarios without making a truly-stuck stream hang forever.
+
+3. Wrap the source `error` listener in a 3-second debounce. On the
+   first error, start a `sourceErrorTimer` and, 3 seconds later, end
+   the song only if the video has still not recovered
+   (`isMediaPlaying(video)` returns false). Subsequent errors while a
+   timer is pending are coalesced into the same check.
+
+4. Drop `transpose` from the `sync_state` payload in
+   `coreaoke/routes/socket_events.py` so the emit matches the fields
+   the client actually consumes.
+
+**Files changed:**
+- `coreaoke/static/js/splash.js` -- remove `endSong` call from
+  `beforeunload` handler (and dead `splashLoadTime`), raise
+  `playbackStartTimeout` to 30000, and debounce the source-error
+  handler with a 3-second timer that checks `isMediaPlaying` before
+  calling `endSong`
+- `coreaoke/routes/socket_events.py` -- remove `transpose` from the
+  `sync_state` payload emitted by `request_sync`

@@ -92,7 +92,6 @@ def setup_socket_events(socketio, app: Flask):
                     "playing": True,
                     "src": pc.now_playing_url,
                     "position": pc.now_playing_position or 0,
-                    "transpose": pc.now_playing_transpose,
                 },
                 room=request.sid,
             )
