@@ -2428,3 +2428,65 @@ because it had no sticky positioning.
   `max-height`, and `overflow-y: auto` to `.sidebar-content`; add
   sticky positioning with `#262626` background and `z-index: 1` to
   `.sidebar-content #alpha-bar`
+
+## Goodies nav interrupted the song by reloading the player
+
+**Symptom:** Clicking About, Docs, or SBOM in the Goodies sidebar
+section reloaded the main panel with the Goodies page content,
+which tore down the currently playing karaoke video. The song was
+interrupted and the player had to re-sync from the server every
+time a user peeked at Docs or About.
+
+**Root cause:** The Goodies nav items were wired as
+`data-sidebar-link` targets that routed through the base-template
+`loadSidebarContent()` bypass list. That bypass intentionally
+falls back to `window.location.href = url` for `/credits`,
+`/docs`, and `/sbom` so the full templates can render, but a
+full-page navigation destroys the player `<video>` element and
+the background video along with it. Even with the `request_sync`
+reconnect path the user sees a visible cut in the song.
+
+**Fix:**
+
+1. Open each Goodies nav item in a new browser tab instead of
+   navigating the current page. The original tab keeps its player
+   and background video alive untouched; the new tab renders
+   `base.html` with the Goodies page in the main panel.
+
+2. Drop `data-sidebar-link="true"` and the
+   `{% if request.endpoint == ... %}sidebar-active{% endif %}`
+   active-state logic from the Goodies anchors so the sidebar
+   click handler in `base.html` cannot intercept them and
+   `preventDefault` the `target="_blank"` navigation.
+
+3. Remove `/credits`, `/docs`, and `/sbom` from the
+   `loadSidebarContent()` bypass list in `base.html` and from the
+   `excludedPaths` array in `spa-navigation.js`. Those lists now
+   only carry URLs that still need full-page navigation in the
+   current tab; Goodies is no longer in that category.
+
+4. Add a `target="_blank"` short-circuit to `shouldExcludeLink()`
+   in `spa-navigation.js` so any future link that opts into a new
+   tab is automatically skipped by the SPA interceptor without
+   relying on a class or path allowlist.
+
+5. Add a small "Return to Player" link at the top of each Goodies
+   page body (`credits.html`, `docs.html`, `sbom.html`) that calls
+   `window.close()` and falls back to `window.history.back()` when
+   the browser blocks `close()` on tabs it did not script-open.
+   Styled as a plain text link (`#69c`, `0.875rem`, no background)
+   per the UI spec's link treatment.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- Goodies anchors now use
+  `target="_blank" rel="noopener"`, no `data-sidebar-link`, and
+  no endpoint-based `sidebar-active` class; `loadSidebarContent`
+  bypass list no longer references `/credits`, `/docs`, `/sbom`
+- `coreaoke/static/spa-navigation.js` -- `shouldExcludeLink`
+  returns true for `target="_blank"` links; `excludedPaths` no
+  longer lists `/credits`, `/docs`, `/sbom`
+- `coreaoke/templates/credits.html`,
+  `coreaoke/templates/docs.html`,
+  `coreaoke/templates/sbom.html` -- add a "Return to Player" link
+  at the top of `main_content` that tries `window.close()` and
+  falls back to `window.history.back()`

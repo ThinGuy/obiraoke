@@ -271,7 +271,7 @@
           }
 
           function loadSidebarContent(url) {
-            if (url === '/search' || url === '/docs' || url === '/sbom' || url === '/credits' || url.indexOf('?query=') !== -1) {
+            if (url === '/search' || url.indexOf('?query=') !== -1) {
               window.location.href = url;
               return;
             }
@@ -695,15 +695,15 @@
         GOODIES
       </div>
       <div id="goodies-items" style="display:none">
-        <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa {% if request.endpoint == 'credits.credits' %}sidebar-active{% endif %}" data-sidebar-link="true" title="About">
+        <a href="{{ url_for('credits.credits') }}" class="sidebar-item no-spa" target="_blank" rel="noopener" title="About">
           <i class="icon icon-info-circled"></i>
           <span class="sidebar-label">About</span>
         </a>
-        <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa {% if request.endpoint == 'docs.docs' %}sidebar-active{% endif %}" data-sidebar-link="true" title="Docs">
+        <a href="{{ url_for('docs.docs') }}" class="sidebar-item no-spa" target="_blank" rel="noopener" title="Docs">
           <i class="icon icon-info"></i>
           <span class="sidebar-label">Docs</span>
         </a>
-        <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa {% if request.endpoint == 'sbom.sbom' %}sidebar-active{% endif %}" data-sidebar-link="true" title="SBOM">
+        <a href="{{ url_for('sbom.sbom') }}" class="sidebar-item no-spa" target="_blank" rel="noopener" title="SBOM">
           <i class="icon icon-list-alt"></i>
           <span class="sidebar-label">SBOM</span>
         </a>

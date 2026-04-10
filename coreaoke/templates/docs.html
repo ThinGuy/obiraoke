@@ -4,6 +4,10 @@
 <p style="font-size: 0.8rem; color: rgba(255,255,255,0.65);">See main panel.</p>
 {% endblock %} {% block main_content %}
 
+<a href="#" onclick="event.preventDefault(); try { window.close(); } catch(e) {} if (!window.closed) { window.history.back(); }"
+   style="display: inline-block; color: #69c; font-size: 0.875rem; text-decoration: none; margin-bottom: 1rem;"
+   onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&larr; Return to Player</a>
+
 <style>
   .docs-section { margin-bottom: 1.5rem; }
   .docs-section h2 {

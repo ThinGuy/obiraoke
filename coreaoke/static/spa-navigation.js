@@ -237,6 +237,12 @@
         const href = $(link).attr('href');
         const $link = $(link);
 
+        // Links that open in a new tab must pass through to the browser
+        // so target="_blank" is honored (e.g. Goodies nav items).
+        if ($link.attr('target') === '_blank') {
+            return true;
+        }
+
         // Exclude links with specific classes that use AJAX handlers
         if ($link.hasClass('no-spa') ||
             $link.hasClass('edit-button') ||
@@ -251,6 +257,9 @@
         }
 
         // Exclude admin action links that perform system operations
+        // Note: Goodies pages (/credits, /docs, /sbom) are not listed here.
+        // They open in a new tab via target="_blank" and are excluded by the
+        // no-spa class + the target="_blank" check above.
         const excludedPaths = [
             '/quit',
             '/shutdown',
@@ -265,10 +274,7 @@
             '/batch-song-renamer', // Edit all songs page
             '/files/edit', // Edit single song
             '/files/delete', // Delete song
-            '/queue/edit', // Queue edit actions (move up/down/top/bottom/delete)
-            '/docs', // Operator docs (full-page, not sidebar)
-            '/sbom', // Software bill of materials (full-page, not sidebar)
-            '/credits' // Credits (full-page, not sidebar)
+            '/queue/edit' // Queue edit actions (move up/down/top/bottom/delete)
         ];
 
         // Check if the href matches any excluded path
