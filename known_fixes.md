@@ -2388,3 +2388,43 @@ transient HLS glitch, or slow startup:
   calling `endSong`
 - `coreaoke/routes/socket_events.py` -- remove `transpose` from the
   `sync_state` payload emitted by `request_sync`
+
+## Browse sidebar song list cut off at bottom
+
+**Symptom:** When the Browse sidebar is expanded, the song list
+appears pinned to the bottom of the sidebar with the first letters
+of each song name cut off. The alpha bar scrolls away with the list
+so there is no way to jump to a letter once the user has scrolled.
+
+**Root cause:** A prior change set `.sidebar-nav` to `overflow-y:
+auto` with `flex: 1` so the nav items could scroll. But
+`.sidebar-content` (the Browse panel) had `overflow-y: visible` and
+no `flex-shrink` or `max-height`, so it had no bounded box inside
+the sidebar flex column. The nav grew to consume the available
+height and pushed the Browse content flush against the bottom of
+the sidebar, where it was clipped by the viewport edge. The
+`#alpha-bar` inside the Browse panel also scrolled with the list
+because it had no sticky positioning.
+
+**Fix:**
+
+1. Give `.sidebar-content` a bounded, scrollable box inside the
+   sidebar flex column:
+   - `overflow-y: auto` so the Browse content scrolls internally
+   - `flex-shrink: 0` so it does not collapse under the nav
+   - `max-height: 50vh` so it never takes more than half the
+     viewport, leaving room for the nav above and the footer below
+
+2. Make `.sidebar-content #alpha-bar` stick to the top of the
+   Browse scroll container:
+   - `position: sticky; top: 0` so it stays pinned as the song
+     list scrolls beneath it
+   - `background: #262626` so list rows scrolling under it are
+     not visible through the bar
+   - `z-index: 1` so the sticky bar paints above the rows
+
+**Files changed:**
+- `coreaoke/static/coreaoke.css` -- add `flex-shrink`,
+  `max-height`, and `overflow-y: auto` to `.sidebar-content`; add
+  sticky positioning with `#262626` background and `z-index: 1` to
+  `.sidebar-content #alpha-bar`

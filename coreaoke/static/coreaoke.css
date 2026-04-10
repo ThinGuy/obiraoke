@@ -261,10 +261,12 @@ a:hover {
 /* --- Sidebar content area (page content when expanded) --- */
 .sidebar-content {
   display: none;
-  overflow-y: visible;
+  overflow-y: auto;
   overflow-x: hidden;
   padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  max-height: 50vh;
 }
 
 .sidebar-expanded .sidebar-content {
@@ -524,6 +526,10 @@ a:hover {
 
 /* Alpha bar compact for browse */
 .sidebar-content #alpha-bar {
+  position: sticky;
+  top: 0;
+  background: #262626;
+  z-index: 1;
   flex-wrap: wrap;
   gap: 2px;
   padding: 4px;
