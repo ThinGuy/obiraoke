@@ -2200,3 +2200,37 @@ against the dark sidebar background.
 **Files changed:**
 - `coreaoke/static/coreaoke.css` -- added -webkit-text-fill-color to sidebar label rule
 - `coreaoke/templates/info.html` -- added -webkit-text-fill-color to .settings-pref label style block and all label inline styles
+
+## Advanced settings labels invisible after inline style approach
+
+**Root cause:** The previous belt-and-suspenders fix added per-element inline
+`style` attributes on every `<label>` and on every `<div class="settings-pref">`
+in `info.html`. Placing typography properties inline inside a flex row that
+also contained form controls put labels into a context where Chromium's UA
+stylesheet asserted its own `-webkit-text-fill-color` over the inline `color`,
+making the Advanced settings labels render transparent against the dark panel.
+The `!important` overrides in the stylesheet fought the inline declarations
+and lost on certain label nodes.
+
+**Fix:** Revert the inline style approach entirely. Let the stylesheet own
+label typography and row layout:
+
+1. Removed every `style="..."` attribute from every `<div class="settings-pref">`
+   across Splash screen, Language, and Advanced sections. The div is just
+   `<div class="settings-pref">` now.
+2. Removed every `style="..."` attribute from every `<label>` in the settings
+   sections. Labels are just `<label for="pref-xxx">Text</label>`.
+3. Removed the inline `style` on number inputs inside `.settings-pref` rows.
+   The existing `.settings-pref input[type="number"]` rule handles width.
+4. Updated `.settings-pref` in the `<style>` block to `display: flex;
+   align-items: center; gap: 0.5rem; margin-bottom: 8px;`.
+5. Updated `.settings-pref label` to set `font-weight: 400;
+   color: rgba(255,255,255,0.85); -webkit-text-fill-color:
+   rgba(255,255,255,0.85); font-size: 0.8rem; line-height: 1.4;` without
+   `!important` -- without competing inline declarations the stylesheet rule
+   applies cleanly and the UA override no longer wins.
+
+**Files changed:**
+- `coreaoke/templates/info.html` -- removed inline styles from settings-pref
+  divs, labels, and number inputs; updated .settings-pref and
+  .settings-pref label rules in the `<style>` block
