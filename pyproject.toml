@@ -1,6 +1,6 @@
 [project]
 name = "coreaoke"
-version = "1.19.0"
+version = "1.0.0"
 description = "Youtube-based Karaoke machine for Ubuntu and Linux"
 authors = [{name = "Vic Wong"}]
 readme = "README.md"
