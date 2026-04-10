@@ -2185,17 +2185,18 @@ restore ran before the video element existed.
 
 ## Invisible checkbox labels in Tweaks sidebar
 
-**Root cause:** The CSS rule in `coreaoke.css` for `.sidebar-content label`
-lacked `!important`, so it was overridden by more specific or later-loading
-styles, leaving label text invisible against the dark sidebar background.
+**Root cause:** Chromium's `-webkit-text-fill-color` is set to `rgb(0,0,0)` by
+the UA stylesheet for form elements inside certain contexts. This overrides both
+the `color` property and inline `style` color, rendering label text invisible
+against the dark sidebar background.
 
-**Fix:** Two-pronged approach:
-1. Added `!important` to the `color` property in the `.sidebar-content label`
-   CSS rule to ensure it wins specificity battles.
-2. Added inline `style="color: rgba(255,255,255,0.85); font-size:0.8rem;
-   line-height:1.4;"` to every `<label>` element in `info.html` as a
-   belt-and-suspenders fallback.
+**Fix:** Three-pronged approach:
+1. Added `-webkit-text-fill-color: rgba(255,255,255,0.85) !important` to the
+   `.sidebar-content label` and `.settings-pref label` CSS rules in both
+   `coreaoke.css` and the `<style>` block in `info.html`.
+2. Added `-webkit-text-fill-color` to every `<label>` inline style in
+   `info.html` as a belt-and-suspenders fallback.
 
 **Files changed:**
-- `coreaoke/static/coreaoke.css` -- added !important to sidebar label color rule
-- `coreaoke/templates/info.html` -- added inline style to all label elements
+- `coreaoke/static/coreaoke.css` -- added -webkit-text-fill-color to sidebar label rule
+- `coreaoke/templates/info.html` -- added -webkit-text-fill-color to .settings-pref label style block and all label inline styles

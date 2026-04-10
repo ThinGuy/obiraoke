@@ -466,6 +466,7 @@ a:hover {
 .sidebar-content label,
 .sidebar-content .settings-pref label {
   color: rgba(255, 255, 255, 0.85) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
   font-size: 0.8rem;
   line-height: 1.4;
 }
