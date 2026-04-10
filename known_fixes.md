@@ -2490,3 +2490,68 @@ reconnect path the user sees a visible cut in the song.
   `coreaoke/templates/sbom.html` -- add a "Return to Player" link
   at the top of `main_content` that tries `window.close()` and
   falls back to `window.history.back()`
+
+## Goodies pages pulled in the player runtime through base.html
+
+**Symptom:** Even after the Goodies nav items were switched to
+`target="_blank"`, opening About, Docs, or SBOM still loaded the
+full karaoke player runtime in the new tab. The tab booted
+`base.html`, which meant socket.io, jQuery, hls.js, the splash
+player bootstrap, and `spa-navigation.js` all ran just to render
+a static info page. The new tab then opened its own socket.io
+connection, creating a second, non-singing client the server
+had to track and broadcast to on every playback event.
+
+**Root cause:** `credits.html`, `docs.html`, and `sbom.html` all
+`{% extends 'base.html' %}`. `base.html` is the karaoke app
+shell: it loads the sidebar nav, the player panel with the
+background/karaoke `<video>` elements, socket.io, hls.js,
+jQuery, the selectize UI, `spa-navigation.js`, and the full
+`connectSocket()` / `updatePlayerNowPlaying()` pipeline. The
+Goodies pages only needed a plain content area, but inheriting
+from `base.html` dragged the entire player runtime into every
+tab the user opened from the Goodies menu.
+
+**Fix:**
+
+1. Add a new `coreaoke/templates/goodies_base.html` — a minimal
+   standalone layout with its own `<!DOCTYPE html>`, the Ubuntu
+   variable `@font-face` declarations, `fontello.css`, and
+   `coreaoke.css`. It loads no JavaScript libraries (no jQuery,
+   socket.io, hls.js, selectize, `spa-navigation.js`, or splash
+   player bootstrap) and opens no socket connections.
+
+2. Give `goodies_base.html` its own flat topbar (`#262626`
+   background, white text, 4px `#e95420` left accent to match
+   the sidebar rule in the UI spec): the left side links the
+   app icon and name back to `/`, the right side is a single
+   `Return to Player` button that calls `window.close()` and
+   falls back to `window.history.back()` when the browser
+   refuses to close a tab it did not script-open. The button
+   now lives in the base template, not in each page body.
+
+3. Point `credits.html`, `docs.html`, and `sbom.html` at
+   `goodies_base.html` and drop the per-page `Return to Player`
+   link that was added in the previous session. Remove the
+   empty `header`/`content` blocks those pages only carried
+   because `base.html` required them.
+
+4. In `credits.html`, replace the jQuery `$.getJSON` stats call
+   with a plain `fetch()` + `response.json()` and drop the
+   `window.socket.emit('credits_trigger')` snippet. The credits
+   overlay is already emitted server-side by the `/credits`
+   route handler when the page renders, so the client-side
+   trigger was only needed while the page loaded through the
+   sidebar AJAX path. Goodies tabs no longer speak socket.io
+   at all.
+
+**Files changed:**
+- `coreaoke/templates/goodies_base.html` -- new minimal
+  standalone layout for Goodies pages
+- `coreaoke/templates/credits.html` -- extend
+  `goodies_base.html`, drop the per-page return link, replace
+  jQuery stats call with `fetch()`, remove the socket trigger
+- `coreaoke/templates/docs.html` -- extend `goodies_base.html`,
+  drop the per-page return link
+- `coreaoke/templates/sbom.html` -- extend `goodies_base.html`,
+  drop the per-page return link
