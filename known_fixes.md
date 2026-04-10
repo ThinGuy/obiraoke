@@ -2287,3 +2287,38 @@ as one unit when its combined content overflows the viewport.
 **Files changed:**
 - `coreaoke/static/coreaoke.css` -- updated `.sidebar-nav` and
   `.sidebar-content` rules
+
+## Karaoke video restarted from 0 after page reload
+
+**Root cause:** Navigating to Search, About, Docs, or SBOM triggers a full
+page reload of `base.html`. The fresh `#player-video` element starts from
+position 0 and has no knowledge of where the server-side song actually is.
+The existing client bootstrap only fetched `now_playing` via `$.get`, which
+sets the stream source and calls `video.play()` but never seeks. Meanwhile
+FFmpeg keeps running on the server, so the audio/video shown in the panel
+is out of sync with the server-side playback clock until the next time
+`playback_position` happens to broadcast from a master splash.
+
+**Fix:** Introduce a small client/server sync handshake on socket connect.
+
+1. `coreaoke/templates/base.html` -- on `socket.on('connect')`, emit a
+   `request_sync` event. In the player-panel IIFE, listen for `sync_state`
+   and, when the fresh video element isn't already playing, point its
+   `<source>` at the stream URL (including HLS.js wiring for non-native
+   browsers with `startPosition` set to the server position), call
+   `video.load()`, `showPlayerVideo()`, seek to the supplied position
+   once metadata is available, and resume playback.
+
+2. `coreaoke/routes/socket_events.py` -- add a `request_sync` handler
+   that reads `karaoke.playback_controller` and, if
+   `is_playing and now_playing_url`, emits `sync_state` back to the
+   requesting client only (`room=request.sid`) with `playing`, `src`
+   (`now_playing_url`), `position` (`now_playing_position` or 0), and
+   `transpose` (`now_playing_transpose`). The state attributes live on
+   `playback_controller`, not directly on the karaoke instance.
+
+**Files changed:**
+- `coreaoke/templates/base.html` -- emit `request_sync` on connect and
+  handle `sync_state` in the player-panel IIFE
+- `coreaoke/routes/socket_events.py` -- add `request_sync` handler that
+  emits `sync_state` to the requesting client

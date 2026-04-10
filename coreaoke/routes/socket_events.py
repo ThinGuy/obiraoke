@@ -75,6 +75,28 @@ def setup_socket_events(socketio, app: Flask):
             socketio.emit("splash_role", "slave", room=sid)
             logging.info(f"Slave splash screen assigned: {sid}")
 
+    @socketio.on("request_sync")
+    def request_sync() -> None:
+        """Send current playback state to a reconnecting client.
+
+        Triggered when a page reload (e.g. Search/Goodies navigation)
+        creates a fresh video element that would otherwise start from
+        position 0 while the server-side song continues playing.
+        """
+        k = get_karaoke_instance()
+        pc = k.playback_controller
+        if pc.is_playing and pc.now_playing_url:
+            socketio.emit(
+                "sync_state",
+                {
+                    "playing": True,
+                    "src": pc.now_playing_url,
+                    "position": pc.now_playing_position or 0,
+                    "transpose": pc.now_playing_transpose,
+                },
+                room=request.sid,
+            )
+
     @socketio.on("playback_position")
     def handle_playback_position(position: float) -> None:
         """Handle playback_position WebSocket event from the master splash screen.

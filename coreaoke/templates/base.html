@@ -87,6 +87,11 @@
       window.socket = io();
       window.socket.on('connect', function() {
           console.log('Socket connected');
+          // After a full page reload (e.g. Search/Goodies), ask the
+          // server for current playback state so the fresh video
+          // element can resume from the correct position instead of
+          // restarting from zero.
+          window.socket.emit('request_sync');
       });
       window.socket.on('disconnect', function() {
           console.log('Socket disconnected');
@@ -497,6 +502,48 @@
               if (Math.abs(video.currentTime - position) > 2) {
                 video.currentTime = position;
               }
+            }
+          });
+          // Resume playback after a full page reload. Fired by the
+          // server in response to 'request_sync' on socket connect.
+          window.socket.on('sync_state', function(data) {
+            if (!data || !data.playing || !data.src) return;
+            var video = getPlayerVideo();
+            if (!video) return;
+            // Skip if the new video element is already playing content.
+            if (video.src && !video.paused) return;
+            playerCurrentVideoUrl = data.src;
+            var streamUrl = data.src;
+            var position = data.position || 0;
+            var source = document.getElementById('player-video-source');
+            source.setAttribute('src', '');
+            video.load();
+            source.setAttribute('src', streamUrl);
+            if (streamUrl.endsWith('.m3u8') && typeof Hls !== 'undefined') {
+              if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = streamUrl;
+              } else {
+                if (playerHlsInstance) {
+                  playerHlsInstance.destroy();
+                  playerHlsInstance = null;
+                }
+                playerHlsInstance = new Hls({ startPosition: position });
+                playerHlsInstance.loadSource(streamUrl);
+                playerHlsInstance.attachMedia(video);
+              }
+            }
+            video.load();
+            showPlayerVideo();
+            var seekAndPlay = function() {
+              try { video.currentTime = position; } catch(e) {}
+              video.play().catch(function(err) {
+                console.error('sync_state play failed:', err);
+              });
+            };
+            if (video.readyState >= 1) {
+              seekAndPlay();
+            } else {
+              video.addEventListener('loadedmetadata', seekAndPlay, { once: true });
             }
           });
           window.socket.on('credits_overlay', function() {
