@@ -1,0 +1,206 @@
+{% extends 'goodies_base.html' %}
+
+{% block scripts %}
+<style>
+  html, body {
+    height: 100%;
+  }
+  .portal-root {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+    background: #f7f7f7;
+  }
+  .portal-sidebar {
+    width: 208px;
+    flex: 0 0 208px;
+    background: #262626;
+    border-left: 4px solid #e95420;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+  }
+  .portal-sidebar-brand {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 300;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .portal-sidebar-brand img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  .portal-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.5rem;
+  }
+  .portal-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.65);
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    text-decoration: none;
+  }
+  .portal-nav-item:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .portal-nav-item.active {
+    color: #ffffff;
+    background: #313131;
+    border-left: 2px solid #e95420;
+  }
+  .portal-nav-item .icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .portal-sidebar-spacer {
+    flex: 1 1 auto;
+  }
+  .portal-sidebar-return {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.65);
+    background: transparent;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+  }
+  .portal-sidebar-return:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .portal-main {
+    flex: 1 1 auto;
+    background: #ffffff;
+    overflow-y: auto;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  .portal-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 1rem;
+    font-weight: 300;
+    text-align: center;
+  }
+  .portal-loading {
+    padding: 2rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+  .portal-content-wrapper {
+    padding: 1.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="portal-root">
+  <aside class="portal-sidebar">
+    <div class="portal-sidebar-brand" title="{{ app_name }}">
+      <img src="{{ app_icon_url }}" alt="{{ app_name }}">
+      <span>{{ app_name }}</span>
+    </div>
+    <nav class="portal-sidebar-nav">
+      <button type="button" class="portal-nav-item" data-portal-target="{{ url_for('credits.credits') }}" data-portal-title="About">
+        <i class="icon icon-info-circled"></i>
+        <span>About</span>
+      </button>
+      <button type="button" class="portal-nav-item" data-portal-target="{{ url_for('docs.docs') }}" data-portal-title="Docs">
+        <i class="icon icon-info"></i>
+        <span>Docs</span>
+      </button>
+      <button type="button" class="portal-nav-item" data-portal-target="{{ url_for('sbom.sbom') }}" data-portal-title="SBOM">
+        <i class="icon icon-list-alt"></i>
+        <span>SBOM</span>
+      </button>
+    </nav>
+    <div class="portal-sidebar-spacer"></div>
+    <button type="button" class="portal-sidebar-return"
+            onclick="try { window.close(); } catch (e) {} if (!window.closed) { window.history.back(); }">
+      &larr; Return to Player
+    </button>
+  </aside>
+  <main class="portal-main" id="portal-main">
+    <div class="portal-welcome">Select a section from the left to get started.</div>
+  </main>
+</div>
+<script>
+  (function() {
+    var main = document.getElementById('portal-main');
+    var navItems = document.querySelectorAll('.portal-nav-item[data-portal-target]');
+
+    function setActive(clicked) {
+      navItems.forEach(function(item) {
+        item.classList.remove('active');
+      });
+      if (clicked) {
+        clicked.classList.add('active');
+      }
+    }
+
+    function extractMainContent(html) {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(html, 'text/html');
+      var section = doc.querySelector('.goodies-main');
+      return section ? section.innerHTML : doc.body.innerHTML;
+    }
+
+    function loadSection(url, clicked) {
+      setActive(clicked);
+      main.innerHTML = '<div class="portal-loading">Loading...</div>';
+      fetch(url, { credentials: 'same-origin' })
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
+          return response.text();
+        })
+        .then(function(html) {
+          main.innerHTML = '<div class="portal-content-wrapper">' + extractMainContent(html) + '</div>';
+          main.scrollTop = 0;
+        })
+        .catch(function(err) {
+          main.innerHTML = '<div class="portal-loading">Failed to load section: ' + err.message + '</div>';
+        });
+    }
+
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        var url = item.getAttribute('data-portal-target');
+        if (url) {
+          loadSection(url, item);
+        }
+      });
+    });
+  })();
+</script>
+{% endblock %}

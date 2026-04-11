@@ -2555,3 +2555,82 @@ tab the user opened from the Goodies menu.
   drop the per-page return link
 - `coreaoke/templates/sbom.html` -- extend `goodies_base.html`,
   drop the per-page return link
+
+## Goodies consolidated into a self-contained portal
+
+**Symptom:** The sidebar carried three separate About, Docs, and
+SBOM nav items inside a collapsible GOODIES section. Each one
+opened its own new tab, so a user reviewing all three wound up
+with three tabs plus the karaoke player, and the sidebar had to
+track collapse state and active highlighting for a feature that
+did not belong on the main player chrome at all.
+
+**Root cause:** Goodies were wired as three independent top-level
+nav items living on the karaoke sidebar. The collapsible GOODIES
+header and its JavaScript toggle only existed to hide that
+clutter, and the per-item `target="_blank"` behavior meant every
+click spawned a fresh tab with no shared navigation between the
+three pages.
+
+**Fix:**
+
+1. Add a new `coreaoke/routes/goodies.py` blueprint exposing
+   `GET /goodies`. The route renders a new
+   `coreaoke/templates/goodies_portal.html` template and is
+   gated by the same `get_lockdown()` guard as the individual
+   Goodies pages. `/credits`, `/docs`, and `/sbom` continue to
+   work for direct URL access with their existing lockdown
+   checks; only the sidebar entry point changes.
+
+2. Register `goodies_bp` in `coreaoke/app.py` alongside
+   `credits_bp`, `docs_bp`, and `sbom_bp` in the
+   `_internal_blueprints` list.
+
+3. Build `goodies_portal.html` as a two-panel layout that
+   extends `goodies_base.html`. It overrides the new
+   `{% block body %}` to drop the default topbar and replace it
+   with a left sidebar (208px wide, `#262626` background, 4px
+   `#e95420` accent per the UI spec) and a right content panel
+   that fills the remaining viewport. The left sidebar carries
+   the app icon/name header, three nav buttons (About, Docs,
+   SBOM), and a `Return to Player` button at the bottom that
+   calls `window.close()` with a `window.history.back()`
+   fallback. The right panel starts with a welcome message and
+   loads the selected section via `fetch()`, parses the response
+   with `DOMParser`, extracts the `.goodies-main` innerHTML, and
+   injects it into `#portal-main` so the URL never changes and
+   the left nav stays visible the whole time.
+
+4. Wrap the existing topbar and `<main>` in
+   `goodies_base.html` inside a new `{% block body %}` so the
+   portal can replace the default chrome while `/credits`,
+   `/docs`, and `/sbom` continue to render with the topbar when
+   accessed directly. Remove the `goodies-topbar-return` button
+   and its CSS because the portal now owns the return control.
+
+5. Replace the `GOODIES` collapsible section in
+   `coreaoke/templates/base.html` with a single `Goodies` nav
+   item that points at `/goodies` with
+   `target="_blank" rel="noopener"` and uses `icon-info-circled`
+   (no `icon-gift` glyph is bundled in the Fontello set). The
+   item sits between the sidebar content area and the version
+   footer and is wrapped in `{% if not lockdown %}` so it
+   disappears entirely when lockdown is active. Delete the
+   `goodies-header` / `goodies-items` collapsible markup and the
+   matching localStorage toggle JavaScript; neither has a job
+   anymore.
+
+**Files changed:**
+- `coreaoke/routes/goodies.py` -- new `goodies_bp` blueprint
+  exposing `GET /goodies` with a lockdown guard
+- `coreaoke/app.py` -- import `goodies_bp` and register it in
+  `_internal_blueprints`
+- `coreaoke/templates/goodies_portal.html` -- new two-panel
+  portal layout that AJAX-loads About/Docs/SBOM content into
+  the right panel
+- `coreaoke/templates/goodies_base.html` -- wrap topbar + main
+  in `{% block body %}`, drop the `Return to Player` button
+  and its styles
+- `coreaoke/templates/base.html` -- replace the GOODIES
+  collapsible section and its toggle JavaScript with a single
+  `Goodies` nav item pointing at `/goodies`

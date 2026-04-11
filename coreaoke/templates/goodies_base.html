@@ -80,19 +80,6 @@
       height: 24px;
       object-fit: contain;
     }
-    .goodies-topbar-return {
-      color: #ffffff;
-      font-size: 0.875rem;
-      font-weight: 300;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      padding: 0;
-    }
-    .goodies-topbar-return:hover {
-      text-decoration: underline;
-    }
     .goodies-main {
       max-width: 64rem;
       margin: 0 auto;
@@ -108,19 +95,17 @@
 </head>
 
 <body>
+  {% block body %}
   <header class="goodies-topbar">
     <a href="{{ url_for('home.home') }}" class="goodies-topbar-brand" title="{{ app_name }}">
       <img src="{{ app_icon_url }}" alt="{{ app_name }}">
       <span>{{ app_name }}</span>
     </a>
-    <button type="button" class="goodies-topbar-return"
-            onclick="try { window.close(); } catch (e) {} if (!window.closed) { window.history.back(); }">
-      &larr; Return to Player
-    </button>
   </header>
   <main class="goodies-main">
     {% block main_content %}{% endblock %}
   </main>
+  {% endblock %}
 </body>
 
 </html>

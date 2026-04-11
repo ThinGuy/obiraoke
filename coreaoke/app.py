@@ -48,6 +48,7 @@ from coreaoke.routes.search import search_bp
 from coreaoke.routes.socket_events import setup_socket_events
 from coreaoke.routes.credits import credits_bp
 from coreaoke.routes.docs import docs_bp
+from coreaoke.routes.goodies import goodies_bp
 from coreaoke.routes.sbom import sbom_bp
 from coreaoke.routes.signage import signage_bp
 from coreaoke.routes.splash import splash_bp
@@ -105,6 +106,7 @@ _internal_blueprints = [
     info_bp,
     credits_bp,
     docs_bp,
+    goodies_bp,
     sbom_bp,
     splash_bp,
     batch_song_renamer_bp,
